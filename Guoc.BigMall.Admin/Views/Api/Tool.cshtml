@@ -1,0 +1,92 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+    </style>
+}
+<div id="app" class="box box-primary">
+    <div class="row">
+        <div class="col-sm-6 text-center">
+            <h3>创建采购单初始化库存</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 ">
+            <el-form inline="true" class="demo-form-inline">
+                <el-form-item label="excel模板">
+                    <el-input type="textarea" v-model="model.json" v-bind:rows="10" style="width:700px" placeholder="粘贴：仓库，编码，数量，批次价格，序列号，供应商" clearable></el-input>
+                </el-form-item>
+                <el-input v-model="model.file" placeholder="excel名字"></el-input>
+                    <el-button type="primary" v-on:click="submit">提交</el-button>
+                </el-form-item>
+            </el-form>
+        </div> 
+        <div class="col-md-12 ">
+            <el-form inline="true" class="demo-form-inline">
+                <el-form-item label="excel模板">
+                    <el-input type="textarea" v-model="model.codes" v-bind:rows="10" style="width:700px" placeholder="粘贴：采购单号" clearable></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-on:click="stockIn">提交入库</el-button>
+                </el-form-item>
+            </el-form>
+        </div>         
+        <div class="col-md-12">
+            <p class="bg-danger text-center">{{errorMessage}}</p>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                model: {
+                    json: '',
+                    codes:'',
+                    file:''
+                },                
+                errorMessage: ''
+            },
+            methods: {
+                //推送销售批发单收货信息
+                submit: function () {
+                    var _self = this;
+                    _self.errorMessage = "";
+                    if (_self.model.file == "") { _self.$message.error("输入文件名"); return; }
+                    var url = "/api/InitInventory";
+                    var data = _self.model;
+                    $.post(url, data, function (result) {
+                        if (result.success) {
+                            _self.$message.success("成功");
+                            _self.model.file = "";
+                            _self.model.json = "";
+                        } else {
+                            _self.errorMessage = result.error;
+                        }
+                    });
+                },
+                stockIn: function () {
+                    var _self = this;
+                    _self.errorMessage = "";
+                    var url = "/api/InitStockIn";
+                    var data = _self.model;
+                    $.post(url, data, function (result) {
+                        if (result.success) {
+                            _self.$message.success("成功");
+                            _self.model.codes = "";
+                        } else {
+                            _self.errorMessage = result.error;
+                        }
+                    });
+                },
+            }
+        });
+    </script>
+}
+
+
+
+

@@ -1,0 +1,120 @@
+﻿@model Guoc.BigMall.Domain.Entity.SystemSetup
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<!-- demo root element -->
+<div id="app" class="box box-primary">
+
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/SystemSetup/Index"><i class="fa fa-dashboard"></i>系统配置</a></li>
+            <li class="active"><a href="/SystemSetup/Edit">编辑配置</a></li>
+        </ol>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="100px" style="margin: 20px;" class="demo-ruleForm">
+        <el-form-item label="名称" prop="name">
+            <el-col span="6">
+                <el-input v-model="ruleForm.name" placeholder="输入配置名称"></el-input>
+            </el-col>
+        </el-form-item>
+        <el-form-item label="配置" prop="value">
+            <el-col span="6">
+                <el-input v-model="ruleForm.value" placeholder="输入配置"></el-input>
+            </el-col>
+        </el-form-item>
+
+
+        <el-form-item label="描述" prop="description">
+            <el-col span="6">
+                <el-input v-model="ruleForm.description" placeholder="输入配置"></el-input>
+            </el-col>
+        </el-form-item>
+
+        <el-form-item>
+            <el-button type="primary" v-on:click="submitForm('ruleForm')" v-bind:disabled="modal">保存</el-button>
+            <el-button v-on:click="back">取消</el-button>
+        </el-form-item>
+    </el-form>
+
+
+</div>
+@section scripts{
+
+    <script>
+        var demo = new Vue({
+
+            el: '#app',
+
+            data: {
+                modal: false,
+                ruleForm: {
+                    id:@Model.Id,
+                    name: '@Model.Name',
+                    value: '@Model.Value',
+                    description:'@Model.Description',
+                },
+                rules: {
+                    name: [
+                        { required: true, message: '请输入字段', trigger: 'blur' },{pattern:'^[a-zA-Z]+$', message: '只能输入英文！', trigger: 'blur' }
+                    ],
+                    value: [
+                       { required: true, message: '请输入值！', trigger: 'blur' }
+
+                    ],
+                    description: [
+                       { required: true, message: '请输入描述！', trigger: 'blur' }
+                    ],
+                }
+
+            },
+
+            methods: {
+                back:function( ) {
+                    window.location="/SystemSetup/Index";;
+                },
+
+                submitForm:function(formName) {
+                    this.modal=true;
+
+                    var v_data = this.ruleForm;
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            $.post("/SystemSetup/Edit", v_data, function (result) {
+                                if (result.success) {
+                                    //bootbox.alert("保存成功！", function () {
+                                    //    window.location.href = "/Role/Index";
+                                    //});
+                                    demo.$alert('保存成功', '成功', {
+                                        confirmButtonText: '确定',
+                                        callback: action => {
+                                            window.location.href = "/SystemSetup/Index";
+                                }
+                            });
+                }
+            else {
+            //bootbox.alert(result.error);
+                                    demo.$message({
+            type: 'error',
+            message: result.error
+        });
+        }
+        }, "json");
+        } else {
+            console.log('error submit!!');
+            return false;
+        }
+        })
+        this.modal=false;
+        },
+
+        }
+        })
+
+    </script>
+}
+

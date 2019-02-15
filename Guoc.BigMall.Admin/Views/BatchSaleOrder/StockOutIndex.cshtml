@@ -1,0 +1,185 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+        .el-dialog__body {
+            padding: 5px 20px;
+        }
+    </style>
+}
+
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/BatchSaleOrder/StockOutIndex"><i class="fa fa-dashboard"></i>批发出库</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+            <el-row v-bind:gutter="20">
+                <el-col v-bind:span="3">
+                    <el-input v-model="table.args.OrderCode" placeholder="输入单号" clearable></el-input>
+                </el-col>
+                <el-col v-bind:span="3">
+                    <el-input v-model="table.args.sapCode" placeholder="SAP单号" clearable></el-input>
+                </el-col>
+                <el-col v-bind:span="3">
+                    <el-input v-model="table.args.ProductCode" placeholder="商品编码" clearable></el-input>
+                </el-col>
+                <el-col v-bind:span="3">
+                    <el-input v-model="table.args.ProductName" placeholder="商品名称" clearable></el-input>
+                </el-col>
+                @*<el-col v-bind:span="4">
+                        <product-selector v-model="table.args.productIds" placeholder="商品" ref="producttable"></product-selector>
+                    </el-col>*@
+                <el-col v-bind:span="4">
+                    <el-input v-model="table.args.snCode" placeholder="输入串码" clearable></el-input>
+                </el-col>
+                <el-col v-bind:span="4">
+                    <store-selector v-model="table.args.storeId" placeholder="门店"></store-selector>
+                </el-col>
+            </el-row>
+            <el-row class="row-bottom">
+                <el-col v-bind:span="4">
+                    <el-date-picker v-model="table.args.time" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="制单日期起" end-placeholder="制单日期止">
+                    </el-date-picker>
+                </el-col>
+            </el-row>
+            <el-row class="row-bottom">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">
+                        @*<button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>*@
+                        <el-button type="primary" class="btn btn-flat" v-on:click="loadData">查询</el-button>
+                        <el-button type="success" class="btn btn-flat " v-on:click="print">打印</el-button>
+                    </span>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col v-bind:span="24">
+                    <el-table v-on:cell-click="cellClick" class="form-group" ref="$table" v-bind:data="table.rows" v-bind:height="table.height" border v-on:selection-change="selsChange" @*show-summary v-bind:summary-method="getSummaries"*@>
+                        <el-table-column type="selection" width="55"></el-table-column>
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="Code" label="单号" width="180"></el-table-column>
+                        <el-table-column prop="SapCode" label="SAP单号" width="100"></el-table-column>
+                        <el-table-column prop="StoreName" label="销售门店" width="200"></el-table-column>
+                        <el-table-column prop="CreatedByName" label="制单人" width="150"></el-table-column>
+                        <el-table-column prop="CreatedOnTime" label="制单时间" width="150"></el-table-column>
+                        <el-table-column prop="StatusName" label="审核状态" width="100"></el-table-column>
+                        <el-table-column prop="Remark" label="备注" width="200"></el-table-column>
+                        <el-table-column label="操作" width="87">
+                            <template slot-scope="scope">
+                                <subpage-dialog type="text" text="出库" title="批发销售单出库" dialog-width="85%" dialog-height="500px"
+                                                v-bind:buttons="[{ buttonId: 'stockOut', text:'出库' , type: 'success', callback:stockOut }]" v-bind:url="'/BatchSaleOrder/StockOut?code='+scope.row.Code"></subpage-dialog>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                   layout="total,sizes,prev,pager,next,jumper" @*v-bind:page-sizes="table.args.pageSize"*@
+                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                    </el-pagination>
+                </el-col>
+            </el-row>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="clearfix"></div>
+    <div id="printDiv"></div>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/subpage-dialog/subpage-dialog.js"></script>
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/product-selector/product-selector.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.PrintArea.js"></script>
+    <script>
+
+        // bootstrap the demo
+        var demo = new Vue({
+            components: {
+            },
+            el: '#app',
+            data: {
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: { ProductName: '', ProductCode: '', OrderCode: '', Status: '@ViewBag.ShowStatus', storeId: '', createOnFrom: '', createOnTo: '', time: '', snCode: '', sapCode: '' },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize, isPaging: true }
+                },
+                checkedIds: [],
+            },
+            methods: {
+                stockOut: function () {
+                    this.loadData();
+                },
+                abandonBatchSaleOrder: function () {
+                    this.loadData();
+                },
+                cellClick: function (row, column, cell, event) {
+
+                },
+                //获取选中的列
+                selsChange: function (sels) {
+                    this.sels = sels;
+                    var $this = this;
+                    this.checkedIds = [];
+                    sels.forEach(function (row) {
+                        $this.checkedIds.push(row.Id);
+                    });
+                },
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+                    var _self = this;
+                    var url = "/BatchSaleOrder/GetBatchSaleOrderList";
+                    //设置时间
+                    if (_self.table.args.time.length > 0) {
+                        _self.table.args.createOnFrom = _self.table.args.time[0];
+                        _self.table.args.createOnTo = _self.table.args.time[1];
+                    }
+                    var data = Object.assign({}, _self.table.page, _self.table.args);
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                },
+                print: function () {
+                    if (this.checkedIds.length == 0) {
+                        this.$message.error("请选择要打印的单据。");
+                        return;
+                    }
+                    var data = { ids: this.checkedIds.join() };
+                    $.get("/BatchSaleOrder/Print", data, function (result) {
+                        $("#printDiv").html(result);
+                        $("#printTemplate").printArea();
+                        $("#printDiv").html("");
+                    });
+                },
+            },
+            created: function () {
+                setListPage(this.table, 293);
+            }
+        });
+    </script>
+}
+
+
+
+
+
+

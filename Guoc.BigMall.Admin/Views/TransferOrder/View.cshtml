@@ -1,0 +1,126 @@
+﻿@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a target="_parent" href="/TransferOrder/CreateIndex"><i class="fa fa-dashboard"></i>调拨单 - 制单</a></li>
+            <li class="active"><a v-bind:href="'/TransferOrder/View/'+model.Id">查看调拨单</a></li>
+        </ol>
+    </div>
+
+    <div style="min-width:700px;padding:10px;">
+
+        <el-row type="flex" justify="center">
+            <el-col v-bind:span="9">
+                <h3 class="text-center text-danger title">调拨单</h3>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col v-bind:span="18">调出门店：[{{model.FromStoreCode}}]{{model.FromStoreName}}</el-col>
+            <el-col v-bind:span="6">调拨单号：{{model.Code}}</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="9">调入门店：[{{model.ToStoreCode}}]{{model.ToStoreName}}</el-col>
+            <el-col v-bind:span="9">单据状态：{{model.StatusDesc}}</el-col>
+            <el-col v-bind:span="6">制单日期：{{model.CreatedOn.toDate().format("yyyy-MM-dd hh:mm:ss")}}</el-col>
+        </el-row>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width="60px">序号</th>
+                    <th width="262px">编码</th>
+                    <th width="30%">名称</th>
+                    <th width="30%">型号</th>
+                    <th width="130px">串码</th>
+                    <th width="120px">库存</th>
+                    @*<th width="120px">单价</th>*@
+                    <th width="120px">数量</th>
+                    @*<th width="120px">金额</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in model.Items">
+                    <td>{{index+1}}</td>
+                    <td>{{item.ProductCode}}</td>
+                    <td>{{item.ProductName}}</td>
+                    <td>{{item.Spec}}</td>
+                    @*<td>{{item.SNCodes}}</td>*@
+                    <td>{{(item.SNCodes ? "<" + item.SNCodes + ">" : "").split(",").join('><')}}</td>
+                    <td>{{item.InventoryQuantity}}</td>
+                    @*<td>{{item.Price.toFixed(4)}}</td>*@
+                    <td>{{item.Quantity}}</td>
+                    @*<td>{{item.Amount.toFixed(2)}}</td>*@
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>合计：</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    @*<td></td>*@
+                    <td>{{totalQuantity}}</td>
+                    @*<td>{{totalAmount.toFixed(2)}}</td>*@
+                </tr>
+            </tfoot>
+        </table>
+
+        <el-row>
+            <el-col>备&ensp;&ensp;注：{{model.Remark}}</el-col>
+        </el-row>
+
+        <el-row>
+            <el-col v-bind:span="6">制单人：{{model.CreatedByName}}</el-col>
+            <el-col v-bind:span="6">审核人：{{model.AuditByName}}</el-col>
+            <el-col v-bind:span="6">审核时间：{{model.AuditOn ? model.AuditOn.toDate().format("yyyy-MM-dd hh:mm:ss") : ""}}</el-col>
+            <el-col v-bind:span="6">审核意见：{{model.AuditRemark}}</el-col>
+        </el-row>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>
+    <script src="~/Content/vue/plugins/product-selector/product-selector.js"></script>
+    <script type="text/javascript">
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                model: @Html.Raw(ViewBag.Model),
+                totalAmount:0
+            },
+            methods: {
+                backToList: function(){
+                    window.parent.closeDialog();
+                },
+                cancel:function(dialog, button, callback){
+                    //button.unlock();
+                    dialog.close();
+                }
+            },
+            computed:{
+                totalQuantity:function(){
+                    var $this=this;
+                    var totalQty=0;
+                    this.totalAmount=0;
+                    this.model.Items.forEach(function(item,index){
+                        if(!item.Quantity)
+                            item.Quantity = 1;
+                        totalQty += parseInt(item.Quantity);
+                        item.Amount = item.Price * item.Quantity;
+                        $this.totalAmount += item.Amount;
+                    });
+                    return totalQty;
+                }
+            },
+            created:function(){
+                var dialog=window.parent.activeDialog;
+                dialog.bindEvent("cancel",this.cancel);
+            }
+        });
+    </script>
+}

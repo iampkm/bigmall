@@ -1,0 +1,255 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@{
+    ViewBag.Title = "CreateBrandVoucher";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+        /*.el-select {
+            width: 100%;
+        }
+
+        .el-date-editor {
+            width: 100% !important;
+        }*/
+
+        .card-number-selector {
+            width: 500px;
+        }
+
+        .el-date-editor {
+            width: 500px !important;
+        }
+
+        .el-input-group {
+            width: 500px;
+        }
+
+        .el-table {
+            width: 500px;
+        }
+    </style>
+}
+
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/TransferOrder/CreateIndex"><i class="fa fa-dashboard"></i>品牌充值券 - 制券</a></li>
+            <li class="active"><a href="/TransferOrder/Create">新增品牌充值券</a></li>
+        </ol>
+    </div>
+
+    <div style="min-width:700px;padding:10px;">
+
+        <el-form ref="form" v-bind:model="model" v-bind:rules="formRules" label-width="92px">
+            <el-form-item>
+                <el-button-group>
+                    <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>
+                    <el-button v-on:click="backToList" v-bind:disabled="lock">取消</el-button>
+                </el-button-group>
+            </el-form-item>
+
+            <el-form-item label="门店" prop="StoreId">
+                <store-selector v-model="model.StoreId" placeholder="选择门店" v-on:value-changed="onStoreChanged"></store-selector>
+            </el-form-item>
+
+            <el-form-item label="品牌" prop="BrandId">
+                <brand-selector v-model="model.BrandId" placeholder="选择品牌" v-bind:multi-select="false"></brand-selector>
+            </el-form-item>
+
+            <el-form-item label="活动时间" prop="DateRange">
+                <el-date-picker v-model="model.DateRange" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            </el-form-item>
+
+            <el-form-item label="参加品类" prop="CategoryIds">
+                <category-selector v-model="model.CategoryIds" placeholder="参加品类" v-bind:multi-select="true" v-bind:return-simplified="true" v-on:value-changed="onCategoryChanged"></category-selector>
+            </el-form-item>
+
+            <el-form-item label="排除商品">
+                <table>
+                    <tr>
+                        <td>
+                            <product-selector v-bind:url="'/Product/LoadStoreProduct'" v-bind:search-args="productSearchArgs" v-on:callback="selectProductCallback" v-on:initialize="onProductSelectorInitialize" placeholder="输入商品编码搜索" v-bind:display-template="'{Code}'"></product-selector>
+                        </td>
+                        <td style="padding-left:10px;">
+                            <el-button type="primary" v-on:click="showDialog = true" plain>导入</el-button>
+                        </td>
+                    </tr>
+                </table>
+            </el-form-item>
+
+            <el-form-item>
+                <el-table v-bind:data="model.ExceptProducts" height="280" border>
+                    <el-table-column type="index"></el-table-column>
+                    <el-table-column prop="ProductCode" label="商品编码" width="108"></el-table-column>
+                    <el-table-column prop="ProductName" label="商品名称"></el-table-column>
+                    <el-table-column label="操作" fixed="right" width="50">
+                        <template slot-scope="scope">
+                            <el-button type="text" v-on:click="removeProduct(scope.row)">移除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-form-item>
+
+            <el-form-item label="卡券总金额" prop="Amount">
+                <el-input-number v-model="model.Amount" v-bind:precision="2" v-bind:min="0.01" v-bind:max="999999"></el-input-number>
+                元
+            </el-form-item>
+
+            <el-form-item label="单品限额" prop="Limit">
+                单品使用卡券金额不能超过销售价的
+                <el-input-number v-model="model.Limit" v-bind:precision="2" v-bind:min="0.01" v-bind:max="100"></el-input-number>
+                %
+            </el-form-item>
+        </el-form>
+
+        <el-dialog title="导入商品" v-bind:visible.sync="showDialog">
+            <el-input type="textarea" v-model="importProducts" rows="10" placeholder="将商品编码复制到此处，多个编码空格分隔。"></el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button v-on:click="showDialog = false">取消</el-button>
+                <el-button type="success" v-on:click="confirmImport">确定</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/category-selector/category-selector.js"></script>
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>
+    <script src="~/Content/vue/plugins/product-selector/product-selector.js"></script>
+    <script src="~/Content/vue/plugins/brand-selector/brand-selector.js"></script>
+    <script type="text/javascript">
+        var rules = @Html.Raw(FormRules.GetRules(typeof(CreateBrandVoucherModel)));
+
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                lock: false,
+                showDialog: false,
+                productSearchArgs:{ StoreId: "0",BrandIds:"0",CategoryId:"0" },
+                importProducts:"",
+                model: {
+                    StoreId:0,
+                    StoreCode:"",
+                    BrandId:0,
+                    DateRange:[],
+                    CategoryIds:"0",
+                    Amount:1,
+                    Limit:1,
+                    ExceptProducts:[],
+                },
+                ExceptProductTemplate:{
+                    ProductId:0,
+                    ProductCode:"",
+                    ProductName:""
+                },
+                postModel:{ StoreId: 0, BrandId: 0, DateRange: [""], CategoryIds: null, Amount: 0, Limit: 0 },
+                formRules: rules
+            },
+            watch:{
+                "model.BrandId":function(){
+                    this.productSearchArgs.BrandIds = this.model.BrandId ? this.model.BrandId : "0";
+                    this.clearProduct();
+                }
+            },
+            methods: {
+                onSubmit: function () {
+                    var $this=this;
+                    this.$refs.form.validate(function(valid){
+                        if(!valid)return false;
+                        $this.lock=true;
+                        var data = JsExt.map($this.model, $this.postModel, true);
+                        data.ExceptProductIds = [];
+                        $this.model.ExceptProducts.forEach(function(product){
+                            data.ExceptProductIds.push(product.ProductId);
+                        });
+                        data.DateRange = data.DateRange.toString();
+
+                        $.ajax({
+                            type:"POST",
+                            url:"/CardVoucher/CreateBrandVoucher",
+                            data:JSON.stringify(data),
+                            dataType:"JSON",
+                            contentType:"application/json",
+                            success:function(result){
+                                $this.lock=false;
+                                if (!result.success) {
+                                    $this.$message.error(result.error);
+                                    return;
+                                }
+                                $this.$message.success({
+                                    message:"保存成功！",
+                                    onClose:function(){
+                                        $this.backToList();
+                                    }
+                                });
+                            }
+                        });
+                    });
+                },
+                backToList: function(){
+                    window.location="/CardVoucher/CreateBrandVoucherIndex";
+                },
+                removeProduct: function(product){
+                    this.model.ExceptProducts.remove(product);
+                },
+                confirmImport:function(){
+                    this.clearProduct();
+                    this.showDialog = false;
+                    var products=this.importProducts.trim().split(/\s+/).remove(function(productCode){ return !productCode || !productCode.trim(); }).distinct();
+                    if(products.length==0) return;
+                    var $this = this;
+                    $.post("/Product/LoadProduct", { StoreId: this.productSearchArgs.StoreId, BrandIds: this.productSearchArgs.BrandIds, CategoryId: this.productSearchArgs.CategoryId, Code: products.toString() }, function (result) {
+                        if (!result.success) {
+                            $this.$message.error(result.error);
+                            return;
+                        }
+                        $this.bindProduct(result.data);
+                    }, "Json");
+                },
+                clearProduct:function(){
+                    this.model.ExceptProducts=[];
+                },
+                onStoreChanged: function(currentSelection){
+                    if(currentSelection.length > 0){
+                        this.model.StoreCode = currentSelection[0].Code;
+                        this.productSearchArgs.StoreId = currentSelection[0].Key;
+                    }else{
+                        this.model.StoreCode = "";
+                        this.productSearchArgs.StoreId = "0";
+                    }
+                    this.clearProduct();
+                },
+                onCategoryChanged:function(currentSelection){
+                    this.productSearchArgs.CategoryId = this.model.CategoryIds ? this.model.CategoryIds : "0";
+                    this.clearProduct();
+                },
+                onProductSelectorInitialize:function(selector, dataKey){
+                    selector.removeColumns("InventoryQuantity","CostPrice");
+                    selector.addColumns(["CategoryCode", "品类编码", 85],["CategoryName", "品类名称"]);
+                },
+                selectProductCallback: function(selectedProducts, currentItem){
+                    var $this = this;
+                    selectedProducts.remove(
+                        function(product){
+                            return $this.model.ExceptProducts.contains(
+                                function(exceptProduct){
+                                    return exceptProduct.ProductId == product.Id;
+                                });
+                        });
+                    this.bindProduct(selectedProducts);
+                    selectedProducts.splice(0, selectedProducts.length);
+                },
+                bindProduct: function(products){
+                    var $this = this;
+                    products.forEach(function(product){
+                        var exceptProduct=JsExt.clone($this.ExceptProductTemplate, true);
+                        $this.model.ExceptProducts.push(exceptProduct);
+                        exceptProduct.ProductId = product.Id;
+                        exceptProduct.ProductCode = product.Code;
+                        exceptProduct.ProductName = product.Name;
+                    });
+                }
+            }
+        });
+    </script>
+}

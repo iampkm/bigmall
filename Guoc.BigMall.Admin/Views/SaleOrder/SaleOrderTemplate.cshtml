@@ -1,0 +1,117 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@using Guoc.BigMall.Infrastructure.Extension;
+@model Guoc.BigMall.Application.DTO.SaleOrderModel
+@{
+    //Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = null;
+    var title = string.Format("{0}", Model.BillType.Description());
+}
+
+
+<div id="app" class="box box-primary">
+    <form>
+        <div id="printTemplate" class="box-body visible-print">
+            <div>
+                <el-row type="flex" justify="center">
+                    <el-col v-bind:span="9">
+                        <h3 class="text-center text-danger title">@title</h3>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col v-bind:span="20">门店：@Model.StoreName</el-col>
+                </el-row>
+                <el-row>
+                    <el-col v-bind:span="6">单据状态：@Model.StatusName</el-col>
+                    <el-col v-bind:span="6">销售单号：@Model.Code</el-col>
+                    <el-col v-bind:span="6">制单日期：@Model.CreatedOnTime</el-col>
+                </el-row>
+                <el-row>
+                    <el-col v-bind:span="6">备注：@Model.Remark</el-col>
+                    <el-col v-bind:span="6">会员姓名：@Model.Buyer</el-col>
+                    <el-col v-bind:span="6">会员电话：@Model.Phone</el-col>
+                </el-row>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>编码</th>
+                            <th>串号</th>
+                            <th>名称</th>
+                            <th>数量</th>
+                            <th>单价</th>
+                            <th>金额</th>
+                            <th>店员一</th>
+                            <th>店员二</th>
+                            <th>赠品</th>
+                            <th>富基单号</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr >
+                            @{   var index = 1;}
+                            @foreach (var item in Model.Items)
+                            {
+                            
+                            <td>@(index++)</td>
+                            <td>@item.ProductCode</td>
+                            <td> @item.SNCode</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.RealPrice</td>
+                            <td>@item.Amount</td>
+                            <td>@item.SaleClerkOne</td>
+                            <td>@item.SaleClerkTwo</td>
+                            @* 循环展现赠品 *@
+                            <td>
+                                <table>
+                                    @foreach (var giftItem in item.GiftItems)
+                                        {
+                                    <tr>
+                                       
+                                            <td>赠品名称： @giftItem.GiftProductName&nbsp;&nbsp;</td>
+                                            <td>赠品数量：@giftItem.GiftQuantity</td>
+                                        
+                                    </tr>
+                                     }
+                                </table>
+                            </td>
+                            <td>
+                                @item.FJCode
+                            </td>
+                            }
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td>合计：</td>
+                            <td></td>
+                            <td></td>
+                            <td>@Model.TotalQuantity</td>
+                            <td></td>
+                            <td>@Model.OrderAmount</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <el-row>
+                    <el-col v-bind:span="6">制单人：@Model.CreatedByName</el-col>
+                </el-row>
+            </div>
+            @*<el-row class="row-bottom">
+                    <el-col>
+                        <span class="input-group-btn">
+                            <el-button type="success" class="btn btn-flat" v-on:click="passAudit">审核</el-button>
+                            <el-button type="danger" class="btn btn-flat" v-on:click="rejectAudit">驳回</el-button>
+                        </span>
+                    </el-col>
+                </el-row>*@
+        </div>
+      </form>
+ </div>
+
+        

@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{75E71E09-1A2E-4CD5-B576-80E0E526DC45}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Guoc.BigMall.Application</RootNamespace>
+    <AssemblyName>Guoc.BigMall.Application</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper.DBContext, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Dapper.DBContext.1.0.0\lib\net45\Dapper.DBContext.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation">
+      <HintPath>..\packages\FluentValidation.6.2.1.0\lib\Net45\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\SystemConfig.cs" />
+    <Compile Include="DTO\AccountInfo.cs" />
+    <Compile Include="DTO\AccountCreateModel.cs" />
+    <Compile Include="DTO\BrandRechargeVoucherDto.cs" />
+    <Compile Include="DTO\BrandRechargeVoucherSearch.cs" />
+    <Compile Include="DTO\CategoryRechargeVoucherDto.cs" />
+    <Compile Include="DTO\CategoryRechargeVoucherSearch.cs" />
+    <Compile Include="DTO\CategoryTreeNode.cs" />
+    <Compile Include="DTO\CreateBrandVoucherModel.cs" />
+    <Compile Include="DTO\CreateCategoryVoucherModel.cs" />
+    <Compile Include="DTO\InitInventoryExcelDto.cs" />
+    <Compile Include="DTO\InventorySummaryDto.cs" />
+    <Compile Include="DTO\LoginModel.cs" />
+    <Compile Include="DTO\MenuModel.cs" />
+    <Compile Include="DTO\ProductPriceDto.cs" />
+    <Compile Include="DTO\PurchaseOrderItemModel.cs" />
+    <Compile Include="DTO\ReturnSaleOrderInStockModel.cs" />
+    <Compile Include="DTO\SaleOrderDto.cs" />
+    <Compile Include="DTO\SaleOrderItemDto.cs" />
+    <Compile Include="DTO\SaleOrderItemModel.cs" />
+    <Compile Include="DTO\SaleOrderListDto.cs" />
+    <Compile Include="DTO\SaleOrderModel.cs" />
+    <Compile Include="DTO\SaleOrderRejectModel.cs" />
+    <Compile Include="DTO\StoreInventoryBatchDto.cs" />
+    <Compile Include="DTO\TransferOrderDetailDto.cs" />
+    <Compile Include="IApiFacade.cs" />
+    <Compile Include="IAreaFacade.cs" />
+    <Compile Include="IBatchSaleOrderFacade.cs" />
+    <Compile Include="IBrandRechargeVoucherFacade.cs" />
+    <Compile Include="ICategoryRechargeVoucherFacade.cs" />
+    <Compile Include="IExchangeOrderFacade.cs" />
+    <Compile Include="IPreSaleOrderFacade.cs" />
+    <Compile Include="IReturnBatchSaleOrderFacade.cs" />
+    <Compile Include="IReturnPreSaleOrderFacade.cs" />
+    <Compile Include="IReturnSaleOrderFacade.cs" />
+    <Compile Include="ISaleOrderFacade.cs" />
+    <Compile Include="Search\BrandSearch.cs" />
+    <Compile Include="Search\SearchInventorySummary.cs" />
+    <Compile Include="Search\SearchPreSaleOrder.cs" />
+    <Compile Include="Search\SearchProfit.cs" />
+    <Compile Include="Search\SearchReturnPreSaleOrder.cs" />
+    <Compile Include="Search\SearchReturnSaleOrder.cs" />
+    <Compile Include="Search\SearchSaleOrder.cs" />
+    <Compile Include="DTO\StockInModel.cs" />
+    <Compile Include="DTO\StockOutModel.cs" />
+    <Compile Include="DTO\SystemSetupModel.cs" />
+    <Compile Include="DTO\TransferEditModel.cs" />
+    <Compile Include="DTO\TransferItemEditModel.cs" />
+    <Compile Include="DTO\TransferItemStockInModel.cs" />
+    <Compile Include="DTO\TransferItemStockOutModel.cs" />
+    <Compile Include="DTO\TransferOrderDto.cs" />
+    <Compile Include="DTO\TransferItemDetailCreateModel.cs" />
+    <Compile Include="DTO\TransferItemCreateModel.cs" />
+    <Compile Include="DTO\TransferCreateModel.cs" />
+    <Compile Include="DTO\TransferOrderItemDto.cs" />
+    <Compile Include="DTO\TransferOrderSearch.cs" />
+    <Compile Include="DTO\PurchaseOrderModel.cs" />
+    <Compile Include="DTO\StoreModel.cs" />
+    <Compile Include="DTO\StoreSearch.cs" />
+    <Compile Include="DTO\StoreTreeNode.cs" />
+    <Compile Include="DTO\SupplierDto.cs" />
+    <Compile Include="DTO\TransferStockInModel.cs" />
+    <Compile Include="DTO\TransferStockOutModel.cs" />
+    <Compile Include="DTO\TreeNode.cs" />
+    <Compile Include="DTO\RoleModel.cs" />
+    <Compile Include="DTO\searchAccount.cs" />
+    <Compile Include="IAccountFacade.cs" />
+    <Compile Include="IBrandFacade.cs" />
+    <Compile Include="ICategoryFacade.cs" />
+    <Compile Include="IContextFacade.cs" />
+    <Compile Include="IProductPriceFacade.cs" />
+    <Compile Include="IReportFacade.cs" />
+    <Compile Include="IStocktakingPlannFacade.cs" />
+    <Compile Include="IMenuFacade.cs" />
+    <Compile Include="IPurchaseFacade.cs" />
+    <Compile Include="IProductFacade.cs" />
+    <Compile Include="ISystemSetupFacade.cs" />
+    <Compile Include="ITransferOrderFacade.cs" />
+    <Compile Include="IRoleFacade.cs" />
+    <Compile Include="IStoreFacade.cs" />
+    <Compile Include="IStoreInventoryFacade.cs" />
+    <Compile Include="ISupplierFacade.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search\SearchInventoryPlan.cs" />
+    <Compile Include="Search\SearchPurchaseOrder.cs" />
+    <Compile Include="Search\SearchPurchaseSaleInventorySummary.cs" />
+    <Compile Include="Search\SearchSaleOrderItemSummary.cs" />
+    <Compile Include="Search\SearchSaleOrderSummary.cs" />
+    <Compile Include="Search\SearchStoreInventory.cs" />
+    <Compile Include="Search\SearchStoreInventoryBatch.cs" />
+    <Compile Include="Search\SearchStoreInventoryHistory.cs" />
+    <Compile Include="Search\SearchProduct.cs" />
+    <Compile Include="Search\SearchStoreProductPrice.cs" />
+    <Compile Include="ViewObject\AccountDto.cs" />
+    <Compile Include="ViewObject\OrderProfitDto.cs" />
+    <Compile Include="ViewObject\PreSaleOrderAbandonModel.cs" />
+    <Compile Include="ViewObject\PreSaleOrderAuditedModel.cs" />
+    <Compile Include="ViewObject\PreSaleOrderOutStockModel.cs" />
+    <Compile Include="ViewObject\PreSaleOrderRejectModel.cs" />
+    <Compile Include="ViewObject\PurchaseSaleInventorySummaryDto.cs" />
+    <Compile Include="ViewObject\SaleOrderAbandonModel.cs" />
+    <Compile Include="ViewObject\SaleOrderItemSummaryDto.cs" />
+    <Compile Include="ViewObject\SaleOrderListDetailDto.cs" />
+    <Compile Include="ViewObject\SaleOrderOutStockModel.cs" />
+    <Compile Include="ViewObject\SaleOrderAuditedModel.cs" />
+    <Compile Include="ViewObject\SaleOrderSummaryDto.cs" />
+    <Compile Include="ViewObject\StocktakingPlanDto.cs" />
+    <Compile Include="ViewObject\StocktakingPlanProductDto.cs" />
+    <Compile Include="ViewObject\PurchaseOrderDetailDto.cs" />
+    <Compile Include="ViewObject\PurchaseOrderDto.cs" />
+    <Compile Include="ViewObject\PurchaseOrderDetailListDto.cs" />
+    <Compile Include="ViewObject\Pager.cs" />
+    <Compile Include="ViewObject\ProductDto.cs" />
+    <Compile Include="ViewObject\PurchaseOrderItemDto.cs" />
+    <Compile Include="ViewObject\RoleDTO.cs" />
+    <Compile Include="ViewObject\SNCodeInventoryDto.cs" />
+    <Compile Include="ViewObject\StoreInventoryBatchQueryDto.cs" />
+    <Compile Include="ViewObject\StoreInventoryHistoryQueryDto.cs" />
+    <Compile Include="ViewObject\StoreInventoryQueryDto.cs" />
+    <Compile Include="ViewObject\StoreDto.cs" />
+    <Compile Include="ViewObject\StoreProductPriceDto.cs" />
+    <Compile Include="ViewObject\TransferOrderPrintDto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Guoc.BigMall.Infrastructure\Guoc.BigMall.Infrastructure.csproj">
+      <Project>{0aa21be3-b59f-42c7-83dc-ccc1fb3d8fb1}</Project>
+      <Name>Guoc.BigMall.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Guoc.BigMall.Domain\Guoc.BigMall.Domain.csproj">
+      <Project>{e349624e-9c0a-4e9e-9c99-9df8f9531ec2}</Project>
+      <Name>Guoc.BigMall.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。启用“NuGet 程序包还原”可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

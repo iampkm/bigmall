@@ -1,0 +1,390 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<!-- demo root element -->
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/StocktakingPlan/Index"><i class="fa fa-dashboard"></i>盘点管理</a></li>
+            </ol>
+        </div>
+
+        <div class="box-body">
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                <div class="col-xs-3 col-sm-2">
+                    <input class="form-control" v-model="table.args.productCodeOrBarCode" placeholder="商品编码/条码" debounce="500" />
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <input class="form-control" v-model="table.args.productName" placeholder="商品名" debounce="500" />
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <store-selector v-model="table.args.StoreId" placeholder="门店"></store-selector>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <brand-selector v-model="checkBrandIds" placeholder="品牌"></brand-selector>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <category-selector v-model="table.args.categoryId" placeholder="品类"></category-selector>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <el-select v-model="table.args.status" placeholder="盘点状态" clearable>
+                        <el-option v-for="item in statusOptions"
+                                   v-bind:key="item.Key"
+                                   v-bind:label="item.Value"
+                                   v-bind:value="item.Key">
+                        </el-option>
+                    </el-select>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                <div class="col-xs-3 col-sm-2">
+                    <input class="form-control" v-model="table.args.code" placeholder="盘点单号" debounce="500" />
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <el-select v-model="table.args.isSNProduct" placeholder="商品类别" clearable>
+                        <el-option v-bind:key="0" label="非串码" v-bind:value="0"></el-option>
+                        <el-option v-bind:key="1" label="串码" v-bind:value="1"></el-option>
+                    </el-select>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <el-checkbox v-model="table.args.difference">显示差异</el-checkbox>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="input-group">
+                        <span class="input-group-addon">选择时间</span>
+                        <el-date-picker v-model="table.args.time" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+                        </el-date-picker>
+                    </div>
+                </div>
+            </div>
+            <el-row class="row-bottom">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">
+
+                        <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData(1)">查 询</button>
+                        <button type="button" class="btn btn-warning btn-flat" v-on:click="exportExecl()" title="导出盘点表">导 出</button>
+                        <button type="button" class="btn btn-info btn-flat" v-on:click="dialogVisible=true" title="导入盘点表">导 入</button>
+                        @*<button type="button" class="btn btn-default btn-flat" v-on:click="clearQuery()">
+                                <i class="fa fa-eraser"></i>清除条件
+                            </button>*@
+                        <button type="button" class="btn btn-success btn-flat" v-on:click="dialogConfirmVisible=true" title="完结盘点">确认盘点</button>
+                    </span>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col v-bind:span="24">
+                    <el-table class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" v-bind:height="table.height">
+
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="PlanCode" label="盘点单编号" width="100"></el-table-column>
+                        <el-table-column prop="StoreCodeAndName" label="门店" width="220"></el-table-column>
+                        <el-table-column prop="StocktakingDateStr" label="盘点日期" width="100"></el-table-column>
+                        <el-table-column prop="ProductCode" label="商品编码" width="100"></el-table-column>
+                        <el-table-column prop="ProductName" label="商品名称" width="220"></el-table-column>
+                        <el-table-column prop="SNProduct" label="串码" width="50"></el-table-column>
+                        <el-table-column prop="Quantity" label="库存" width="80"></el-table-column>
+                        <el-table-column prop="FirstQuantity" label="初盘数量" width="80"></el-table-column>
+                        <el-table-column prop="diffFristQuantity" label="初盘差异" width="80"></el-table-column>
+                        <el-table-column prop="ComplexDateStr" label="最近复盘时间" width="105"></el-table-column>
+                        <el-table-column prop="ComplexQuantity" label="复盘数量" width="80"></el-table-column>
+                        <el-table-column prop="diffComplexQuantity" label="复盘差异" width="80"></el-table-column>
+                        <el-table-column prop="SurplusSNCode" label="盘盈串码" width="80"></el-table-column>
+                        <el-table-column prop="MissingSNCode" label="盘亏串码" width="80"></el-table-column>
+                        <el-table-column prop="StatusName" label="状态" width="65"></el-table-column>
+                        <el-table-column prop="PushSap" label="推SAP" width="80">
+                            <template slot-scope="scope">
+                                <el-tag v-bind:type="scope.row.IsPushSap ? 'success' : 'danger'"
+                                        disable-transitions>{{scope.row.PushSap}}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="CategoryCodeAndName" label="类别" width="200"></el-table-column>
+                        <el-table-column prop="BrandCodeAndName" label="品牌" width="120"></el-table-column>
+                        <el-table-column prop="CreatedOnStr" label="创建日期" width="100"></el-table-column>
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                   layout="total,sizes,prev,pager,next,jumper"
+                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                    </el-pagination>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+    <!-- modal -->
+    <el-dialog title="提示"
+               v-bind:visible.sync="dialogVisible"
+               width="50%">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-danger">盘点明细ID*</th>
+                    <th class="text-danger">盘点数*</th>
+                    <th class="text-danger">盘盈串码</th>
+                    <th class="text-danger">盘亏串码</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>10</th>
+                    <th>20</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>11</th>
+                    <th>0</th>
+                    <th>123456,987453</th>
+                    <th>654789,335654</th>
+                </tr>
+            </tbody>
+        </table>
+        <el-input type="textarea" v-bind:rows="7" v-model="inputProducts" placeholder="请复制盘点信息"></el-input>
+        <span style="margin-top:5px;">请将excel中盘点明细ID和盘点数,串码三列粘贴到文本框中！盘点明细ID请不要随意修改，如有修改导入后自行负责！请盘点有差异的填入串码，差异数量与串码数相匹配 </span>
+        <span slot="footer" class="dialog-footer">
+            <el-button v-on:click="closeD">取 消</el-button>
+            <el-button type="primary" v-on:click="importProduct">确 定</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog title="提示"
+               v-bind:visible.sync="dialogConfirmVisible"
+               width="50%">
+        <span>是否确认最终盘点？ </span>
+        <span slot="footer" class="dialog-footer">
+            <el-button v-on:click="closeCD">取 消</el-button>
+            <el-button type="primary" v-on:click="Confirm">确 定</el-button>
+        </span>
+    </el-dialog>
+    <!-- /.box-body -->
+</div>
+
+
+@section scripts{
+
+    @*<script src="~/Scripts/jquery.PrintArea.js"></script>*@
+    <script src="~/Content/vue/plugins/brand-selector/brand-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/category-selector/category-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js" type="text/javascript"></script>
+    <script>
+
+        var demo = new Vue({
+            components: {
+
+            },
+            el: '#app',
+            data: {
+                dialogVisible: false,
+                dialogConfirmVisible: false,
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: { code: '', productCodeOrBarCode: '', StoreId: '@ViewBag.StoreId', productName: '', time: '', categoryId: '', brandId: '',
+                        status:'',difference:false ,isSNProduct:''},
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize },
+
+                },
+                checkBrandIds: [],
+                selectDetail: {
+                    modal: false,
+                    items: [],
+                    totalAmount: 0,
+                    financeRemarks: []
+                },
+                inputProducts: [{
+                    ProductCode: '', ProductName: '', StoreCode: '', Quantity: 0
+                }],
+                inputProducts: '',
+                statusOptions:@Html.Raw(ViewBag.Status),
+
+            },
+            methods: {
+
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData(1);
+                },
+
+                loadData: function (pageIndex) {
+
+                    var _self = this;
+
+                    if (!_self.table.args.StoreId) {
+                        _self.$message({
+                            message: "请先选择门店再查询！",
+                            type: 'error'
+                        });
+                        return;
+                    }
+
+                    var times = _self.table.args.time;
+                    if(pageIndex)
+                        _self.table.page.pageIndex = pageIndex;
+                    _self.table.args.brandId = _self.checkBrandIds.toString();
+                    _self.table.args.categoryId = _self.table.args.categoryId.toString();
+                    _self.table.args.StoreId = _self.table.args.StoreId.toString();
+                    _self.table.args.productName = _self.table.args.productName.toString();
+
+                    var url = "/StocktakingPlan/LoadDetailData";
+                    var data = Object.assign({}, _self.table.page, _self.table.args);
+
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                    _self.table.args.time = times;
+                },
+                clearQuery: function () {
+                    window.location.href = "/StocktakingPlan/Index";
+                },
+                exportExecl: function () {
+                    var _self = this;
+                    if (!_self.table.args.StoreId) {
+                        _self.$message({
+                            message: "请选择一个门店，再导出盘点表！",
+                            type: 'error'
+                        });
+                        return;
+                    }
+                    window.location.href = "/StocktakingPlan/ExportExecl?selectStoreId=" + _self.table.args.StoreId;
+                },
+
+                showD: function () {
+                    this.dialogVisible = true;
+
+                },
+                closeD: function () {
+                    this.dialogVisible = false;
+
+                },
+                showCD: function () {
+                    this.dialogConfirmVisible = true;
+
+                },
+                closeCD: function () {
+                    this.dialogConfirmVisible = false;
+
+                },
+                importProduct: function () {
+                    var inputItems = this.inputProducts;
+                    var _self = this;
+                    if (inputItems == "") {
+                        return;
+                    }
+                    //var data = '';
+                    var productlist = $.trim(inputItems).split("\n");
+                    //for (var nRow = 1; nRow <= productlist.length - 1; nRow++) {
+                    //    var product = productlist[nRow].split("\t");
+                    //    if (product.length < 2) continue;
+                    //    data += "{\"PlanItemId\":" + product[0] + ",\"Quantity\":" + product[1] + ",\"SNCode\":\"" + (product[2] ? product[2] : "") + "\"},";
+                    //}
+
+                    //if (data == "") {
+                    //    _self.$message.error("请按照格式复制粘贴盘点信息");
+                    //    //bootbox.alert("请导入商品");
+                    //    return;
+                    //}
+                    //data = data.substring(0, data.length - 1);
+                    //data = "[" + data + "]";
+                    //var v_data = { data: data };
+
+                    var data = [];
+                    for (var i = 0; i < productlist.length; i++) {
+                        var product = productlist[i].split("\t");
+                        if (product.length < 2) continue;
+                        data.push({
+                            PlanItemId: product[0],
+                            Quantity: product[1],
+                            SurplusSNCode: (product[2] ? product[2].split(",").remove(function (snCode) { return !snCode || !snCode.trim(); }).distinct().toString() : ""),
+                            MissingSNCode: (product[3] ? product[3].split(",").remove(function (snCode) { return !snCode || !snCode.trim(); }).distinct().toString() : "")
+                        });
+                    }
+                    if (data.length == 0) {
+                        _self.$message.error("请按照格式复制粘贴盘点信息");
+                        bootbox.alert("请导入商品");
+                        return;
+                    }
+
+                    var results = confirm("您确定提交该记录？");
+
+                    if (results) {
+                        //$.post("/StocktakingPlan/ImpExecl", { data: JSON.stringify(data) }, function (result) {
+                        //    if (result.success) {
+                        //        _self.$message('成功！');
+                        //        _self.dialogVisible = false;
+                        //        window.location.href = "/StocktakingPlan/Index";
+                        //    }
+                        //    else {
+                        //        _self.$message.error(result.error);
+                        //    }
+                        //}, "json");
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/StocktakingPlan/ImpExecl",
+                            data: JSON.stringify(data),
+                            dataType: "JSON",
+                            contentType: "application/json",
+                            success: function (result) {
+                                if (result.success) {
+                                    _self.$message('成功！');
+                                    _self.dialogVisible = false;
+                                    window.location.href = "/StocktakingPlan/Index";
+                                }
+                                else {
+                                    _self.$message.error(result.error);
+                                }
+                            }
+                        });
+                    }
+                },
+                Confirm: function () {
+                    var _self = this;
+                    if (!_self.table.args.StoreId) {
+                        _self.$message({
+                            message: "请选择一个门店，再确认盘点！",
+                            type: 'error'
+                        });
+                        return;
+                    }
+
+                    $.post("/StocktakingPlan/Confirm",{ storeId : _self.table.args.StoreId }, function (result) {
+                        if (result.success) {
+                            _self.$message('结转盘点成功！');
+                            _self.dialogConfirmVisible = false;
+                            window.location.href = "/StocktakingPlan/Index";
+
+                        }
+                        else {
+                            _self.$message.error(result.error);
+
+                        }
+
+                    }, "json");
+                },
+            },
+            created: function () {
+                setListPage(this.table, 297);
+            },
+        });
+    </script>
+}

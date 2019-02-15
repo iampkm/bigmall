@@ -1,0 +1,383 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@using Guoc.BigMall.Application.Configuration;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/TransferOrder/CreateIndex"><i class="fa fa-dashboard"></i>调拨单 - 制单</a></li>
+            <li class="active"><a href="/TransferOrder/Create">新增调拨单</a></li>
+        </ol>
+    </div>
+
+    <div style="min-width:700px;padding:10px;">
+
+        <el-button-group>
+            <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>
+            @*<el-button class="btn-print" v-on:click="" v-bind:disabled="lock">打印</el-button>*@
+            <el-button v-on:click="backToList" v-bind:disabled="lock">取消</el-button>
+        </el-button-group>
+
+        <el-row v-bind:gutter="20" class="first-row">
+            <el-col v-bind:span="5">
+                <store-selector v-model="model.FromStoreId" placeholder="调出门店" v-bind:url="'/Store/LoadAllStoreTree'" v-on:value-changed="onFromStoreChanged"></store-selector>
+                <span class="error-msg">{{fromStoreErrorMsg}}</span>
+            </el-col>
+            <el-col v-bind:span="5">
+                <store-selector v-model="model.ToStoreId" placeholder="调入门店"></store-selector>
+                <span class="error-msg">{{toStoreErrorMsg}}</span>
+            </el-col>
+            <el-col v-bind:span="5">
+                <el-input v-model="model.Remark" placeholder="单据备注" clearable></el-input>
+            </el-col>
+        </el-row>
+
+        <el-row type="flex" justify="center">
+            <el-col v-bind:span="9">
+                <h3 class="text-center text-danger title">调拨单</h3>
+            </el-col>
+        </el-row>
+
+        @*<el-row>
+                <el-col v-bind:span="2" class="label-col">调出门店：</el-col>
+                <el-col v-bind:span="8">{{model.FromStoreName}}</el-col>
+                <el-col v-bind:span="2" class="label-col" v-bind:offset="8">调拨单号：</el-col>
+                <el-col v-bind:span="4">{{model.Code}}</el-col>
+            </el-row>
+            <el-row>
+                <el-col v-bind:span="2" class="label-col">调入门店：</el-col>
+                <el-col v-bind:span="7">{{model.ToStoreName}}</el-col>
+                <el-col v-bind:span="2" class="label-col">单据状态：</el-col>
+                <el-col v-bind:span="7">{{model.StatusDesc}}</el-col>
+                <el-col v-bind:span="2" class="label-col">制单日期：</el-col>
+                <el-col v-bind:span="4">@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</el-col>
+            </el-row>*@
+        <el-row>
+            <el-col v-bind:span="20">调出门店：{{model.FromStoreName}}</el-col>
+            <el-col v-bind:span="4">调拨单号：{{model.Code}}</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="10">调入门店：{{model.ToStoreName}}</el-col>
+            <el-col v-bind:span="10">单据状态：{{model.StatusDesc}}</el-col>
+            <el-col v-bind:span="4">制单日期：@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</el-col>
+        </el-row>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width="77px"></th>
+                    <th width="60px">序号</th>
+                    <th width="262px">编码</th>
+                    <th>名称</th>
+                    <th width="120px">库存</th>
+                    <th width="120px">单价</th>
+                    <th width="120px">数量</th>
+                    <th width="120px">金额</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in model.Items">
+                    <td>
+                        @*el-icon-circle-plus-outline*@
+                        <el-button type="success" icon="el-icon-plus" size="mini" v-on:click="addRow" v-bind:disabled="lock" circle></el-button>
+                        <el-button type="danger" icon="el-icon-delete" class="clear-margin-left" size="mini" v-on:click="removeRow(index)" v-bind:disabled="lock" circle v-if="index>0"></el-button>
+                    </td>
+                    <td>{{index+1}}</td>
+                    <td>
+                        <product-selector v-model="item.ProductId" v-bind:data-key="item" v-bind:url="'/Product/LoadStoreProduct'" v-bind:search-args="productSearchArgs" v-on:callback="selectProductCallback" v-on:initialize="productSelectorInitialize" v-bind:display-template="'{Code}'"></product-selector>
+                        <span class="error-msg">{{item.ProductErrorMsg}}</span>
+                    </td>
+                    <td>{{item.ProductName}}</td>
+                    <td>{{item.InventoryQuantity}}</td>
+                    <td>{{item.Price.toFixed(4)}}</td>
+                    <td>
+                        <el-input-number v-model="item.Quantity" v-bind:precision="0" v-bind:min="1" v-bind:max="item.MaxQuantity" v-on:change="productQuantityChanged(item,item.Quantity)"></el-input-number>
+                        <span class="error-msg">{{item.QuantityErrorMsg}}</span>
+                    </td>
+                    <td>{{item.Amount.toFixed(2)}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>合计：</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{totalQuantity}}</td>
+                    <td>{{totalAmount.toFixed(2)}}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <el-row>
+            <el-col>备&ensp;&ensp;注：{{model.Remark}}</el-col>
+        </el-row>
+
+        <el-row>
+            <el-col v-bind:span="6">制单人：{{model.CreatedByName}}</el-col>
+            <el-col v-bind:span="6">审核人：{{model.AuditByName}}</el-col>
+            <el-col v-bind:span="6">审核时间：{{model.AuditOn}}</el-col>
+            <el-col v-bind:span="6">审核意见：{{model.AuditRemark}}</el-col>
+        </el-row>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>
+    <script src="~/Content/vue/plugins/product-selector/product-selector.js"></script>
+    <script type="text/javascript">
+        var rules = @Html.Raw(FormRules.GetRules(typeof(CreateAccountModel)));
+
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                lock: false,
+                lockClearRow: false,
+                productSearchArgs:{ storeId: "0" },
+                fromStoreErrorMsg:"",
+                toStoreErrorMsg:"",
+                model: {
+                    Code :"",
+                    SapCode :"",
+                    Type :1,
+                    FromStoreId :0,
+                    FromStoreName:"" ,
+                    ToStoreName :"",
+                    ToStoreId :@ViewBag.DefaultStoreId,
+                    BatchNo :null,
+                    Status :0,
+                    StatusDesc:"@ViewBag.StatusDesc",
+                    Remark :"",
+                    CreatedOn :null,
+                    CreatedBy :@ViewBag.CreatedBy,
+                    CreatedByName :"@ViewBag.CreatedByName",
+                    UpdatedOn :null,
+                    UpdatedBy :null,
+                    UpdatedByName:null ,
+                    AuditOn :null,
+                    AuditBy :null,
+                    AuditByName :null,
+                    AuditRemark:null,
+                    Items: []//,
+                    //ItemsJson:""
+                },
+                itemTemplate:{
+                    ProductId:0,
+                    ProductName:"",
+                    //productSelection:[],
+                    InventoryQuantity:0,
+                    Quantity:1,
+                    ActualShipmentQuantity:0,
+                    ActualReceivedQuantity:0,
+                    Price:0,
+                    BatchNo:0,
+                    SNCodes:"",
+                    Amount:0,
+                    MaxQuantity:999999,
+                    ProductErrorMsg:"",
+                    QuantityErrorMsg:""
+                },
+                //totalQuantity:0,
+                totalAmount:0,
+                postModel:{ FromStoreId: 0, ToStoreId: 0, Remark: null, Items: [{ ProductId:0, Quantity: 0, Price: 0}]}
+            },
+            watch:{
+
+            },
+            methods: {
+                onSubmit: function () {
+                    if(this.validate()){
+                        this.lock=true;
+                        var $this=this;
+                        var data = JsExt.map(this.model,this.postModel, true);
+                        //data.ItemsJson = JSON.stringify(data.Items);
+                        //$.post("/TransferOrder/Create",data,function(result){
+                        //    if (result.success) {
+                        //        $this.$message.success({
+                        //            message:"保存成功！",
+                        //            onClose:function(){
+                        //                $this.backToList();
+                        //            }
+                        //        });
+                        //    }else {
+                        //        $this.$message.error(result.error);
+                        //    }
+                        //    $this.lock=false;
+                        //},"json");
+
+                        $.ajax({
+                            type:"POST",
+                            url:"/TransferOrder/Create",
+                            data:JSON.stringify(data),
+                            dataType:"JSON",
+                            contentType:"application/json",
+                            success:function(result){
+                                if (result.success) {
+                                    $this.$message.success({
+                                        message:"保存成功！",
+                                        onClose:function(){
+                                            $this.backToList();
+                                        }
+                                    });
+                                }else {
+                                    $this.$message.error(result.error);
+                                }
+                                $this.lock=false;
+                            }
+                        });
+                    }
+                },
+                validate:function(){
+                    if(!this.model.FromStoreId || this.model.FromStoreId=="0"){
+                        this.fromStoreErrorMsg="必须选择调出门店";
+                        return false;
+                    }
+                    this.fromStoreErrorMsg="";
+
+                    if(!this.model.ToStoreId || this.model.ToStoreId=="0"){
+                        this.toStoreErrorMsg="必须选择调入门店";
+                        return false;
+                    }
+                    if(this.model.FromStoreId == this.model.ToStoreId){
+                        this.toStoreErrorMsg="相同门店不能做调入调出";
+                        return false;
+                    }
+                    this.toStoreErrorMsg="";
+
+                    if(this.model.Items.length==0){
+                        this.$message.error("调拨单至少应包含一条商品明细。");
+                        return false;
+                    }
+
+                    for (var i = 0; i < this.model.Items.length; i++) {
+                        var item=this.model.Items[i];
+                        if(!item.ProductId || item.ProductId=="0"){
+                            item.ProductErrorMsg="必须选择商品";
+                            return false;
+                        }
+                        item.ProductErrorMsg="";
+
+                        if(!item.Quantity || item.Quantity<1){
+                            item.QuantityErrorMsg="调拨数量必须 ≥ 1";
+                            return false;
+                        }
+
+                        if(item.Quantity>item.InventoryQuantity){
+                            item.QuantityErrorMsg="调拨数量必须 ≤ 库存数";
+                            return false;
+                        }
+                        item.QuantityErrorMsg="";
+                    }
+                    return true;
+                },
+                backToList: function(){
+                    window.location="/TransferOrder/CreateIndex";
+                },
+                addRow: function(){
+                    var newItem=JsExt.clone(this.itemTemplate,true);
+                    this.model.Items.push(newItem);
+                    return newItem;
+                },
+                removeRow: function(index){
+                    this.model.Items.splice(index,1);
+                },
+                clearRow: function(callback){
+                    if(this.lockClearRow == false){
+                        this.lockClearRow = true;
+                        this.model.Items = [];
+                        var $this = this;
+                        setTimeout(function(){
+                            $this.addRow();
+                            $this.lockClearRow = false;
+                        }, 5);
+                    }
+                },
+                onFromStoreChanged: function(currentSelection){
+                    if(currentSelection.length > 0){
+                        this.model.FromStoreName = currentSelection[0].Name;
+                        this.productSearchArgs.storeId = currentSelection[0].Key;
+                    }else{
+                        this.model.FromStoreName = "";
+                        this.productSearchArgs.storeId = "0";
+                    }
+                    this.clearRow();
+                },
+                onToStoreChanged: function(currentSelection){
+                    this.model.ToStoreName = currentSelection.length > 0 ? currentSelection[0].Name : "";
+                },
+                //选择商品后生成明细行，并绑定商品的相关信息
+                selectProductCallback: function(selectedProducts, currentItem){
+                    var $this = this;
+                    selectedProducts.remove(
+                        function(product){
+                            return $this.model.Items.contains(
+                                function(item){
+                                    return item != currentItem && item.ProductId == product.Id;
+                                });
+                        });
+
+                    if(selectedProducts.length > 0){
+                        var products = selectedProducts.splice(1, selectedProducts.length - 1);
+                        this.bindProduct(currentItem, selectedProducts[0]);
+                        products.forEach(function(product){
+                            var item = $this.addRow();
+                            $this.bindProduct(item, product);
+                        });
+                    }else{
+                        this.bindProduct(currentItem, {Id: 0, Name: "", CostPrice: 0, InventoryQuantity: 0});
+                    }
+                },
+                bindProduct: function(item, product){
+                    item.ProductErrorMsg="";
+                    item.QuantityErrorMsg="";
+                    item.ProductId = product.Id;
+                    item.ProductName = product.Name;
+                    item.Price = product.CostPrice;
+                    item.InventoryQuantity = product.InventoryQuantity;
+                    item.MaxQuantity = product.HasSNCode ? (@SystemConfig.ItemMaxSNCodeQuantity) : 999999;
+                },
+                productSelectorInitialize:function(selector){
+                    selector.addColumns(["IsSNCode", "是否串码", 80]);
+                },
+
+                productQuantityChanged:function(item, quantity){
+                    item.QuantityErrorMsg="";
+                    this.numberChanged(item,"Quantity",1);
+                },
+
+                numberChanged:function(item, p, defaultValue){
+                    var number = this.validateNumber(item[p], defaultValue);
+                    if(item[p] != number) item[p] = number;
+                },
+
+                validateNumber: function(value, defaultValue){
+                    var number = parseFloat(value);
+                    if(number.toString() == "NaN"){
+                        return defaultValue;
+                    }
+                    return number;
+                },
+            },
+            computed:{
+                totalQuantity:function(){
+                    var $this=this;
+                    var totalQty=0;
+                    this.totalAmount=0;
+                    this.model.Items.forEach(function(item,index){
+                        if(!item.Quantity)
+                            item.Quantity = 1;
+                        totalQty += parseInt(item.Quantity);
+                        item.Amount = item.Price * item.Quantity;
+                        $this.totalAmount += item.Amount;
+                    });
+                    return totalQty;
+                }
+            },
+            created:function(){
+                this.addRow();
+            }
+        });
+    </script>
+}

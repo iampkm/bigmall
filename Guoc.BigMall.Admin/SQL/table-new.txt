@@ -1,0 +1,29 @@
+﻿CREATE TABLE [dbo].[AccountStoreMap] (
+[Id] int NOT NULL IDENTITY(1,1) ,
+[AccountId] int NOT NULL ,
+[MapKey] nvarchar(64) NULL ,
+[MapValue] nvarchar(64) NULL ,
+)
+go
+create index idx_AccountStoreMap
+on AccountStoreMap (AccountId,MapKey,MapValue)
+go
+insert into [AccountStoreMap] values (1,'store-all','all')
+insert into [AccountStoreMap] values (1,'store-tag','')
+insert into [AccountStoreMap] values (1,'store-id',3)
+
+go
+DROP TABLE [dbo].[StoreTag]
+GO
+CREATE TABLE [dbo].[StoreTag] (
+[Id] int NOT NULL IDENTITY(1,1) ,
+[Name] nvarchar(64) NULL ,
+)
+
+
+
+select * from StoreTag
+
+insert into StoreTag values ('所有门店')
+insert into StoreTag values ('沙坪坝店')
+insert into StoreTag values ('江北店')

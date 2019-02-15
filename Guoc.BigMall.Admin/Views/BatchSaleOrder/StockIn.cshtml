@@ -1,0 +1,295 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+        h3.title {
+            font-weight: bold;
+            padding-bottom: 1px;
+            border-bottom: 2px solid;
+        }
+
+        .first-row {
+            margin-top: 15px;
+        }
+
+        .label-col {
+            text-align: right;
+        }
+
+        .btn-print {
+            color: white;
+            border-color: #8EBCED;
+            background-color: #8EBCED;
+        }
+
+            .btn-print:hover {
+                color: white;
+                border-color: rgba(142,188,237,0.7);
+                background-color: rgba(142,188,237,0.7);
+            }
+
+        .clear-margin-left {
+            margin-left: 0px !important;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 9pt;
+        }
+    </style>
+}
+<div id="app" class="box box-primary">
+    <div>
+        <el-row v-bind:gutter="20" class="first-row" v-show="false">
+            <el-col v-bind:span="5">
+                <el-input v-model="AuditedRemark" placeholder="审核意见" clearable></el-input>
+            </el-col>
+        </el-row>
+        <el-row type="flex" style="margin-top:10px;">
+            <el-col v-bind:span="5">
+                <el-input autofocus="true" placeholder="串码扫码" v-model="snCode" prefix-icon="el-icon-tickets" v-on:keyup.enter.native="inputSNCode" clearable></el-input>
+            </el-col>
+            <el-col v-bind:span="3"></el-col>
+            <el-col v-bind:span="8">
+                <h3 class="text-center text-danger title">批发退货单</h3>
+            </el-col>
+        </el-row>
+        <el-row v-show="false">
+            <el-col v-bind:span="20">门店：{{model.StoreName}}</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="6">门店：{{model.StoreName}}</el-col>
+            <el-col v-bind:span="6">批发销售单号：{{model.Code}}</el-col>
+            <el-col v-bind:span="6">制单日期：{{model.CreatedOnTime}}</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="6">单据状态：{{model.StatusName}}</el-col>
+            <el-col v-bind:span="6">会员姓名：{{model.Buyer}}</el-col>
+            <el-col v-bind:span="6">会员电话：{{model.Phone}}</el-col>
+        </el-row>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>编码</th>
+                    <th>名称</th>
+                    <th>应收数量</th>
+                    <th>实收数量</th>
+                    <th>串号</th>
+                    <th>单价</th>
+                    <th>金额</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in model.Items">
+                    <td>{{index+1}}</td>
+                    <td>{{item.ProductCode}}</td>
+                    <td>{{item.ProductName}}</td>
+                    <td>{{item.Quantity}}</td>
+                    <td style="width:100px;">
+                        <el-input-number v-model="item.ActualQuantity" placeholder="实收数量" v-bind:precision="0" v-bind:min="1" v-bind:max="item.Quantity"></el-input-number>
+                    </td>
+                    <td style="width:350px">
+
+                        <el-tag v-for="(codeItem,index) in item.snCodeList" v-bind:key="codeItem" v-on:close="removeSNCode(item,index)" disable-transitions="false" closable>{{codeItem}}</el-tag>
+                    </td>
+                    <td>{{item.RealPrice}}</td>
+                    <td>{{item.Amount}}</td>
+
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>合计：</td>
+                    <td></td>
+                    <td>{{model.TotalQuantity}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+        <el-row>
+            <el-col v-bind:span="6">制单人：{{model.CreatedByName}}</el-col>
+            <el-col v-bind:span="6">备注：{{model.Remark}}</el-col>
+        </el-row>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                totalQuantity:"",
+                lock: false,
+                lockClearRow: false,
+                productSearchArgs:{ storeId: "0" },
+                StoreErrorMsg:"",
+                ItemMaxSNCodeQuantity:@SystemConfig.ItemMaxSNCodeQuantity,
+                model: @Html.Raw(ViewBag.BatchSaleOrder),
+                // totalAmount:0,
+                AuditedRemark:"",
+                snCode:"",
+                postModel:{Id:0,Code:'',Items:[{ProductId:0,ActualQuantity:0,SNCode:''}]}
+            },
+            watch:{
+
+            },
+            methods: {
+                //出库
+                stockIn: function (dialog, button,callback) {
+                    var $this=this;
+                    var data = JsExt.map(this.model,this.postModel, true);
+                    $.ajax({
+                        type: 'post',
+                        url: "/BatchSaleOrder/StockIn",
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        contentType: 'application/json',
+                        success: function (result) {
+                            if (result.success) {
+                                $this.$message.success({
+                                    message:"处理成功！",
+                                    onClose:function(){
+                                        button.unlock();
+                                        dialog.close();
+                                        if(callback)
+                                        {
+                                            callback();
+                                        }
+                                    }
+                                });
+                            }else {
+                                button.unlock();
+                                $this.$message.error(result.error);
+                            }
+                        }
+                    });
+                },
+                //作废
+                abandonBatchSaleOrder: function (dialog, button,callback) {
+                    var $this=this;
+                    var data={OrderCode:this.model.Code};
+                    if(this.AuditedRemark=="")
+                    {
+                        this.$message.error('审核意见不能为空');
+                        return;
+                    }
+                    $.ajax({
+                        type: 'post',
+                        url: "/BatchSaleOrder/AbandonSaleOrder",
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        contentType: 'application/json',
+                        success: function (result) {
+                            if (result.success) {
+                                $this.$message.success({
+                                    message:"作废成功！",
+                                    onClose:function(){
+                                        button.unlock();
+                                        dialog.close();
+                                        if(callback)
+                                        {
+                                            callback();
+                                        }
+                                    }
+                                });
+                            }else {
+                                button.unlock();
+                                $this.$message.error(result.error);
+                            }
+                        }
+                    });
+                },
+                inputSNCode:function(){
+                    var _self = this;
+                    if(_self.snCode ==""){  _self.$message.error("串码不能为空！");  return  ;}
+
+                    var url ="/BatchSaleOrder/ScanSNCodeForStockIn";
+                    var data = {storeId:_self.model.StoreId,snCode:_self.snCode};
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            var snProduct = result.data;
+                            for(var i=0;i<_self.model.Items.length;i++)
+                            {
+                                var item = _self.model.Items[i];
+                                if(!item.snCodeList)item.snCodeList =[];  // 动态添加一个 串码数组
+                                if(item.ProductId== snProduct.Id)
+                                {
+                                    var filterResult= item.snCodeList.filter(function(line){
+                                        return line==_self.snCode;
+                                    });
+                                    if(filterResult.length>0){ _self.$message.error("请勿重复录入串码" +_self.snCode);  }
+                                    else
+                                    {
+                                        if(item.snCodeList.length<item.Quantity)
+                                        {
+                                            if(item.snCodeList.length >= _self.ItemMaxSNCodeQuantity){
+                                                _self.$message.error("商品{0}串码总数不能超过{1}个！".format(item.ProductCode, _self.ItemMaxSNCodeQuantity));
+                                                break;
+                                            }
+
+                                            item.snCodeList.push(_self.snCode);
+                                            item.ActualQuantity = item.snCodeList.length;
+                                            item.SNCode = item.snCodeList.join();
+                                            _self.snCode ="";
+                                        }
+                                        else{
+                                            _self.$message.error("串码总数不能超过应收数！");
+                                            _self.snCode ="";
+                                        }
+                                    }
+                                    break ;
+                                }
+                            }
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                            _self.snCode ="";
+                        }
+                    }, "Json");
+
+                },
+                removeSNCode: function (item, index) {
+                    item.snCodeList.splice(index, 1);
+                    item.ActualQuantity = item.snCodeList.length;
+                },
+            },
+            computed:{
+                //totalQuantity:function(){
+                //    var $this=this;
+                //    var totalQty=0;
+                //    this.totalAmount=0;
+                //    this.model.Items.forEach(function(item,index){
+                //        if(!item.Quantity)
+                //            item.Quantity = 1;
+                //        totalQty += parseInt(item.Quantity);
+                //        //操作明细
+                //        item.GiftItems.forEach(function(gift,index){
+                //            if(!gift.Quantity)
+                //                gift.Quantity = 1;
+                //            totalQty += parseInt(gift.GiftQuantity);
+                //        });
+                //        item.Amount = item.Price * item.Quantity;
+                //        $this.totalAmount += item.Amount;
+                //    });
+                //    return totalQty;
+                //}
+            },
+            created:function(){
+                var dialog=window.parent.activeDialog;
+                dialog.bindEvent("stockIn",this.stockIn);
+                //dialog.bindEvent("abandonBatchSaleOrder",this.abandonBatchSaleOrder);
+                // this.addRow();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,138 @@
+﻿@using Guoc.BigMall.Infrastructure.Extension;
+@model List<Guoc.BigMall.Application.DTO.SaleOrderModel>
+@{
+    //Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = null;
+    //var groupRows = Model.GroupBy(n => n.Code).ToList();
+    //var title = string.Format("采购{0}", Model.OrderType.Description());
+    var PageSize = 10000000;   // 每页打印行数
+    var PageNum = 0;
+}
+<style>
+    .dataRow div {
+        margin-bottom: 0px;
+    }
+
+    .pading {
+        padding-right: 20px;
+    }
+
+    .tablefs td {
+        font-size: 16px;
+    }
+</style>
+<!-- demo root element -->
+<div id="printTemplate">
+    @foreach (var order in Model)
+    {
+
+        PageNum += 1;
+        //var rows = list.ToList();
+        //var entity = rows.FirstOrDefault();
+        var i = 0;
+
+        while (i < order.Items.Count)
+        {
+            <div class="table-printfontsize14">
+                <!--container-->
+                <div class="row">
+                    <div class="col-xs-3 col-sm-3"></div>
+                    <div class="col-xs-6 col-sm-6">
+                        <h4 class="text-center text-success" style="border-bottom:2px solid;padding-bottom:1px;">
+                            <b>商码特科技有限公司批发销售单</b>
+                        </h4>
+                    </div>
+                    <div class="col-xs-3 col-sm-6"><span style="font-size:18px"></span></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <span class="pading">单号：@order.Code</span>
+                        <span class="pading">日期：@order.CreatedOn.Value.ToString("yyyy-MM-dd")</span>
+                        <span class="pading">门店：@("[{0}]{1}".FormatWith(order.StoreCode, order.StoreName))</span>
+                        <span class="pading">会员姓名：@order.Buyer</span>
+                        <span class="pading">会员电话：@order.Phone</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-printfontsize14" style="margin-bottom: 5px; margin-top: 5px;">
+                                <thead>
+                                    <tr>
+                                        <th style="padding-top:4px ;padding-bottom:4px;">序号</th>
+                                        <th style="padding-top:4px ;padding-bottom:4px;">商品编码</th>
+                                        <th style="padding-top:4px ;padding-bottom:4px;">品名</th>
+                                        <th style="padding-top:4px ;padding-bottom:4px;">应发数量</th>
+                                        <th style="padding-top:4px ;padding-bottom:4px;">实发数量</th>
+                                        <th style="padding-top:4px ;padding-bottom:4px;">备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody">
+                                    @{
+            var totalQuantity = 0;
+            var index = 1;
+                                    }
+
+                                    @for (; i < order.Items.Count; )
+                                    {
+                                        var item = order.Items[i];
+                                        totalQuantity += item.Quantity;
+                                        <tr>
+                                            <td class="text-center">@(index++)</td>
+                                            <td>@item.ProductCode</td>
+                                            <td>@item.ProductName</td>
+                                            <td>@item.Quantity</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        i += 1;
+                                        if (i % PageSize == 0)
+                                        {
+                                            //需要分页
+                                            break;
+                                        }
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td>合计：</td>
+                                        <td></td>
+                                        <td>@totalQuantity</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 col-sm-3">
+                        <span>制单人：@order.CreatedByName</span>
+                    </div>
+                    <div class="col-xs-3 col-sm-3">
+                        <span>审核人：@order.AuditedByName </span>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-6">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            if (i % PageSize == 0 && i < order.Items.Count)
+            {
+                <div style="page-break-after: always;"></div>
+            }
+
+        }
+        <!--每一个订单默认打印一页-->
+        if (PageNum < Model.Count)
+        {
+            <div style="page-break-after: always;"></div>
+        }
+
+    }
+
+</div>

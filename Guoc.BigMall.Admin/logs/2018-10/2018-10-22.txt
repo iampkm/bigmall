@@ -1,0 +1,113 @@
+2018-10-22 14:00:21.0485|24|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.<>c__DisplayClass1f.<BatchStockIn>b__10(SaleOrderItem n) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 191
+   在 System.Collections.Generic.List`1.FindIndex(Int32 startIndex, Int32 count, Predicate`1 match)
+   在 System.Collections.Generic.List`1.Exists(Predicate`1 match)
+   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.BatchStockIn(SaleOrder order) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 191
+   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.InStock(ReturnBatchOrderModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 131
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.StockIn(ReturnBatchOrderModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 104
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-22 14:01:18.7610|25|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.<>c__DisplayClass1f.<BatchStockIn>b__10(SaleOrderItem n) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 191
+   在 System.Collections.Generic.List`1.FindIndex(Int32 startIndex, Int32 count, Predicate`1 match)
+   在 System.Collections.Generic.List`1.Exists(Predicate`1 match)
+   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.BatchStockIn(SaleOrder order) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 191
+   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.InStock(ReturnBatchOrderModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 131
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.StockIn(ReturnBatchOrderModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 104
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-22 14:02:37.4089|29|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.<>c__DisplayClass1f.<BatchStockIn>b__10(SaleOrderItem n) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 191
+   在 System.Collections.Generic.List`1.FindIndex(Int32 startIndex, Int32 count, Predicate`1 match)
+   在 System.Collections.Generic.List`1.Exists(Predicate`1 match)
+   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.BatchStockIn(SaleOrder order) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 191
+   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.InStock(ReturnBatchOrderModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 131
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.StockIn(ReturnBatchOrderModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 104
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-22 14:08:56.1682|34|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.<>c__DisplayClass1f.<BatchStockIn>b__10(SaleOrderItem n) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 191
+   在 System.Collections.Generic.List`1.FindIndex(Int32 startIndex, Int32 count, Predicate`1 match)
+   在 System.Collections.Generic.List`1.Exists(Predicate`1 match)
+   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.BatchStockIn(SaleOrder order) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 191
+   在 CBest.SMT.Application.Facade.ReturnBatchSaleOrderFacade.InStock(ReturnBatchOrderModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ReturnBatchSaleOrderFacade.cs:行号 131
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.StockIn(ReturnBatchOrderModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 104
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-22 14:16:58.4634|37|Info|商品30008834002非原批发销售单串码
+2018-10-22 14:17:12.9925|37|Info|商品30008834002非原批发销售单串码
+2018-10-22 14:21:20.2985|32|Info|商品30008834002,串码8000000000000005 非原批发销售单
+2018-10-22 14:24:43.4334|10|Info|商品30008834002,串码8000000000000005 非原批发销售单
+2018-10-22 14:24:51.6831|10|Info|商品30008834002,串码8000000000000005 非原批发销售单
+2018-10-22 14:25:58.0921|34|Info|商品:800000000000008 不存在
+2018-10-22 17:07:00.4372|31|Info|
+
+2018-10-22 17:07:00.5112|31|Info|调拨出库=====================================>
+2018-10-22 17:07:00.7990|31|Info|data：{"StockOutCode":"7000004040","StockOutDate":"2018-10-22T16:04:37.6","TransferCode":"6000004039","SapTransferCode":"6200429339","Items":[{"StockOutRow":971,"SapTransferRow":"00010","ProductCode":"30008840002","Quantity":2,"SNCodes":"8000000000000026,8000000000000027","Unit":"EA","StockLocation":"P010","FromStoreCode":"A011","SapStockOutRow":null}],"SupplierCode":"P010","SapStockOutCode":null}
+2018-10-22 17:07:00.8446|31|Info|request：{"I_HEAD":[{"REQCODE":"7000004040","EBELN":"6200429339","BILLCODE":"6000004039","TEXT":"","LIFNR":"P010","BLDAT":"20181022"}],"IT_ITEM":[{"REQROW":"971","EBELP":"00010","MATNR":"30008840002","MENGE":"2","SN":"8000000000000026,8000000000000027","MEINS":"EA","WERKS":"P010","RESLO":"A011"}]}
+2018-10-22 17:08:48.7928|31|Info|
+
+2018-10-22 17:08:48.8008|31|Info|调拨出库=====================================>
+2018-10-22 17:08:48.8008|31|Info|data：{"StockOutCode":"7000004040","StockOutDate":"2018-10-22T16:04:37.6","TransferCode":"6000004039","SapTransferCode":"6200429339","Items":[{"StockOutRow":971,"SapTransferRow":"00010","ProductCode":"30008840002","Quantity":2,"SNCodes":"8000000000000026,8000000000000027","Unit":"EA","StockLocation":"P010","FromStoreCode":"A011","SapStockOutRow":null}],"SupplierCode":"P010","SapStockOutCode":null}
+2018-10-22 17:08:48.8138|31|Info|request：{"I_HEAD":[{"REQCODE":"7000004040","EBELN":"6200429339","BILLCODE":"6000004039","TEXT":"","LIFNR":"P010","BLDAT":"20181022"}],"IT_ITEM":[{"REQROW":"971","EBELP":"00010","MATNR":"30008840002","MENGE":"2","SN":"8000000000000026,8000000000000027","MEINS":"EA","WERKS":"P010","RESLO":"A011"}]}
+2018-10-22 17:10:38.0285|38|Info|
+
+2018-10-22 17:10:38.0285|38|Info|调拨出库=====================================>
+2018-10-22 17:10:38.0435|38|Info|data：{"StockOutCode":"7000004040","StockOutDate":"2018-10-22T16:04:37.6","TransferCode":"6000004039","SapTransferCode":"6200429339","Items":[{"StockOutRow":971,"SapTransferRow":"00010","ProductCode":"30008840002","Quantity":2,"SNCodes":"8000000000000026,8000000000000027","Unit":"EA","StockLocation":"P010","FromStoreCode":"A011","SapStockOutRow":null}],"SupplierCode":"P010","SapStockOutCode":null}
+2018-10-22 17:10:38.0435|38|Info|request：{"I_HEAD":[{"REQCODE":"7000004040","EBELN":"6200429339","BILLCODE":"6000004039","TEXT":"","LIFNR":"P010","BLDAT":"20181022"}],"IT_ITEM":[{"REQROW":"971","EBELP":"00010","MATNR":"30008840002","MENGE":"2","SN":"8000000000000026,8000000000000027","MEINS":"EA","WERKS":"P010","RESLO":"A011"}]}
+2018-10-22 17:16:18.1264|25|Info|
+
+2018-10-22 17:16:18.1264|25|Info|调拨出库=====================================>
+2018-10-22 17:16:18.1394|25|Info|data：{"StockOutCode":"7000004040","StockOutDate":"2018-10-22T16:04:37.6","TransferCode":"6000004039","SapTransferCode":"6200429339","Items":[{"StockOutRow":971,"SapTransferRow":"00010","ProductCode":"30008840002","Quantity":2,"SNCodes":"8000000000000026,8000000000000027","Unit":"EA","StockLocation":"P010","FromStoreCode":"A011","SapStockOutRow":null}],"SupplierCode":"P010","SapStockOutCode":null}
+2018-10-22 17:16:18.1394|25|Info|request：{"I_HEAD":[{"REQCODE":"7000004040","EBELN":"6200429339","BILLCODE":"6000004039","TEXT":"","LIFNR":"P010","BLDAT":"20181022"}],"IT_ITEM":[{"REQROW":"971","EBELP":"00010","MATNR":"30008840002","MENGE":"2","SN":"8000000000000026,8000000000000027","MEINS":"EA","WERKS":"P010","RESLO":"A011"}]}
+2018-10-22 17:18:37.9738|40|Info|
+
+2018-10-22 17:18:38.0587|40|Info|调拨出库=====================================>
+2018-10-22 17:18:38.3569|40|Info|data：{"StockOutCode":"7000004040","StockOutDate":"2018-10-22T16:04:37.6","TransferCode":"6000004039","SapTransferCode":"6200429339","Items":[{"StockOutRow":971,"SapTransferRow":"00010","ProductCode":"30008840002","Quantity":2,"SNCodes":"8000000000000026,8000000000000027","Unit":"EA","StockLocation":"P010","FromStoreCode":"A011","SapStockOutRow":null}],"SupplierCode":"P010","SapStockOutCode":null}
+2018-10-22 17:18:38.3939|40|Info|request：{"I_HEAD":[{"REQCODE":"7000004040","EBELN":"6200429339","BILLCODE":"6000004039","TEXT":"","LIFNR":"P010","BLDAT":"20181022"}],"IT_ITEM":[{"REQROW":"971","EBELP":"00010","MATNR":"30008840002","MENGE":"2","SN":"8000000000000026,8000000000000027","MEINS":"EA","WERKS":"P010","RESLO":"A011"}]}
+2018-10-22 17:20:50.9422|52|Info|
+
+2018-10-22 17:20:50.9422|52|Info|调拨出库=====================================>
+2018-10-22 17:20:50.9562|52|Info|data：{"StockOutCode":"7000004040","StockOutDate":"2018-10-22T16:04:37.6","TransferCode":"6000004039","SapTransferCode":"6200429339","Items":[{"StockOutRow":971,"SapTransferRow":"00010","ProductCode":"30008840002","Quantity":2,"SNCodes":"8000000000000026,8000000000000027","Unit":"EA","StockLocation":"P010","FromStoreCode":"A011","SapStockOutRow":null}],"SupplierCode":"P010","SapStockOutCode":null}
+2018-10-22 17:20:50.9562|52|Info|request：{"I_HEAD":[{"REQCODE":"7000004040","EBELN":"6200429339","BILLCODE":"6000004039","TEXT":"","LIFNR":"P010","BLDAT":"20181022"}],"IT_ITEM":[{"REQROW":"971","EBELP":"00010","MATNR":"30008840002","MENGE":"2","SN":"8000000000000026,8000000000000027","MEINS":"EA","WERKS":"P010","RESLO":"A011"}]}
+2018-10-22 17:22:10.8503|10|Info|
+
+2018-10-22 17:22:10.8563|10|Info|调拨出库=====================================>
+2018-10-22 17:22:10.8563|10|Info|data：{"StockOutCode":"7000004040","StockOutDate":"2018-10-22T16:04:37.6","TransferCode":"6000004039","SapTransferCode":"6200429339","Items":[{"StockOutRow":971,"SapTransferRow":"00010","ProductCode":"30008840002","Quantity":2,"SNCodes":"8000000000000026,8000000000000027","Unit":"EA","StockLocation":"P010","FromStoreCode":"A011","SapStockOutRow":null}],"SupplierCode":"P010","SapStockOutCode":null}
+2018-10-22 17:22:10.8563|10|Info|request：{"I_HEAD":[{"REQCODE":"7000004040","EBELN":"6200429339","BILLCODE":"6000004039","TEXT":"","LIFNR":"P010","BLDAT":"20181022"}],"IT_ITEM":[{"REQROW":"971","EBELP":"00010","MATNR":"30008840002","MENGE":"2","SN":"8000000000000026,8000000000000027","MEINS":"EA","WERKS":"P010","RESLO":"A011"}]}

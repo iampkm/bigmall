@@ -1,0 +1,44 @@
+2018-10-27 03:01:54.2740|18|Error|原因:M251,convert failed,堆栈：   在 CBest.SMT.Application.Facade.ApiFacade.initInventory(String excel, String file) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ApiFacade.cs:行号 401
+   在 CBest.SMT.Admin.Controllers.ApiController.InitInventory(String json, String file) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\ApiController.cs:行号 153
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-27 03:01:54.2830|18|Error|内部异常原因:输入字符串的格式不正确。,堆栈：   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseDecimal(String value, NumberStyles options, NumberFormatInfo numfmt)
+   在 CBest.SMT.Application.Facade.ApiFacade.ConvertPurchaseOrder(String value) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ApiFacade.cs:行号 506
+   在 CBest.SMT.Application.Facade.ApiFacade.initInventory(String excel, String file) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ApiFacade.cs:行号 393
+2018-10-27 03:46:43.6506|5|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:46:43.8069|5|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:46:43.8694|5|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:46:43.9475|5|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:46:44.0098|5|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:46:44.0880|5|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:46:44.7286|5|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:53:56.4301|13|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:53:56.5239|13|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:53:56.6200|13|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 03:55:21.4772|10|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 04:01:44.3465|16|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1692
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633
+2018-10-27 04:04:56.6974|12|Error|原因:未将对象引用设置到对象的实例。,堆栈：   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(PurchaseOrder entity) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1697
+   在 CBest.SMT.Application.Facade.PurchaseFacade.InitStockIn(String codes) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\PurchaseFacade.cs:行号 1633

@@ -1,0 +1,179 @@
+﻿@{
+    ViewBag.Title = "StockOutIndex";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/TransferOrder/StockOutIndex"><i class="fa fa-dashboard"></i>调拨单 - 出库</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+            <el-row v-bind:gutter="20">
+                <el-col v-bind:span="3">
+                    <el-input v-model="table.args.Code" placeholder="调拨单号" clearable></el-input>
+                </el-col>
+                <el-col v-bind:span="3">
+                    <el-input v-model="table.args.sapCode" placeholder="SAP单号" clearable></el-input>
+                </el-col>
+                <el-col v-bind:span="3">
+                    <store-selector v-model="table.args.FromStoreId" placeholder="调出门店"></store-selector>
+                </el-col>
+                <el-col v-bind:span="3">
+                    <store-selector v-model="table.args.ToStoreId" placeholder="调入门店"></store-selector>
+                </el-col>
+                @*<el-col v-bind:span="3">
+                        <el-input v-model="table.args.BatchNo" placeholder="批次号" clearable></el-input>
+                    </el-col>*@
+                <el-col v-bind:span="3">
+                    <el-select v-model="table.args.Type" placeholder="调拨类型" clearable>
+                        @foreach (var item in ViewBag.TypeList)
+                        {
+                            <el-option key="@item.Key" label="@item.Value" value="@item.Key"></el-option>
+                        }
+                    </el-select>
+                </el-col>
+                <el-col v-bind:span="6">
+                    <el-date-picker v-model="table.args.time" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="制单日期起" end-placeholder="制单日期止">
+                    </el-date-picker>
+                </el-col>
+            </el-row>
+            <el-row class="row-bottom">
+                <el-col>
+                    <span class="input-group-btn">
+                        <el-button type="primary" class="btn btn-flat" v-on:click="loadData">查询</el-button>
+                        <el-button type="success" class="btn btn-flat " v-on:click="print">打印</el-button>
+                    </span>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col>
+                    <el-table v-bind:data="table.rows" v-bind:height="table.height" border v-on:selection-change="onSelectionChange">
+                        <el-table-column type="selection" width="55"></el-table-column>
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="Code" label="调拨单号" width="110"></el-table-column>
+                        <el-table-column prop="TypeDesc" label="类型" width="100"></el-table-column>
+                        <el-table-column prop="SapCode" label="Sap调拨单号" width="110"></el-table-column>
+                        <el-table-column prop="FromStoreCode" label="调出门店" width="150" sortable>
+                            <template slot-scope="scope">
+                                {{scope.row.FromStoreCode + ( scope.row.FromStoreName ? ' - ' + scope.row.FromStoreName : '')}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="ToStoreCode" label="调入门店" width="150" sortable>
+                            <template slot-scope="scope">
+                                {{scope.row.ToStoreCode + ( scope.row.ToStoreName ? ' - ' + scope.row.ToStoreName : '')}}
+                            </template>
+                        </el-table-column>
+                        @*<el-table-column prop="BatchNo" label="新批次号" width="100"></el-table-column>*@
+                        <el-table-column prop="CreatedOn" label="制单时间" width="100" v-bind:formatter="dateCellFormatter"></el-table-column>
+                        <el-table-column prop="CreatedByName" label="制单人" width="100" sortable></el-table-column>
+                        <el-table-column prop="StatusDesc" label="状态" width="80"></el-table-column>
+                        <el-table-column prop="Remark" label="备注"></el-table-column>
+                        <el-table-column label="操作" fixed="right" width="105">
+                            <template slot-scope="scope">
+                                <subpage-dialog type="text" text="查看" v-bind:buttons="viewDialogButtons" v-bind:url="'/TransferOrder/View/'+scope.row.Id"></subpage-dialog>
+                                <el-button type="text" v-on:click="showParent('调拨单'+scope.row.Code,'/TransferOrder/StockOut/'+scope.row.Id)">出库</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex"
+                                   v-bind:page-size="table.page.pageSize"
+                                   v-bind:total="table.page.total"
+                                   v-bind:layout="table.page.layout"
+                                   v-on:size-change="onPageSizeChange"
+                                   v-on:current-change="onPageChange">
+                    </el-pagination>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+    <div id="printDiv"></div>
+</div>
+
+@section scripts{
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>
+    <script src="~/Content/vue/plugins/subpage-dialog/subpage-dialog.js"></script>
+    <script src="~/Scripts/jquery.PrintArea.js"></script>
+    <script type="text/javascript">
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: {
+                        Code: null, Type: null, Status: null, FromStoreId: "", ToStoreId: "", BatchNo: null, brandIds: '', categoryId: '', categoryCode: '',
+                        productIds: '', snCode: '', createOnFrom: '', createOnTo: '', time: '', sapCode: '', productIds: ''
+                    },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize, layout: global_config.page.layout }
+                },
+                argTemplate: { Code: null, Type: null, FromStoreId: "", ToStoreId: "", BatchNo: null },
+                checkedIds: [],
+                viewDialogButtons: [{ buttonId: "cancel", text: "取消", autolock: false }]
+            },
+            methods: {
+                onSelectionChange: function (selection) {
+                    var $this = this;
+                    this.checkedIds = [];
+                    selection.forEach(function (row) {
+                        $this.checkedIds.push(row.Id);
+                    });
+                },
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+                    var $this = this;
+                    //设置时间
+                    if ($this.table.args.time != null) {
+                        $this.table.args.createOnFrom = $this.table.args.time[0];
+                        $this.table.args.createOnTo = $this.table.args.time[1];
+                    }
+                    else {
+                        $this.table.args.createOnFrom = "";
+                        $this.table.args.createOnTo = "";
+                    }
+                    var data = Object.assign({}, this.table.page, this.table.args);
+                    $.get("/TransferOrder/LoadStockOutList", data, function (result) {
+                        if (result.success) {
+                            $this.table.rows = result.data;
+                            $this.table.page.total = result.total;
+                        } else {
+                            $this.$message.error(result.error);
+                        }
+                    }, "Json");
+                },
+
+                dateCellFormatter: function (row, column, cellValue, index) {
+                    return cellValue.toDate().format("yyyy-MM-dd hh:mm:ss");
+                },
+
+                clearArgs: function () {
+                    this.table.args = JsExt.clone(this.argTemplate, true);
+                },
+                print: function () {
+                    var data = { ids: this.checkedIds.join() };
+                    $.get("/transferOrder/Print", data, function (result) {
+                        $("#printDiv").html(result);
+                        $("#printTemplate").printArea();
+                        $("#printDiv").html("");
+                    });
+                },
+                showParent: function (title, link) {
+                    window.parent.document.showTab(title, link);
+                }
+            },
+            created: function () {
+                this.table.args = JsExt.clone(this.argTemplate, true);
+                setListPage(this.table, 224);
+            }
+        });
+    </script>
+}

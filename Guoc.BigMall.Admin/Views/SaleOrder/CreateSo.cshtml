@@ -1,0 +1,622 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+        h3.title {
+            font-weight: bold;
+            padding-bottom: 1px;
+            border-bottom: 2px solid;
+        }
+
+        .first-row {
+            margin-top: 15px;
+        }
+
+        .label-col {
+            text-align: right;
+        }
+
+        .btn-print {
+            color: white;
+            border-color: #8EBCED;
+            background-color: #8EBCED;
+        }
+
+            .btn-print:hover {
+                color: white;
+                border-color: rgba(142,188,237,0.7);
+                background-color: rgba(142,188,237,0.7);
+            }
+
+        .clear-margin-left {
+            margin-left: 0px !important;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 9pt;
+        }
+
+        .el-select .el-input__inner {
+            border-right-color: transparent;
+        }
+    </style>
+}
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/SaleOrder/Index"><i class="fa fa-dashboard"></i>销售单管理</a></li>
+            <li class="active"><a href="/SaleOrder/CreateSo">新增销售单</a></li>
+        </ol>
+    </div>
+
+    <div style="min-width:700px;padding:10px;">
+
+        <el-button-group>
+            <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>
+            @*<el-button class="btn-print" v-on:click="print" v-bind:disabled="lock">打印</el-button>*@
+            <el-button v-on:click="backToList" v-bind:disabled="lock">取消</el-button>
+        </el-button-group>
+
+        <el-row v-bind:gutter="20" class="first-row">
+            <el-col v-bind:span="5">
+                <store-selector ref="NormalStore" v-model="model.StoreId" placeholder="商品出货仓位" v-on:value-changed="onStoreChanged"></store-selector>
+                <span class="error-msg">{{StoreErrorMsg}}</span>
+            </el-col>
+            <el-col v-bind:span="5">
+                <store-selector ref="GiftStore" v-model="model.StoreIdGift" placeholder="赠品出货仓位" v-on:value-changed="onStoreGiftChanged"></store-selector>
+                <span class="error-msg">{{StoreIdGiftErrorMsg}}</span>
+            </el-col>
+            <el-col v-bind:span="5">
+                <el-input v-model="model.FJCode" placeholder="富基单号" clearable></el-input>
+            </el-col>
+            <el-col v-bind:span="5">
+                <el-input v-model="model.Remark" placeholder="单据备注" clearable></el-input>
+            </el-col>
+        </el-row>
+    </div>
+    <div>
+        <el-row type="flex" justify="center">
+            <el-col v-bind:span="9">
+                <h3 class="text-center text-danger title">销售单</h3>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="20">门店：{{model.StoreName}}</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="6">单据状态：{{model.StatusDesc}}</el-col>
+            <el-col v-bind:span="6">销售单号：{{model.Code}}</el-col>
+            <el-col v-bind:span="6">制单日期：@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="6">审核人：{{model.AuditByName}}</el-col>
+            <el-col v-bind:span="6">审核时间：{{model.AuditOn}}</el-col>
+            <el-col v-bind:span="6">审核意见：{{model.AuditRemark}}</el-col>
+        </el-row>
+
+        <div class="table-responsive">
+            <table class="table table-bordered" style="min-width:1500px;">
+                <thead>
+                    <tr>
+                        <th width="77px"></th>
+                        <th width="60px">序号</th>
+                        <th width="120px">编码</th>
+                        <th width="300px">串号</th>
+                        <th width="150px">名称</th>
+                        <th width="90px">数量</th>
+                        <th width="95px">单价</th>
+                        <th width="120px">金额</th>
+                        <th width="200px">品类优惠</th>
+                        <th width="80px">品牌优惠</th>
+                        <th width="85px">店员一</th>
+                        <th width="85px">店员二</th>
+                        <th width="267px">赠品</th>
+                        @*<th width="120px">富基单号</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in model.Items">
+                        <td>
+                            @*el-icon-circle-plus-outline*@
+                            <el-button type="success" icon="el-icon-plus" size="mini" v-on:click="addRow" v-bind:disabled="lock" circle></el-button>
+                            <el-button type="danger" icon="el-icon-delete" class="clear-margin-left" size="mini" v-on:click="removeRow(index,item)" v-bind:disabled="lock" circle v-if="index>0"></el-button>
+                        </td>
+                        <td>{{index+1}}</td>
+                        <td>{{item.ProductCode}}</td>
+                        <td>
+                            <sncode-selector v-model="item.SNCode" v-bind:data-key="item" v-bind:url="'/Product/LoadSNCodeData'" v-bind:search-args="productSearchArgs" v-on:callback="selectProductCallback" v-bind:display-template="'{SNCode}'"></sncode-selector>
+                            <span class="error-msg">{{item.ProductErrorMsg}}</span>
+                        </td>
+                        <td>{{item.ProductName}}</td>
+                        <td>
+                            <el-input-number v-model="item.Quantity" controls-position="right" v-bind:precision="0" v-bind:min="1" v-bind:max="999" v-if="item.SNCode ===''" v-on:change="numberChanged(item, 'Quantity', 1)" style="width:90px;"></el-input-number>
+                            <el-input-number v-model="item.Quantity" v-bind:controls="false" v-bind:precision="0" v-bind:min="1" v-bind:max="1" disabled v-else style="width:90px;"></el-input-number>
+                            <span class="error-msg">{{item.QuantityErrorMsg}}</span>
+                        </td>
+                        <td>
+                            <el-input-number v-model="item.RealPrice" v-bind:precision="2" v-bind:min="0" v-bind:max="999999" v-bind:controls="false" v-on:change="numberChanged(item, 'RealPrice', 0)" style="width:95px;"></el-input-number>
+                        </td>
+                        <td>{{item.Amount.toFixed(2)}}</td>
+
+                        <td>
+                            <el-row>
+                                <el-col v-bind:span="12">
+                                    <el-select v-model="item.CategoryCardNumber" placeholder="品类卡" clearable>
+                                        <el-option v-for="card in storeCategoryCardNumbers" v-bind:key="card.CardNumber" v-bind:label="card.CardNumber" v-bind:value="card.CardNumber"></el-option>
+                                    </el-select>
+                                </el-col>
+                                <el-col v-bind:span="12">
+                                    <el-input-number v-model="item.CategoryPreferential" v-bind:precision="2" v-bind:min="0" v-bind:max="999999" v-bind:controls="false" v-on:change="numberChanged(item, 'CategoryPreferential', 0)" class="categoryPreferential-editor" style="width:100%;"></el-input-number>
+                                </el-col>
+                            </el-row>
+                        </td>
+
+                        <td>
+                            <el-input-number v-model="item.BrandPreferential" v-bind:precision="2" v-bind:min="0" v-bind:max="999999" v-bind:controls="false" v-on:change="numberChanged(item, 'BrandPreferential', 0)" class="brandPreferential-editor" style="width:80px;"></el-input-number>
+                        </td>
+
+                        <td><el-input v-model="item.SaleClerkOne" placeholder="店员一" clearable></el-input></td>
+                        <td><el-input v-model="item.SaleClerkTwo" placeholder="店员二" clearable></el-input></td>
+                        @* 循环展现赠品 *@
+                        <td>
+                            <table>
+                                <tr v-for="(giftItem,giftindex) in item.GiftItems">
+                                    <td>
+                                        <el-button type="success" icon="el-icon-plus" size="mini" v-on:click="addGiftRow(item)" v-bind:disabled="lock" circle v-if="giftindex<1"></el-button>
+                                        <el-button type="danger" icon="el-icon-delete" class="clear-margin-left" size="mini" v-on:click="removeGiftRow(item,giftindex)" v-bind:disabled="lock" circle v-if="giftindex>0"></el-button>
+                                    </td>
+                                    <td>
+                                        <product-selector v-model="giftItem.GiftProductId" v-bind:data-key="[item,giftItem]" v-on:initialize="productSelectorInitialize"
+                                                          v-bind:placeholder="'选择赠品'" v-bind:url="'/Product/LoadStoreGiftProduct'" v-bind:search-args="productGiftSearchArgs" v-on:callback="selectGiftProductCallback" v-bind:display-template="'{Name}'"></product-selector>
+                                    </td>
+                                    <td>
+                                        <el-input-number v-model="giftItem.GiftQuantity" controls-position="right" v-bind:precision="0" v-bind:min="1" v-bind:max="999" v-on:change="numberChanged(giftItem, 'GiftQuantity', 1)" style="width:90px;"></el-input-number>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        @*<td>
+                                <el-input v-model="item.FJCode" placeholder="富基小票号" clearable></el-input>
+                                <span class="error-msg">{{item.FJCodeErrorMsg}}</span>
+                            </td>*@
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>合计：</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{totalQuantity}}</td>
+                        <td></td>
+                        <td>{{totalAmount.toFixed(2)}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{totalGiftQuantity}}</td>
+                        @*<td></td>*@
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <el-row>
+            <el-col v-bind:span="6">制单人：{{model.CreatedByName}}</el-col>
+            <div class="col-xs-3 col-sm-3">
+                <span><el-input v-model="model.Buyer" placeholder="会员姓名" maxlength="16" icon></el-input></span>
+            </div>
+            <div class="col-xs-3 col-sm-3">
+                <span><el-input v-model="model.Phone" placeholder="会员电话" maxlength="32" icon></el-input></span>
+            </div>
+        </el-row>
+    </div>
+    <div id="printDiv"></div>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>
+    <script src="~/Content/vue/plugins/product-selector/product-selector.js"></script>
+    <script src="~/Content/vue/plugins/sncode-selector/sncode-selector.js"></script>
+    <script src="~/Scripts/jquery.PrintArea.js"></script>
+    <script type="text/javascript">
+        var rules = @Html.Raw(FormRules.GetRules(typeof(CreateAccountModel)));
+
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                lock: false,
+                lockClearRow: false,
+                productGiftSearchArgs:{storeIdGift:"0",HasSalePrice:true},
+                productSearchArgs:{ storeId: "0",HasSalePrice:true },
+                StoreErrorMsg:"",
+                StoreIdGiftErrorMsg:"",
+                storeCategoryCardNumbers:[],//门店品类卡
+                model: {
+                    Code :"",
+                    Type :1,
+                    StoreId :0,
+                    StoreIdGift:0,
+                    StoreName:"" ,
+                    Status :0,
+                    StatusDesc:"@ViewBag.StatusDesc",
+                    Remark :"",
+                    CreatedOn :null,
+                    CreatedBy :@ViewBag.CreatedBy,
+                    CreatedByName :"@ViewBag.CreatedByName",
+                    UpdatedOn :null,
+                    UpdatedBy :null,
+                    UpdatedByName:null ,
+                    AuditOn :null,
+                    AuditBy :null,
+                    AuditByName :null,
+                    AuditRemark: null,
+                    Buyer: "",
+                    Phone:"",
+                    FJCode:"",
+                    Items: []
+                },
+                itemTemplate:{
+                    FJCode: "",
+                    SaleClerkOne: "",
+                    SaleClerkTwo:"",
+                    ProductId:0,
+                    ProductName:"",
+                    ProductCode:"",
+                    BrandId:0,
+                    CategoryId:0,
+                    CategoryCode:"",
+                    //productSelection:[],
+                    InventoryQuantity:0,
+                    Quantity:1,
+                    SNCode:"",
+                    Amount:0,
+                    SalePrice:0,
+                    RealPrice:0,
+                    CategoryCardNumber:"",//品类卡
+                    CategoryPreferential:0,//品类优惠额度
+                    BrandPreferential:0,//品牌优惠额度
+                    SalePriceErrorMsg:"",
+                    ProductErrorMsg:"",
+                    QuantityErrorMsg: "",
+                    //FJCodeErrorMsg:"",
+                    GiftItems: []
+                },
+                itemGiftTemplate:
+                    {
+                        GiftProductId: 0,
+                        GiftProductName: "",
+                        GiftQuantity: 1,
+                    },
+                //totalQuantity:0,
+                //totalAmount:0,
+                postModel:{ Buyer:"",Phone:"",StoreId: 0, StoreIdGift:0, Remark: "", Items: [{ ProductId:0, Quantity: 0, FJCode:"", SaleClerkOne:"", SaleClerkTwo:"", SNCode:"", RealPrice:0, CategoryCardNumber:"", CategoryPreferential:0, BrandPreferential:0, GiftItems:[{GiftProductId:0, GiftQuantity:1}]}]}
+            },
+            methods: {
+                onSubmit: function () {
+                    if(this.validate()){
+                        this.lock=true;
+                        var $this=this;
+                        var gifts=[];
+                        $this.model.Items.forEach(function (item) {
+                            item.FJCode = $this.model.FJCode.trim();
+                            gifts=[];
+                            item.GiftItems.forEach  (function  (gift){
+                                if (gift.GiftProductId!=0) {
+                                    gifts.push(gift);
+                                }
+                            } );
+                            item.GiftItems=gifts;
+                        });
+                        var data = JsExt.map(this.model,this.postModel, true);
+
+                        $.ajax({
+                            type: 'post',
+                            url: "/SaleOrder/CreateSo",
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            contentType: 'application/json',
+                            success: function (result) {
+                                if (result.success) {
+                                    $this.$message.success({
+                                        message:"保存成功！",
+                                        onClose:function(){
+                                            $this.backToList();
+                                        }
+                                    });
+                                }else {
+                                    $this.$message.error(result.error);
+                                }
+                                $this.lock=false;
+                            }
+                        });
+                    }
+                },
+                //移除控件不显示的列
+                productSelectorInitialize:function(selector,currentItem){
+                    selector.removeColumns("CostPrice");
+                },
+                validate:function(){
+                    if(!this.model.StoreId || this.model.StoreId=="0"){
+                        this.StoreErrorMsg="请选择门店";
+                        return false;
+                    }
+                    this.StoreErrorMsg="";
+
+                    if(this.model.Items.length==0){
+                        this.$message.error("销售单至少应包含一条商品明细。");
+                        return false;
+                    }
+
+                    if(!this.model.FJCode.trim()){
+                        this.$message.error("富基单号不能为空。");
+                        return false;
+                    }
+
+                    for (var i = 0; i < this.model.Items.length; i++) {
+                        var item=this.model.Items[i];
+                        if(!item.ProductId || item.ProductId=="0"){
+                            item.ProductErrorMsg="必须选择商品";
+                            return false;
+                        }
+                        item.ProductErrorMsg="";
+
+                        //if(!item.FJCode.trim()){
+                        //    this.$message.error("富基单号不能为空。");
+                        //    return false;
+                        //}
+
+                        if(!item.Quantity || item.Quantity<1){
+                            item.QuantityErrorMsg="销售数量必须 ≥ 1";
+                            return false;
+                        }
+
+                        if(item.Quantity>item.InventoryQuantity){
+                            item.QuantityErrorMsg="销售数量必须 ≤ 库存数";
+                            return false;
+                        }
+                        item.QuantityErrorMsg="";
+                    }
+                    return true;
+                },
+                backToList: function(){
+                    window.location="/SaleOrder/Index";
+                },
+                addRow: function(){
+                    var newItem=JsExt.clone(this.itemTemplate,true);
+                    this.model.Items.push(newItem);
+                    //新增礼品行
+                    this.addGiftRow(newItem);
+                    return newItem;
+                },
+
+                //礼品新增行v
+                addGiftRow: function (item) {
+                    var newGiftItem = JsExt.clone(this.itemGiftTemplate, true);
+                    item.GiftItems.push(newGiftItem);
+                    return newGiftItem;
+                },
+                removeRow: function(index,item){
+                    //this.model.Items.splice(index,1);
+                    var newItems = this.model.Items.filter(function(m){ return m != item; });
+                    this.model.Items = [];
+                    var $this = this;
+                    setTimeout(function(){ $this.model.Items=newItems; }, 1);
+
+                },
+                //礼品删除
+                removeGiftRow: function(item,index){
+                    item.GiftItems.splice(index,1);
+                },
+                //删除所有礼品
+                removeGiftAll:function()
+                {
+                    var $this=this;
+                    this.model.Items.forEach(function(item)
+                    {
+                        item.GiftItems =[];
+                        $this.addGiftRow(item);
+                    })
+                },
+                clearRow: function(callback){
+                    //防止编辑单据时，门店组件比明细数据后加载，门店组件初始化门店后触发Changed事件，导致明细被清空。
+                    if(this.lockClearRow == false){
+                        this.lockClearRow = true;
+                        this.model.Items = [];
+                        var $this=this;
+                        setTimeout(function(){
+                            $this.addRow();
+                            $this.lockClearRow = false;
+                        }, 5);
+                    }
+                },
+                onStoreChanged: function(currentSelection){
+                    if(currentSelection.length > 0){
+                        if(this.model.StoreId ==this.model.StoreIdGift)
+                        {
+                            this.$refs.NormalStore.onClear();
+                            this.$message.error("商品出货仓位和赠品出货仓位不能相同");
+                            return false;
+                        }
+                        this.model.StoreName = currentSelection[0].Name;
+                        this.productSearchArgs.storeId = currentSelection[0].Key;
+                    }else{
+                        this.model.StoreName = "";
+                        this.productSearchArgs.storeId = "0";
+                    }
+                    this.clearRow();
+                    //加载门店品类卡
+                    this.loadStoreCategoryCardNumbers();
+                },
+
+                onStoreGiftChanged: function(currentSelection){
+                    if(currentSelection.length > 0){
+                        if(this.model.StoreId ==this.model.StoreIdGift)
+                        {
+                            this.$refs.GiftStore.onClear();
+                            this.$message.error("商品出货仓位和赠品出货仓位不能相同");
+                            return false;
+                        }
+                        //this.model.StoreName = currentSelection[0].Name;
+                        this.productGiftSearchArgs.storeIdGift = currentSelection[0].Key;
+                    }else{
+                        //this.model.StoreName = "";
+                        this.productGiftSearchArgs.storeIdGift  = "0";
+                    }
+                    this.removeGiftAll();
+                },
+
+                //选择商品后生成明细行，并绑定商品的相关信息
+                selectProductCallback: function(selectedProducts, currentItem){
+                    //删除重复列
+                    var $this = this;
+                    selectedProducts.remove(
+                        function(product){
+                            return $this.model.Items.contains(
+                                function(item){
+                                    return item != currentItem && item.ProductId == product.Id && (product.HasSNCode == false || item.SNCode == product.SNCode);
+                                });
+                        });
+
+                    if(selectedProducts.length>0){
+                        var products = selectedProducts.splice(1, selectedProducts.length - 1);
+                        this.bindProduct(currentItem, selectedProducts[0]);
+
+                        products.forEach(function(product){
+                            var item = $this.addRow();
+                            $this.bindProduct(item, product);
+                        });
+                    }else{
+                        this.bindProduct(currentItem, { Id: 0, Code: "", Name: "", BrandId: 0, CategoryId: 0, CategoryCode: "", SalePrice: 0, InventoryQuantity: 0, SNCode: "" });//在商品组件上点击清除时
+                    }
+                },
+                bindProduct: function(item, product){
+                    item.ProductId = product.Id;
+                    item.ProductCode =product.Code;
+                    item.ProductName = product.Name;
+                    item.BrandId = product.BrandId;
+                    item.CategoryId = product.CategoryId;
+                    item.CategoryCode = product.CategoryCode;
+                    item.RealPrice = product.SalePrice;
+                    item.InventoryQuantity = product.InventoryQuantity;
+                    item.SNCode =product.SNCode;
+                },
+
+                //选择礼品后生成明细行，并绑定商品的相关信息
+                selectGiftProductCallback: function (selectedProducts, currentItem) {
+
+                    //删除重复列
+                    var $this = this;
+                    selectedProducts.remove(
+                        function(product){
+                            return currentItem[0].GiftItems.contains(
+                                function(item){
+                                    return   item != currentItem[1] && item.GiftProductId== product.Id;
+                                });
+                        });
+
+
+                    if (selectedProducts.length > 0) {
+                        var products = selectedProducts.splice(1, selectedProducts.length - 1);
+                        this.bindGiftProduct(currentItem[1], selectedProducts[0]);
+                        var $this = this;
+                        products.forEach(function (product) {
+                            var item = $this.addGiftRow(currentItem[0]);
+                            $this.bindGiftProduct(item, product);
+                        });
+                    }
+                },
+                bindGiftProduct: function (item, product) {
+                    item.GiftProductId = product.Id;
+                    item.GiftProductName = product.Name;
+                },
+
+                clearStoreCategoryCardNumbers: function(){
+                    this.storeCategoryCardNumbers = [];
+                },
+
+                loadStoreCategoryCardNumbers: function () {
+                    this.clearStoreCategoryCardNumbers();
+                    if(!this.model.StoreId)return;
+                    var $this = this;
+                    $.get("/CardVoucher/LoadStoreCardNumbers", { StoreId: this.model.StoreId }, function (result) {
+                        if (result.success) {
+                            $this.storeCategoryCardNumbers = result.data;
+                        } else {
+                            $this.$message.error(result.error);
+                        }
+                    }, "Json");
+                },
+
+                numberChanged:function(item, p, defaultValue){
+                    var number = this.validateNumber(item[p], defaultValue);
+                    if(item[p] != number) item[p] = number;
+                },
+
+                validateNumber: function(value, defaultValue){
+                    var number = parseFloat(value);
+                    if(number.toString() == "NaN"){
+                        return defaultValue;
+                    }
+                    return number;
+                },
+
+                print:function(){
+                    var self=this;
+                    var data = {id:self.model.Id};
+                    $.get("/SaleOrder/Print", data, function (result) {
+                        $("#printDiv").html(result);
+                        $("#printTemplate").printArea();
+                        $("#printDiv").html("");
+                    });
+                }
+            },
+            computed:{
+                totalQuantity:function(){
+                    var $this=this;
+                    var totalQty=0;
+                    this.totalAmount=0;
+                    this.model.Items.forEach(function(item,index){
+                        if(!item.Quantity)
+                            item.Quantity = 1;
+                        totalQty += parseInt(item.Quantity);
+
+                        //var realPrice = $this.validateNumber(item.RealPrice, 1);
+                        //if(item.RealPrice != realPrice) item.RealPrice = realPrice;
+
+                        item.Amount = item.RealPrice * item.Quantity;
+                        $this.totalAmount += item.Amount;
+                    });
+                    return totalQty;
+                },
+                totalGiftQuantity:function(){
+                    var $this=this;
+                    var totalQty=0;
+                    this.model.Items.forEach(function(item,index){
+
+                        //操作明细
+                        item.GiftItems.forEach(function(gift,index){
+                            if(!gift.GiftProductId)return;//不统计空的赠品项
+                            if(!gift.Quantity)
+                                gift.Quantity = 1;
+                            totalQty += parseInt(gift.GiftQuantity);
+                        });
+
+                    });
+                    return totalQty;
+                }
+            },
+            created:function(){
+                this.addRow();
+                setTimeout(function(){
+                    $(".categoryPreferential-editor .el-input__inner").attr("placeholder","优惠额");
+                    $(".brandPreferential-editor .el-input__inner").attr("placeholder","优惠额");
+                },200);
+            }
+        });
+    </script>
+}

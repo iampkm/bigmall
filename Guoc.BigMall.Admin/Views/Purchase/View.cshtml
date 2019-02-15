@@ -1,0 +1,229 @@
+﻿@model Guoc.BigMall.Application.ViewObject.PurchaseOrderDto
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .dataRow div {
+        margin-bottom: 0px;
+    }
+</style>
+<!-- demo root element -->
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a ><i class="fa fa-dashboard"></i>综合查询</a></li>
+            <li class="active"><a href="/Purchase/View/@Model.Id">采购明细</a></li>
+        </ol>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form>
+        <div class="box-body">
+            <div class="row">
+                <div class="form-group col-sm-4 col-xs-6">
+                 
+                    <button type="button" class="btn btn-primary btn-flat" v-on:click="print">打 印</button>
+                    <el-button v-on:click="backToList">取消</el-button>
+                    <input type="hidden" v-model="model.id" />
+                    <input type="hidden" class="form-control" v-model="model.supplierId">
+                    <input type="hidden" class="form-control" v-model="model.storeId">
+                </div>
+            </div>
+            <div class="row">
+              
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4"></div>
+                <div class="col-xs-4 col-sm-4"><h3 class="text-center text-success" style="border-bottom:2px solid;padding-bottom:1px;"><b>采购订单</b></h3></div>
+                <div class="col-xs-4 col-sm-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>供应商：{{model.supplierName}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span>单据号：{{model.code}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span>备注：{{model.remark}}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>门店：{{model.storeName}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span class="text-danger">单据状态：@Model.PurchaseOrderStatus</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span>制单日期：@Model.CreatedTime</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <div class="table-responsive">
+                        <el-table data="products"
+                                  border
+                                  style="width: 100%">
+                        </el-table>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px;">序号</th>
+                                    <th style="width:150px;">商品编码</th>
+                                    <th style="width:150px;">品名</th>
+                                    <th>规格</th>
+                                    <th>单位</th>
+                                    <th>进价</th>
+                                    <th>订货数</th>
+                                    <th>实收数</th>
+                                    <th>串码</th>
+                                    <th>金额</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody">
+                                <tr v-for="(item,index) in products" class="{{item.BgColor}}">
+                                    <td class="text-center">{{index+1}}</td>
+                                    <td>
+                                        {{item.ProductCode}}
+                                    </td>
+                                    <td>{{item.ProductName}}</td>
+                                    <td>{{item.Specification}}</td>
+                                    <td>{{item.Unit}}</td>
+                                    <td>{{item.CostPrice}}</td>
+                                    <td>{{item.Quantity}}</td> 
+                                    <td>
+                                       {{item.ActualQuantity}}
+                                    </td>
+                                    <td>
+                                        {{item.AllSNcodes}}
+                                    </td>
+                                    <td>{{item.Amount.toFixed(2)}}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td style="width:50px;"></td>
+                                    <td>合计：</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{totalQuantity}}</td>
+                                 
+                                    <td>{{totalActualQuantity}}</td>
+                                    <td></td>
+                                    <td>{{countTotal.toFixed(2)}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>制单人：@Model.CreatedByName </span>
+                </div>
+
+                <div class="col-xs-4 col-sm-4">
+                    <span>更新人：@Model.UpdatedByName</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span>更新时间：@Model.UpdatedTime</span>
+                </div>
+            </div>
+        </div>
+    </form>
+    <br />
+    <div id="printDiv"></div>
+</div>
+
+@section scripts{
+
+    <script src="~/Scripts/jquery.PrintArea.js"></script>
+    <script>
+        $("doucument").ready(function () {
+            var demo = new Vue({
+                components: {
+                   
+                },
+                el: '#app',
+                data: {
+                    inputProductCodeOrBarCode:'',
+                    model: {
+                        id: @Model.Id,
+                        code: '@Model.Code',
+                        storeId: @Model.StoreId,
+                        storeName:'@Model.StoreName',
+                        supplierId: @Model.SupplierId,
+                        supplierName:'@Model.SupplierName',
+                        remark:'@Model.Remark',
+                        status:'@Model.PurchaseOrderStatus',
+                        createdOn:'@Model.CreatedOn',
+                        createdByName:'@Model.CreatedByName',
+                        confirmVerifyCode:'',
+                        items: ''
+                    },
+                    products: @Html.Raw(ViewBag.PurchaseOrderItems),
+                    totalQuantity: 0,
+                    totalActualQuantity:0,
+                    totalActualShipQuantity:0,
+                    toggleScanText:'关',
+                    isSubmit:false,
+                },
+                methods: {
+                    backToList: function(){
+                        window.parent.closeDialog();
+                    },
+              
+                    print: function () {
+                        var data = {id:this.model.id};
+                        $.get("/Purchase/Print", data, function (result) {
+                            $("#printDiv").html(result);
+                            $("#printTemplate").printArea();
+                            $("#printDiv").html("");
+                        });
+                    },
+                },
+                computed: {
+                    countTotal: function () {
+                        var total = 0;
+                        var bookQty = 0;
+                        var totalActualQty = 0;
+                        var totaltotalActualShipQty = 0;
+                        var _self = this;
+                        this.products.forEach(function (item) {
+                            var qty = parseInt(item.Quantity);
+                            var actualQty = parseInt(item.ActualQuantity);
+                            var actualShipQty = parseInt(item.ActualShipQuantity);
+                            var price = item.CostPrice;
+                            item.Amount = price * actualQty;
+                            bookQty += qty;
+                            total += item.Amount;
+                            totalActualQty+= actualQty;
+                            totaltotalActualShipQty+= actualShipQty;
+                            //设置颜色
+                            item.BgColor = item.ActualQuantity==item.ActualShipQuantity ?"bg-success":"bg-danger";
+                        })
+                        _self.totalQuantity = bookQty;
+                        _self.totalActualQuantity = totalActualQty;
+                        _self.totalActualShipQuantity = totaltotalActualShipQty
+                        return total;
+                    }
+                },
+                watch:{
+
+                }
+
+            });
+
+            $(".productCode").focus();
+        });
+    </script>
+}
+
+
+
+
+

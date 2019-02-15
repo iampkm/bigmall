@@ -1,0 +1,51 @@
+首页板块
+
+货架    首页
+货架明细   ---商品
+                ---营销类别集合
+                ---关键字集合
+---------------------------------
+
+商品-sku
+product
+id, code,name,display_name,brand_id,category_id, keyword,
+1   1001  , shirt,  yager-shirt,  yager,  T-Shirt
+product_sku
+id,product_id,code,name,display_name,brand_id,category_id,sku_attribute,Specification, status
+1    1	1001001,shirt, blue-yager-shirt, yager,T-shirt, {1:2,2:5},
+------------
+sku_attribute: {1:2,2:5} ---- [color:blue,size:XXL]
+sku_attribute: 唯一索引 
+-----------
+product_attribute  （商品属性）
+id,name
+1，color
+2 , size
+
+product_attribute_value  （商品属性值）
+id,product_attrbute_id, product_attribute_value
+1    1                             red
+2    1                             blue
+3    1                             green
+4    2                             XL
+5    2                              XXL
+
+
+product_attribute_map （商品属性映射）
+id, product_id, product_attribute_id,product_attribute_value
+1	1	1 (color) 	 2(blue)
+2              1              2 (size)      5(XXL)
+================================
+product_picture （商品图片）
+--------------------
+id, product_id,picture_type, url,
+1      1               main          /productCode/main/imgName.jpg
+2      1              detail         / productCode/detail/imgName.jpg
+--------------------------------------------
+product_parameters (规格参数)
+product_id,tag,parameter_key,parameter_value
+
+---------------------------
+store_inventory
+product_sku_id,sale_price,market_price,quantity
+

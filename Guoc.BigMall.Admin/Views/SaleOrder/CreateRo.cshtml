@@ -1,0 +1,543 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+        h3.title {
+            font-weight: bold;
+            padding-bottom: 1px;
+            border-bottom: 2px solid;
+        }
+
+        .first-row {
+            margin-top: 15px;
+        }
+
+        .label-col {
+            text-align: right;
+        }
+
+        .btn-print {
+            color: white;
+            border-color: #8EBCED;
+            background-color: #8EBCED;
+        }
+
+            .btn-print:hover {
+                color: white;
+                border-color: rgba(142,188,237,0.7);
+                background-color: rgba(142,188,237,0.7);
+            }
+
+        .clear-margin-left {
+            margin-left: 0px !important;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 9pt;
+        }
+    </style>
+}
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/SaleOrder/RoList"><i class="fa fa-dashboard"></i>销售退单管理</a></li>
+            <li class="active"><a href="/SaleOrder/CreateRo">新增销售退单</a></li>
+        </ol>
+    </div>
+
+    <div style="min-width:700px;padding:10px;">
+        <el-row v-bind:gutter="20" class="first-row">
+            <el-col v-bind:span="5">
+                <el-input v-model="model.SaleOrderFJCode" placeholder="请输入富基单号" clearable></el-input>
+            </el-col>
+            <el-col v-bind:span="5">
+                <el-button type="warning" class="btn btn-flat" v-on:click="loadSaleOrder">查询</el-button>
+            </el-col>
+        </el-row>
+        <el-row v-bind:gutter="20" class="first-row">
+        </el-row>
+        <div class="panel panel-default" v-show="show">
+            <div class="panel-heading">销售退单信息</div>
+            <div class="panel-body">
+                <div class="col-md-4">
+                    <ul class="list-group">
+                        <li class="list-group-item"><b>销售订单号： </b>{{model.Code}}</li>
+                        <li class="list-group-item"><b>销售日期： </b>{{model.CreatedOnTime}}</li>
+                        <li class="list-group-item"><b>订单金额： </b>￥{{model.OrderAmount}}</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-group">
+                        <li class="list-group-item"><b>门店： </b>{{model.StoreName}}</li>
+                        <li class="list-group-item"><b>收货人： </b>{{model.Buyer}}</li>
+                        <li class="list-group-item"><b>收货地电话： </b>{{model.Phone}}</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-group">
+                        <li class="list-group-item"><b>订单备注： </b>{{model.Remark}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <el-row type="flex" justify="center" v-show="show">
+            <el-col v-bind:span="9">
+                <h3 class="text-center text-danger title">销售退单</h3>
+            </el-col>
+        </el-row>
+        <table class="table table-bordered" v-show="show">
+            <thead>
+                <tr>
+                    <th width="110px"></th>
+                    <th width="60px">序号</th>
+                    <th width="120px">编码</th>
+                    <th width="150px">串号</th>
+                    <th width="150px">名称</th>
+                    <th width="80">可退数量</th>
+                    <th width="120">退货数量</th>
+                    <th width="120px">单价</th>
+                    <th width="120px">金额</th>
+                    <th>品类卡</th>
+                    <th>品类优惠</th>
+                    <th>品牌优惠</th>
+                    @*<th width="80px">店员一</th>
+                        <th width="80px">店员二</th>*@
+                    <th width="300px">赠品</th>
+                    <th width="120px">富基单号</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in model.Items">
+                    <td>
+                        @*el-icon-circle-plus-outline*@
+                        <el-button type="danger" icon="el-icon-delete" class="clear-margin-left" size="mini" v-on:click="removeRow(index)" v-bind:disabled="lock" circle v-if="index>-1"></el-button>
+                    </td>
+                    <td>{{index+1}}</td>
+                    <td>{{item.ProductCode}}</td>
+                    <td>
+                        @*<sncode-selector v-model="item.ProductId" v-bind:data-key="item" v-bind:url="'/Product/LoadSNCodeData'" v-bind:search-args="productSearchArgs" v-on:callback="selectProductCallback" v-bind:display-template="'{SNCode}'"></sncode-selector>*@
+                        {{item.SNCode}}
+                        <span class="error-msg">{{item.ProductErrorMsg}}</span>
+                    </td>
+                    <td>{{item.ProductName}}</td>
+                    <td>{{item.Quantity}}</td>
+                    <td>
+                        <el-input-number v-model="item.ReturnQuantity" v-bind:precision="0" v-bind:min="1" v-bind:max=item.Quantity></el-input-number>
+                        <span class="error-msg">{{item.ReturnQuantityErrorMsg}}</span>
+                    </td>
+                    <td>
+                        {{item.RealPrice.toFixed(2)}}
+                        <span class="error-msg">{{item.RealPriceErrorMsg}}</span>
+                    </td>
+                    <td>{{item.Amount.toFixed(2)}}</td>
+                    <td>{{item.CategoryCardNumber}}</td>
+                    <td>{{item.CategoryPreferential}}</td>
+                    <td>{{item.BrandPreferential}}</td>
+                    @*<td><el-input v-model="item.SaleClerkOne" placeholder="店员一" clearable></el-input></td>
+                        <td><el-input v-model="item.SaleClerkTwo" placeholder="店员二" clearable></el-input></td>*@
+                    @* 循环展现赠品 *@
+                    <td>
+                        <table>
+                            <tr v-for="(giftItem,giftindex) in item.GiftItems">
+                                <td>
+                                    <el-button type="danger" icon="el-icon-delete" class="clear-margin-left" size="mini" v-on:click="removeGiftRow(item,giftindex)" v-bind:disabled="lock" circle v-if="giftindex>-1"></el-button>
+                                </td>
+                                <td>
+                                    @*<product-selector v-model="giftItem.GiftProductId" v-bind:data-key="[item,giftItem]" v-on:initialize="productSelectorInitialize"
+                                        v-bind:placeholder="'选择赠品'" v-bind:url="'/Product/LoadStoreProduct'" v-bind:search-args="productSearchArgs" v-on:callback="selectGiftProductCallback" v-bind:display-template="'{Name}'"></product-selector>*@
+                                    {{giftItem.GiftProductName}}
+                                </td>
+                                <td>
+                                    <el-input-number v-model="giftItem.GiftReturnQuantity" v-bind:precision="0" v-bind:min="1" v-bind:max=giftItem.GiftQuantity></el-input-number>
+                                    <span class="error-msg">{{item.GiftReturnQuantityErrorMsg}}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td>
+                        {{item.FJCode}}
+                        <span class="error-msg">{{item.FJCodeErrorMsg}}</span>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>合计：</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{totalQuantity}}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{totalAmount.toFixed(2)}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    @*<td></td>
+                        <td></td>*@
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+        <el-row v-show="show">
+            <el-col v-bind:span="6">制单人：{{model.CreatedByName}}</el-col>
+            <el-col>
+                <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>
+            </el-col>
+        </el-row>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>
+    <script src="~/Content/vue/plugins/product-selector/product-selector.js"></script>
+    <script src="~/Content/vue/plugins/sncode-selector/sncode-selector.js"></script>
+    <script type="text/javascript">
+        var rules = @Html.Raw(FormRules.GetRules(typeof(CreateAccountModel)));
+
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                lock: false,
+                lockClearRow: false,
+                productSearchArgs:{ storeId: "0" },
+                StoreErrorMsg:"",
+                show:false,
+                model: {
+                    SourceOrderAmount:"",
+                    SourceSaleOrderCode:"",
+                    SaleOrderFJCode:"",
+                    Code :"",
+                    Type :1,
+                    StoreId :0,
+                    StoreIdGift:0,
+                    StoreName:"" ,
+                    Status :0,
+                    StatusDesc:"@ViewBag.StatusDesc",
+                    Remark :"",
+                    CreatedOn :null,
+                    CreatedOnTime :null,
+                    CreatedBy :@ViewBag.CreatedBy,
+                    CreatedByName :"@ViewBag.CreatedByName",
+                    UpdatedOn :null,
+                    UpdatedBy :null,
+                    UpdatedByName:null ,
+                    AuditOn :null,
+                    AuditBy :null,
+                    AuditByName :null,
+                    AuditRemark: null,
+                    Buyer: "",
+                    Phone:"",
+                    Items: []
+                },
+                itemTemplate:{
+                    FJCode: "",
+                    SaleClerkOne: "",
+                    SaleClerkTwo:"",
+                    ProductId:0,
+                    ProductName:"",
+                    ProductCode:"",
+                    //productSelection:[],
+                    InventoryQuantity:0,
+                    Quantity:1,
+                    ReturnQuantity:1,
+                    SNCode:"",
+                    Amount:0,
+                    SalePrice:0,
+                    SalePriceErrorMsg:"",
+                    ProductErrorMsg:"",
+                    QuantityErrorMsg: "",
+                    FJCodeErrorMsg:"",
+                    ReturnQuantityErrorMsg:"",
+                    GiftItems: []
+                },
+                itemGiftTemplate:
+                    {
+                        GiftProductId: 0,
+                        GiftProductName: "",
+                        GiftQuantity: 1,
+                        GiftReturnQuantity:1,
+                        GiftReturnQuantityErrorMsg:"",
+                    },
+                //totalQuantity:0,
+                //totalAmount:0,
+                postModel:{SourceSaleOrderCode:"",SourceSapCode:"",StoreId: 0,StoreIdGift:0,  Remark: "", Items: [{ ProductId:0, Quantity: 1,ReturnQuantity:1,SalePrice:0,RealPrice:0,FJCode:'',SNCode:'',SourceSaleOrderRow:0,SourceSapRow:"",CategoryCardNumber:"",CategoryPreferential:0,BrandPreferential:0,GiftItems:[{GiftProductId:0, GiftQuantity:1,GiftReturnQuantity:1,SourceSaleOrderRow:0,SourceSapRow:""}]}]}
+            },
+            watch:{
+
+            },
+            methods: {
+                loadSaleOrder:function()
+                {
+                    var v_self = this;
+                    $.get("/SaleOrder/GetSaleOrderByFJCode", { code: this.model.SaleOrderFJCode }, function (result) {
+                        if (result.success) {
+                            var objSaleOrder = result.data;
+                            if(objSaleOrder==null)
+                            {
+                                v_self.$message.error("销售订单不存在，不能退货！");return;
+                            }
+                            if (objSaleOrder.OrderType != (@ViewBag.OrderType)) {
+                                v_self.$message.error("订单类型不是销售订单，不能退货！");return;
+                            }
+                            if (objSaleOrder.Status != (@ViewBag.OutStock)&& objSaleOrder.Status != (@ViewBag.Convert)) {
+                                v_self.$message.error("订单还未完成，不能退货！");return;
+                            }
+                            v_self.show = true;
+                            v_self.model = objSaleOrder;
+                            v_self.model.SourceSaleOrderCode =objSaleOrder.Code;
+                            v_self.model.SourceSapCode = objSaleOrder.SapCode;
+                            v_self.model.Items.forEach(function(item){
+                                item.SourceSapRow = item.SapRow;
+                                item.SourceSaleOrderRow = item.Id;
+                                item.ReturnQuantity = item.Quantity;
+
+                                item.GiftItems.forEach(function(gift){
+                                    gift.SourceSapRow = gift.SapRow;
+                                    gift.SourceSaleOrderRow = gift.Id;
+                                    gift.GiftReturnQuantity = gift.GiftQuantity;
+                                });
+                            });
+                        }
+                        else
+                        {
+                            v_self.$message.error(result.error);
+                        }
+                    }, "json")
+                },
+                onSubmit: function () {
+                    if(this.validate()){
+                        this.lock=true;
+                        var $this=this;
+                        var data = JsExt.map(this.model,this.postModel, true);
+
+                        // var data = this.model;
+                        //data.ItemsJson = JSON.stringify(this.model.Items);
+
+                        //$.post("/SaleOrder/CreateRo",data,function(result){
+                        //    if (result.success) {
+                        //        $this.$message.success({
+                        //            message:"保存成功！",
+                        //            onClose:function(){
+                        //                $this.backToList();
+                        //            }
+                        //        });
+                        //    }else {
+                        //        $this.$message.error(result.error);
+                        //    }
+                        //    $this.lock=false;
+                        //},"json");
+                        $.ajax({
+                            type: 'post',
+                            url: "/SaleOrder/CreateRo",
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            contentType: 'application/json',
+                            success: function (result) {
+                                if (result.success) {
+                                    $this.$message.success({
+                                        message:"保存成功！",
+                                        onClose:function(){
+                                            $this.backToList();
+                                        }
+                                    });
+                                }else {
+                                    $this.$message.error(result.error);
+                                }
+                                $this.lock=false;
+                            }
+                        });
+                    }
+                },
+
+                productSelectorInitialize:function(selector,currentItem){
+                    selector.removeColumns("CostPrice");
+                },
+                validate:function(){
+                    if(!this.model.StoreId || this.model.StoreId=="0"){
+                        this.StoreErrorMsg="请选择门店";
+                        return false;
+                    }
+                    this.StoreErrorMsg="";
+
+                    if(this.model.Items.length==0){
+                        this.$message.error("销售退单至少应包含一条商品明细。");
+                        return false;
+                    }
+
+                    for (var i = 0; i < this.model.Items.length; i++) {
+                        var item=this.model.Items[i];
+                        if(!item.ProductId || item.ProductId=="0"){
+                            item.ProductErrorMsg="必须选择商品";
+                            return false;
+                        }
+                        item.ProductErrorMsg="";
+
+                        debugger;
+                        if(item.FJCode==""){
+                            item.FJCodeErrorMsg="富机单号不能为空";
+                            return false;
+                            item.FJCodeErrorMsg="";
+                        }
+
+                        if(!item.Quantity || item.Quantity<1){
+                            item.QuantityErrorMsg="销售数量必须 ≥ 1";
+                            return false;
+                        }
+
+                        if(item.Quantity>item.InventoryQuantity){
+                            item.QuantityErrorMsg="销售数量必须 ≤ 库存数";
+                            return false;
+                        }
+                        if(item.Quantity<item.ReturnQuantity){
+                            item.ReturnQuantityErrorMsg="退货数量必须小于可退数";
+                            return false;
+                        }
+
+                        if(item.GiftQuantity<item.GiftReturnQuantity){
+                            item.GiftReturnQuantityErrorMsg="退货数量不足";
+                            return false;
+                        }
+
+                    }
+                    return true;
+                },
+                backToList: function(){
+                    window.location="/SaleOrder/RoList";
+                },
+                addRow: function(){
+                    var newItem=JsExt.clone(this.itemTemplate,true);
+                    this.model.Items.push(newItem);
+                    //新增礼品行
+                    this.addGiftRow(newItem);
+                    return newItem;
+                },
+
+                //礼品新增行v
+                addGiftRow: function (item) {
+                    var newGiftItem = JsExt.clone(this.itemGiftTemplate, true);
+                    item.GiftItems.push(newGiftItem);
+                    return newGiftItem;
+                },
+                removeRow: function(index){
+                    this.model.Items.splice(index,1);
+                },
+                //礼品删除
+                removeGiftRow: function(item,index){
+                    debugger;
+                    item.GiftItems.splice(index,1);
+                },
+                clearRow: function(callback){
+                    if(this.lockClearRow == false){
+                        this.lockClearRow = true;
+                        this.model.Items = [];
+                        var $this = this;
+                        setTimeout(function(){
+                            $this.addRow();
+                            $this.lockClearRow = false;
+                        }, 5);
+                    }
+                },
+                onStoreChanged: function(currentSelection){
+                    if(currentSelection.length > 0){
+                        this.model.StoreName = currentSelection[0].Name;
+                        this.productSearchArgs.storeId = currentSelection[0].Key;
+                    }else{
+                        this.model.StoreName = "";
+                        this.productSearchArgs.storeId = "0";
+                    }
+                    this.clearRow();
+                },
+                //选择商品后生成明细行，并绑定商品的相关信息
+                selectProductCallback: function(selectedProducts, currentItem){
+
+                    //删除重复列
+                    var $this = this;
+                    selectedProducts.remove(
+                        function(product){
+                            return $this.model.Items.contains(
+                                function(item){
+                                    return item != currentItem && item.ProductId == product.Id;
+                                });
+                        });
+
+                    if(selectedProducts.length>0){
+                        var products = selectedProducts.splice(1, selectedProducts.length - 1);
+                        this.bindProduct(currentItem, selectedProducts[0]);
+                        var $this = this;
+                        products.forEach(function(product){
+                            var item = $this.addRow();
+                            $this.bindProduct(item, product);
+                        });
+                    }
+                },
+                bindProduct: function(item, product){
+                    item.ProductId = product.Id;
+                    item.ProductCode =product.Code;
+                    item.ProductName = product.Name;
+                    item.SalePrice = product.CostPrice;
+                    item.InventoryQuantity = product.InventoryQuantity;
+                    item.SNCode =product.SNCode;
+                },
+
+                //选择礼品后生成明细行，并绑定商品的相关信息
+                selectGiftProductCallback: function (selectedProducts, currentItem) {
+
+                    //删除重复列
+                    var $this = this;
+                    selectedProducts.remove(
+                        function(product){
+                            return currentItem[0].GiftItems.contains(
+                                function(item){
+                                    return   item != currentItem[1] && item.GiftProductId== product.Id;
+                                });
+                        });
+
+
+                    if (selectedProducts.length > 0) {
+                        var products = selectedProducts.splice(1, selectedProducts.length - 1);
+                        this.bindGiftProduct(currentItem[1], selectedProducts[0]);
+                        var $this = this;
+                        products.forEach(function (product) {
+                            var item = $this.addGiftRow(currentItem[0]);
+                            $this.bindGiftProduct(item, product);
+                        });
+                    }
+                },
+                bindGiftProduct: function (item, product) {
+                    item.GiftProductId = product.Id;
+                    item.GiftProductName = product.Name;
+                }
+            },
+            computed:{
+                totalQuantity:function(){
+                    var $this=this;
+                    var totalQty=0;
+                    this.totalAmount=0;
+                    this.model.Items.forEach(function(item,index){
+                        if(!item.ReturnQuantity)
+                            item.ReturnQuantity = 1;
+                        totalQty += parseInt(item.ReturnQuantity);
+                        //操作明细
+                        item.GiftItems.forEach(function(gift,index){
+                            if(!gift.GiftReturnQuantity)
+                                gift.GiftReturnQuantity = 1;
+                            totalQty += parseInt(gift.GiftReturnQuantity);
+                        });
+                        item.Amount = item.RealPrice * item.ReturnQuantity;
+                        $this.totalAmount += item.Amount;
+                    });
+                    return totalQty;
+                }
+            },
+            created:function(){
+                //this.addRow();
+            }
+        });
+    </script>
+}

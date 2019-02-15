@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section styles{
+    @*<style type="text/css">
+            .button-row {
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+        </style>*@
+}
+
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/Category/Index"><i class="fa fa-dashboard"></i>品类管理</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+
+            @*<el-row class="button-row">
+                    <el-button type="primary">新增</el-button>
+                    <el-button type="warning">编辑</el-button>
+                    <el-button type="danger">删除</el-button>
+                </el-row>*@
+
+            <el-row v-bind:style="treeStyle">
+                <el-tree ref="categoryTree" v-bind:data="categoryData" node-key="Key" v-bind:props="defaultProps" highlight-current v-bind:empty-text='emptyText'></el-tree>
+            </el-row>
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        var vue = new Vue({
+            el: '#app',
+            data: {
+                emptyText: "数据加载中...",
+                treeStyle: {
+                    borderTop: "1px solid #eee",
+                    overflow: "auto",
+                    height: "300px"
+                },
+                defaultProps: {
+                    children: "Children",
+                    label: "Label"
+                },
+                categoryData: []
+            },
+            methods: {
+                loadTree: function (parentCode, callback) {
+                    $.post("/Category/LoadCategoryTree", { "parentCode": parentCode }, callback);
+                }
+            },
+            created: function () {
+                var $this = this;
+                this.loadTree(null, function (nodes) {
+                    $this.categoryData = nodes;
+                    if (!nodes || nodes.length == 0)
+                        $this.emptyText = "没有品类数据。";
+                });
+
+                //$(window).resize(function () {
+                //    $this.treeStyle.height = ($(this).height() - 90) + "px";
+                //}).resize();
+                setListPage(this.treeStyle, 95);
+            }
+        });
+    </script>
+}

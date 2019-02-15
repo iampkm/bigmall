@@ -1,0 +1,111 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@model AccountEditModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+}
+<!-- demo root element -->
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/Account/Index"><i class="fa fa-dashboard"></i>账号管理</a></li>
+            <li class="active"><a href="/Account/Edit/@Model.Id">修改账号</a></li>
+        </ol>
+    </div>
+
+    <div style="max-width:500px;padding:10px 0px 10px 0px;">
+
+        <el-form ref="form" v-bind:model="model" v-bind:rules="formRules" label-width="80px">
+            <el-form-item label="账号名" prop="UserName">
+                <el-input v-model="model.UserName" placeholder="账号名" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="昵称" prop="NickName">
+                <el-input v-model="model.NickName" placeholder="昵称" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="电话" prop="Phone">
+                <el-input v-model="model.Phone" placeholder="电话" clearable>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="角色" prop="RoleId">
+                <template>
+                    <el-select v-model="model.RoleId" placeholder="请选择">
+                        @foreach (var item in ViewBag.Roles)
+                        {
+                            <el-option key="@item.Id" label="@item.Name" value="@item.Id"></el-option>
+                        }
+                    </el-select>
+                </template>
+            </el-form-item>
+            <el-form-item label="门店权限" prop="CanViewStores">
+                <store-selector v-model="model.CanViewStores" placeholder="可以查看门店的权限" multi-select="true"></store-selector>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>
+                <el-button v-on:click="backToList" v-bind:disabled="lock">取消</el-button>
+            </el-form-item>
+        </el-form>
+
+    </div>
+
+</div>
+
+@section scripts{
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>
+
+    <script type="text/javascript">
+        var rules = @Html.Raw(FormRules.GetRules(typeof(AccountEditModel)));
+
+        $("doucument").ready(function () {
+            var demo = new Vue({
+                el: '#app',
+                data: {
+                    lock: false,
+                    model: {
+                        Id:@Model.Id,
+                        UserName: '@Model.UserName',
+                        NickName: '@Model.NickName',
+                        Phone:'@Model.Phone',
+                        RoleId: '@Model.RoleId',
+                        @*StoreId: @Model.StoreId,*@
+                        CanViewStores:@Model.CanViewStores.ToJson()
+                        },
+                    formRules:rules
+                },
+                methods: {
+                    onSubmit: function () {
+                        var $this=this;
+                        this.lock=true;
+                        this.$refs.form.validate(function(valid){
+                            if(!valid)return false;
+                            $this.model.CanViewStores = $this.model.CanViewStores.toString().split(",");
+                            $.ajax({
+                                type:"POST",
+                                url:"/Account/Edit",
+                                data:$this.model,
+                                traditional:true,
+                                success:function(result){
+                                    if (result.success) {
+                                        $this.$message.success({
+                                            message:"保存成功！",
+                                            onClose:function(){
+                                                $this.backToList();
+                                            }
+                                        });
+                                    }else {
+                                        $this.$message.error(result.error);
+                                    }
+                                }
+                            });
+                        });
+                        this.lock=false;
+                    },
+                    backToList:function(){
+                        window.location="/Account/Index";
+                    }
+                }
+            });
+        });
+
+    </script>
+}

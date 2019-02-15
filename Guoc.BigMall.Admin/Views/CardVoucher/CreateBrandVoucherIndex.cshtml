@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "CreateBrandVoucherIndex";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section styles
+{
+    <style type="text/css">
+        /*解决折叠内容展开后表头错位*/
+        .el-table th.gutter {
+            display: table-cell !important;
+        }
+    </style>
+}
+
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/Coupon/CategoryCardIndex"><i class="fa fa-dashboard"></i>品牌充值券 - 制券</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+            <el-row v-bind:gutter="20">
+                <el-col v-bind:span="3">
+                    <brand-selector v-model="table.args.BrandId" placeholder="选择品牌" v-bind:multi-select="false"></brand-selector>
+                </el-col>
+                <el-col v-bind:span="0.1">
+                    <el-date-picker v-model="table.args.DateRange" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+                </el-col>
+                <el-col v-bind:span="3">
+                    <category-selector v-model="table.args.CategoryId" placeholder="商品类别"></category-selector>
+                </el-col>
+            </el-row>
+            <el-row class="row-bottom">
+                <el-col>
+                    <span class="input-group-btn">
+                        <el-button type="primary" class="btn btn-flat" v-on:click="loadData">查询</el-button>
+                        <el-button type="warning" class="btn btn-flat" v-on:click="window.location='/CardVoucher/CreateBrandVoucher'">新增</el-button>
+                        <el-button class="btn btn-flat" v-on:click="clearArgs">清除条件</el-button>
+                    </span>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col>
+                    <el-table v-bind:data="table.rows" v-bind:height="table.height" border>
+                        <el-table-column type="expand">
+                            <template slot-scope="scope">
+                                <el-form>
+                                    <el-form-item label="涉及类别">
+                                        <el-tag v-for="category in scope.row.Categories.split(',')" size="mini">
+                                            {{category}}
+                                        </el-tag>
+                                    </el-form-item>
+                                    <el-form-item label="排除商品">
+                                        <el-tag v-for="product in scope.row.ExceptProducts.split('[,]')" size="mini">
+                                            {{product}}
+                                        </el-tag>
+                                    </el-form-item>
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="Code" label="编码" width="100"></el-table-column>
+                        <el-table-column prop="StartDate" label="开始日期" width="95" v-bind:formatter="dateCellFormatter"></el-table-column>
+                        <el-table-column prop="EndDate" label="结束日期" width="95" v-bind:formatter="dateCellFormatter"></el-table-column>
+                        <el-table-column prop="BrandCode" label="品牌">
+                            <template slot-scope="scope">{{scope.row.BrandCode+' - '+scope.row.BrandName}}</template>
+                        </el-table-column>
+                        <el-table-column prop="StoreCode" label="门店">
+                            <template slot-scope="scope">{{scope.row.StoreCode+' - '+scope.row.StoreName}}</template>
+                        </el-table-column>
+                        <el-table-column prop="Amount" label="本期设置金额" width="105"></el-table-column>
+                        <el-table-column prop="Reduced" label="本期已用金额" width="105"></el-table-column>
+                        <el-table-column label="单品限额" width="80">
+                            <template slot-scope="scope">{{scope.row.Limit+'%'}}</template>
+                        </el-table-column>
+                        <el-table-column prop="StatusDesc" label="状态" width="80"></el-table-column>
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex"
+                                   v-bind:page-size="table.page.pageSize"
+                                   v-bind:total="table.page.total"
+                                   v-bind:layout="table.page.layout"
+                                   v-on:size-change="onPageSizeChange"
+                                   v-on:current-change="onPageChange">
+                    </el-pagination>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/vue/plugins/brand-selector/brand-selector.js"></script>
+    <script src="~/Content/vue/plugins/category-selector/category-selector.js"></script>
+    <script type="text/javascript">
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: {},
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize, layout: global_config.page.layout }
+                },
+                argTemplate: { DateRange: null, BrandId: "", CategoryId: "" }
+            },
+            methods: {
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+
+                loadData: function () {
+                    var $this = this;
+                    var data = Object.assign({}, this.table.page, this.table.args);
+                    $.ajax({
+                        type: "POST",
+                        url: "/CardVoucher/LoadCreateBrandVoucherList",
+                        data: JSON.stringify(data),
+                        dataType: "JSON",
+                        contentType: "application/json",
+                        success: function (result) {
+                            if (result.success) {
+                                $this.table.rows = result.data;
+                                $this.table.page.total = result.total;
+                            } else {
+                                $this.$message.error(result.error);
+                            }
+                        }
+                    });
+                },
+
+                dateCellFormatter: function (row, column, cellValue, index) {
+                    return cellValue.toDate().format("yyyy-MM-dd");
+                },
+
+                clearArgs: function () {
+                    this.table.args = JsExt.clone(this.argTemplate, true);
+                }
+            },
+            created: function () {
+                this.table.args = JsExt.clone(this.argTemplate, true);
+                setListPage(this.table, 224);
+            }
+        });
+    </script>
+}

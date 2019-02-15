@@ -1,0 +1,101 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+    </style>
+}
+<div id="app" class="box box-primary">
+    <div class="row">
+        <div class="col-sm-6 text-center">
+            <h3>商码特手动补发工具</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <el-form inline="true" class="demo-form-inline">
+                <el-form-item label="批发销售单补发收货信息">
+                    <el-input v-model="batchSaleOrder.code" placeholder="商码特销售单号" clearable></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-on:click="postBatchOrderToSap">提交</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+            <el-form inline="true" class="demo-form-inline2" label-position="right">
+                <div v-for="item in apis">
+                    <el-form-item v-bind:label="item.name">
+                        <el-input v-model="item.code" placeholder="商码特单号" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" v-on:click="postToSap(item)">提交</el-button>
+                    </el-form-item>
+                </div>
+            </el-form>
+        </div>
+        <div class="col-md-12">
+            <p class="bg-danger text-center">{{errorMessage}}</p>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                batchSaleOrder: {
+                    code: '',
+                },
+                apis: [
+                    { code: '', name: '关闭采购单', url: '/api/ClosePurchase' },
+                    { code: '', name: '采购单出入库推送', url: '/api/PurchaseOrderInOrOut' },
+                    { code: '', name: '采购单推送', url: '/api/PurchaseOrderToSap' },
+                    { code: '', name: '调拨单推送', url: '/api/TransferOrdeToSap' },
+                    { code: '', name: '调拨单出/入库推送', url: '/api/TransferOrderInOrOut' },
+                    { code: '', name: '销售单推送（零售订单、零售退单、预售订单、预售退单）', url: '/api/SaleOrdeToSap' },
+                    { code: '', name: '销售订单出库推送（零售订单、预售订单）', url: '/api/SaleOrderOutToSap' },
+                    { code: '', name: '零售退单入库推送（零售退单）', url: '/api/SaleOrderInToSap' },
+                    { code: '', name: '预售退单入库推送（预售退单）', url: '/api/PreOrderReturnInStock' },
+                    { code: '', name: '预售转正推送', url: '/api/PreConvertOrder' },
+                    { code: '', name: '零售单订单作废', url: '/api/AbandonSaleOrder' },
+                ],
+                errorMessage: ''
+            },
+            methods: {
+                //推送销售批发单收货信息
+                postBatchOrderToSap: function () {
+                    var _self = this;
+                    _self.errorMessage = "";
+                    var url = "/BatchSaleOrder/PostOrderToSap";
+                    var data = _self.batchSaleOrder;
+                    $.post(url, data, function (result) {
+                        if (result.success) {
+                            _self.$message.success("成功");
+                        } else {
+                            _self.errorMessage = result.error;
+                        }
+                    });
+                },
+                postToSap: function (item) {
+                    var _self = this;
+                    _self.errorMessage = "";
+                    var url = item.url;
+                    var data = { Code: item.code };
+                    $.post(url, data, function (result) {
+                        if (result.success) {
+                            _self.$message.success("成功");
+                        } else {
+                            _self.errorMessage = result.data;
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}
+
+
+
+

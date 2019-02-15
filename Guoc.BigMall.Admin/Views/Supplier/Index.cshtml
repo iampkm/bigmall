@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/Supplier/Index"><i class="fa fa-dashboard"></i>供应商管理</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                <div class="col-xs-3">
+                    <el-input v-model="table.args.code" placeholder="输入供应商编码"></el-input>
+                </div>
+                <div class="col-xs-3">
+                    <el-input v-model="table.args.name" placeholder="输入供应商名"></el-input>
+                </div>
+            </div>
+            <el-row class="row-bottom">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>
+                    </span>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col v-bind:span="24">
+                    <el-table v-on:cell-click="cellClick" class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" v-on:selection-change="selsChange" v-bind:height="table.height" @*show-summary v-bind:summary-method="getSummaries"*@>
+                        <el-table-column type="selection" width="55"></el-table-column>
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="Code" label="编码" width="200"></el-table-column>
+                        <el-table-column prop="Name" label="供应商名" width="200"></el-table-column>
+                        <el-table-column prop="Status" label="状态" width="80"></el-table-column>
+                        <el-table-column prop="Phone" label="电话" width="150"></el-table-column>
+                        <el-table-column prop="Address" label="地址" width="300"></el-table-column>
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                   layout="total,sizes,prev,pager,next,jumper" @*v-bind:page-sizes="table.args.pageSize"*@
+                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                    </el-pagination>
+                </el-col>
+            </el-row>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+@section scripts{
+
+    <script>
+
+        // bootstrap the demo
+        var demo = new Vue({
+            components: {
+            },
+            el: '#app',
+            data: {
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: { name: '', code: '' },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize }
+                },
+            },
+            methods: {
+                cellClick: function (row, column, cell, event) {
+
+                },
+                //获取选中的列
+                selsChange: function (sels) {
+                    this.sels = sels;
+                },
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+                    var _self = this;
+                    var url = "/Supplier/LoadData";
+                    var data = Object.assign({}, _self.table.page, _self.table.args, _self.table.args.name);
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                }
+            },
+
+            created: function () {
+                setListPage(this.table, 251);
+            },
+        });
+    </script>
+}
+
+
+
+
+
+

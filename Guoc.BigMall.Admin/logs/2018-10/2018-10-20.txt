@@ -1,0 +1,260 @@
+2018-10-20 10:15:27.1249|9|Info|
+
+2018-10-20 10:15:27.2244|9|Info|提交发货过账数据=====================================>
+2018-10-20 10:15:27.2534|9|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 10:15:27.3134|9|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 10:15:28.8943|9|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 10:15:28.9043|9|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 10:15:29.2246|9|Error|原因:##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:,堆栈：   在 CBest.Infrastructure.Utils.Ensure.EqualThan[T](T expected, T actual, String message) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.Infrastructure\Utils\Ensure.cs:行号 80
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 219
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 405
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 399
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 197
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   在 System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2018-10-20 10:18:51.0351|18|Info|
+
+2018-10-20 10:18:51.0351|18|Info|提交发货过账数据=====================================>
+2018-10-20 10:18:51.0482|18|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 10:19:54.9303|18|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 10:20:29.9842|18|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 10:20:30.2040|18|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 10:20:30.2465|18|Error|原因:##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:,堆栈：   在 CBest.Infrastructure.Utils.Ensure.EqualThan[T](T expected, T actual, String message) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.Infrastructure\Utils\Ensure.cs:行号 80
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 219
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 405
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 399
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 197
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   在 System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2018-10-20 10:57:51.4607|11|Error|原因:无效的 JSON 基元: code。,堆栈：   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.DeserializePrimitiveObject()
+   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.DeserializeInternal(Int32 depth)
+   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.BasicDeserialize(String input, Int32 depthLimit, JavaScriptSerializer serializer)
+   在 System.Web.Script.Serialization.JavaScriptSerializer.Deserialize(JavaScriptSerializer serializer, String input, Type type, Int32 depthLimit)
+   在 System.Web.Mvc.JsonValueProviderFactory.GetValueProvider(ControllerContext controllerContext)
+   在 System.Web.Mvc.ValueProviderFactoryCollection.GetValueProvider(ControllerContext controllerContext)
+   在 System.Web.Mvc.ControllerBase.get_ValueProvider()
+   在 System.Web.Mvc.ControllerActionInvoker.GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
+   在 System.Web.Mvc.ControllerActionInvoker.GetParameterValues(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__19(AsyncCallback asyncCallback, Object asyncState)
+2018-10-20 10:58:39.8267|11|Error|原因:无效的 JSON 基元: code。,堆栈：   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.DeserializePrimitiveObject()
+   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.DeserializeInternal(Int32 depth)
+   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.BasicDeserialize(String input, Int32 depthLimit, JavaScriptSerializer serializer)
+   在 System.Web.Script.Serialization.JavaScriptSerializer.Deserialize(JavaScriptSerializer serializer, String input, Type type, Int32 depthLimit)
+   在 System.Web.Mvc.JsonValueProviderFactory.GetValueProvider(ControllerContext controllerContext)
+   在 System.Web.Mvc.ValueProviderFactoryCollection.GetValueProvider(ControllerContext controllerContext)
+   在 System.Web.Mvc.ControllerBase.get_ValueProvider()
+   在 System.Web.Mvc.ControllerActionInvoker.GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
+   在 System.Web.Mvc.ControllerActionInvoker.GetParameterValues(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__19(AsyncCallback asyncCallback, Object asyncState)
+2018-10-20 10:59:38.7547|18|Error|原因:无效的 JSON 基元: code。,堆栈：   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.DeserializePrimitiveObject()
+   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.DeserializeInternal(Int32 depth)
+   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.BasicDeserialize(String input, Int32 depthLimit, JavaScriptSerializer serializer)
+   在 System.Web.Script.Serialization.JavaScriptSerializer.Deserialize(JavaScriptSerializer serializer, String input, Type type, Int32 depthLimit)
+   在 System.Web.Mvc.JsonValueProviderFactory.GetValueProvider(ControllerContext controllerContext)
+   在 System.Web.Mvc.ValueProviderFactoryCollection.GetValueProvider(ControllerContext controllerContext)
+   在 System.Web.Mvc.ControllerBase.get_ValueProvider()
+   在 System.Web.Mvc.ControllerActionInvoker.GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
+   在 System.Web.Mvc.ControllerActionInvoker.GetParameterValues(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__19(AsyncCallback asyncCallback, Object asyncState)
+2018-10-20 11:00:33.8783|14|Error|原因:无效的 JSON 基元: code。,堆栈：   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.DeserializePrimitiveObject()
+   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.DeserializeInternal(Int32 depth)
+   在 System.Web.Script.Serialization.JavaScriptObjectDeserializer.BasicDeserialize(String input, Int32 depthLimit, JavaScriptSerializer serializer)
+   在 System.Web.Script.Serialization.JavaScriptSerializer.Deserialize(JavaScriptSerializer serializer, String input, Type type, Int32 depthLimit)
+   在 System.Web.Mvc.JsonValueProviderFactory.GetValueProvider(ControllerContext controllerContext)
+   在 System.Web.Mvc.ValueProviderFactoryCollection.GetValueProvider(ControllerContext controllerContext)
+   在 System.Web.Mvc.ControllerBase.get_ValueProvider()
+   在 System.Web.Mvc.ControllerActionInvoker.GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
+   在 System.Web.Mvc.ControllerActionInvoker.GetParameterValues(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__19(AsyncCallback asyncCallback, Object asyncState)
+2018-10-20 11:04:00.3535|18|Info|
+
+2018-10-20 11:04:00.3615|18|Info|提交发货过账数据=====================================>
+2018-10-20 11:04:00.6507|18|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 11:04:00.7007|18|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:04:00.9851|18|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 11:04:00.9851|18|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 11:07:41.8646|28|Info|
+
+2018-10-20 11:07:41.8646|28|Info|提交发货过账数据=====================================>
+2018-10-20 11:07:41.8766|28|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 11:07:41.8766|28|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:07:42.6011|28|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 11:07:42.6121|28|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 11:11:46.4713|31|Info|
+
+2018-10-20 11:11:46.4713|31|Info|提交发货过账数据=====================================>
+2018-10-20 11:11:46.4853|31|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 11:11:46.4853|31|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:11:46.6333|31|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 11:11:46.6333|31|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 11:12:43.7477|35|Info|
+
+2018-10-20 11:12:43.8258|35|Info|提交发货过账数据=====================================>
+2018-10-20 11:12:44.0977|35|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 11:12:44.1446|35|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:12:44.3549|35|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 11:12:44.3705|35|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 11:13:01.2073|21|Info|
+
+2018-10-20 11:13:01.2073|21|Info|提交发货过账数据=====================================>
+2018-10-20 11:13:01.2183|21|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 11:13:01.2183|21|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:13:01.3682|21|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 11:13:01.3792|21|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 11:26:30.4001|13|Info|
+
+2018-10-20 11:26:30.4061|13|Info|提交发货过账数据=====================================>
+2018-10-20 11:26:30.4061|13|Info|data：[{"Code":"7000003731","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":2,"SNCodes":null,"BillCode":"1300003703","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-20T11:26:30.24","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000034 ","BillItemId":730,"Unit":"EA","Id":807}]
+2018-10-20 11:26:30.4061|13|Info|request：{"I_HEAD":[{"BILLCODE":"7000003731","ORDERCODE":"1300003703","SENDTIME":"20181020","VBELN":"900000034 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"730","ORDERROW":"807","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"2","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:26:31.0971|13|Info|response：{"OFLAG":"S","OMSG":"发货过账成功","VBELN":"0440000323","BILLCODE":"7000003731","O_ITEM":[{"POSNR_VL":"000010","ORDERROW":"807"}]}
+
+2018-10-20 11:48:02.9335|10|Info|
+
+2018-10-20 11:48:02.9485|10|Info|提交发货过账数据=====================================>
+2018-10-20 11:48:02.9545|10|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 11:48:02.9545|10|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:48:03.1294|10|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 11:48:03.1294|10|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 11:48:05.5079|11|Info|
+
+2018-10-20 11:48:05.5149|11|Info|提交发货过账数据=====================================>
+2018-10-20 11:48:05.5149|11|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-20 11:48:05.5149|11|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:48:05.6438|11|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-20 11:48:05.6438|11|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-20 11:54:57.9444|42|Info|
+
+2018-10-20 11:54:58.0184|42|Info|提交发货过账数据=====================================>
+2018-10-20 11:54:58.1208|42|Info|data：[{"Code":"7000003722","Type":1,"ProductId":339,"ProductCode":"30008862001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003720","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-20T11:06:13.553","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000037 ","BillItemId":734,"Unit":"EA","Id":804}]
+2018-10-20 11:54:58.1677|42|Info|request：{"I_HEAD":[{"BILLCODE":"7000003722","ORDERCODE":"1300003720","SENDTIME":"20181020","VBELN":"900000037 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"734","ORDERROW":"804","MATNR":"30008862001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 11:54:58.9470|42|Info|response：{"OFLAG":"S","OMSG":"发货过账成功","VBELN":"0440000326","BILLCODE":"7000003722","O_ITEM":[{"POSNR_VL":"000010","ORDERROW":"804"}]}
+
+2018-10-20 14:11:24.4868|10|Error|原因:对于“CBest.SMT.Admin.Controllers.BatchSaleOrderController”中方法“System.Web.Mvc.JsonResult ScanSNCodeForStockIn(Int32, System.String)”的不可以为 null 的类型“System.Int32”的参数“storeId”，参数字典包含一个 null 项。可选参数必须为引用类型、可以为 null 的类型或声明为可选参数。
+参数名: parameters,堆栈：   在 System.Web.Mvc.ActionDescriptor.ExtractParameterFromDictionary(ParameterInfo parameterInfo, IDictionary`2 parameters, MethodInfo methodInfo)
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-20 14:17:52.8971|9|Info|
+
+2018-10-20 14:17:52.9731|9|Info|提交发货过账数据=====================================>
+2018-10-20 14:17:52.9811|9|Info|data：null
+2018-10-20 14:17:53.0032|9|Info|提交发货过账数据不能为空
+2018-10-20 14:19:57.1251|20|Info|待入库状态的退单才能入库。
+2018-10-20 14:21:58.3323|19|Info|
+
+2018-10-20 14:21:58.3492|19|Info|提交发货过账数据=====================================>
+2018-10-20 14:21:58.3649|19|Info|data：[{"Code":"7000003768","Type":2,"ProductId":339,"ProductCode":"30008862001","StoreId":20,"StoreCode":"A011","Quantity":2,"SNCodes":null,"BillCode":"1300003749","BillType":14,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-20T14:17:52.763","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"920000011","BillItemId":745,"Unit":"EA","Id":820}]
+2018-10-20 14:21:58.4430|19|Info|request：{"I_HEAD":[{"BILLCODE":"7000003768","ORDERCODE":"1300003749","SENDTIME":"20181020","VBELN":"920000011"}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"745","ORDERROW":"820","MATNR":"30008862001","MEINS":"EA","LFIMG":"2","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-20 14:21:59.6266|19|Info|response：{"OFLAG":"S","OMSG":"发货过账成功","VBELN":"0460000072","BILLCODE":"7000003768","O_ITEM":[{"POSNR_VL":"000010","ORDERROW":"820"}]}
+
+2018-10-20 14:46:38.5137|7|Error|原因:序列不包含任何匹配元素,堆栈：   在 System.Linq.Enumerable.First[TSource](IEnumerable`1 source, Func`2 predicate)
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.BatchStockOut(SaleOrder order) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 316
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.CBest.SMT.Application.IBatchSaleOrderFacade.OutStock(SaleOrderOutStockModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 272
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.StockOut(SaleOrderOutStockModel model) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 59
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-20 17:14:59.9595|10|Error|原因:账号已过期，请注销重新登录,堆栈：   在 CBest.SMT.Application.Facade.ContextFacade.get_CurrentAccount() 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ContextFacade.cs:行号 28
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.GetReturnOrderList(Pager page, SearchSaleOrder condition) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 112
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-20 17:15:05.4103|9|Error|原因:账号已过期，请注销重新登录,堆栈：   在 CBest.SMT.Application.Facade.ContextFacade.get_CurrentAccount() 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ContextFacade.cs:行号 28
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.GetReturnOrderList(Pager page, SearchSaleOrder condition) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 112
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-20 17:23:13.4095|24|Error|原因:账号已过期，请注销重新登录,堆栈：   在 CBest.SMT.Application.Facade.ContextFacade.get_CurrentAccount() 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\ContextFacade.cs:行号 28
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.GetCompositeSaleOrders(Pager page, SearchSaleOrder condition) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 142
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)

@@ -1,0 +1,55 @@
+﻿.row-bottom {
+    margin-bottom: 10px;
+}
+/*扁平化*/
+.el-button {
+    border-radius: 0px;
+}
+.el-input__inner {
+    border-radius: 0px;
+}
+/*表格间距*/
+.el-table td, .el-table th {
+    padding: 6px 0;
+}
+/*表格边颜色*/
+.el-table--border, .el-table--group {
+    border: 1px solid #ccc;
+}
+.el-table--border td, .el-table--border th, .el-table__body-wrapper .el-table--border.is-scrolling-left ~ .el-table__fixed {
+    border-right: 1px solid #ccc;
+}
+.el-table td, .el-table th.is-leaf {
+    border-bottom: 1px solid #ccc;
+}
+/*表格字体*/
+.el-table--mini, .el-table--small, .el-table__expand-icon {
+    font-size: 14px;
+}
+/*表头字体颜色*/
+.el-table thead {
+    color: #404040;
+    font-weight: 900;
+}
+/*.el-select-dropdown__item:hover {
+    background-color: #337ab7;
+    color: #ffffff;
+}*/
+/*.el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+    background-color: #337ab7;
+    color: #ffffff;
+}*/
+.el-select-dropdown__item:hover {
+    background-color: #337ab7;
+    color: #ffffff;
+}
+.el-popper {margin-top: -1px;
+}
+/*按钮颜色和大小*/
+/*.el-button {
+    padding: 8px 12px;
+}*/
+.el-button--primary {
+    background-color: #3c8dbc;
+    border-color: #367fa9;
+}

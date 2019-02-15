@@ -1,0 +1,155 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div id="app" class="box box-primary">
+    <center>
+        <h3>销售无原单退货 - 制单</h3>
+    </center>
+    <el-form v-bind:model="createModel" label-position="right" label-width="130px" style="width:450px;margin:0px auto;">
+        <el-form-item label="门店编码">
+            <el-input v-model="createModel.storeCode"></el-input>
+        </el-form-item>
+        <el-form-item label="商品编码">
+            <el-input v-model="createModel.productCode"></el-input>
+        </el-form-item>
+        <el-form-item label="串码">
+            <el-input v-model="createModel.snCode"></el-input>
+        </el-form-item>
+        <el-form-item label="退货数量">
+            <el-input-number v-model="createModel.quantity" v-bind:precision="0" v-bind:min="1" v-bind:max="99999" v-on:change="numberChanged(createModel, 'quantity', 1)" style="width:100%;"></el-input-number>
+        </el-form-item>
+        <el-form-item label="实售单价">
+            <el-input-number v-model="createModel.realPrice" v-bind:precision="2" v-bind:min="0" v-bind:max="99999" v-on:change="numberChanged(createModel, 'realPrice', 1)" style="width:100%;"></el-input-number>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" v-on:click="createRO">提交</el-button>
+            <el-button v-on:click="clearCreateModel"><i class="fa fa-eraser"></i>清空</el-button>
+        </el-form-item>
+    </el-form>
+    <hr />
+    <center>
+        <h3>销售无原单退货 - 入库</h3>
+    </center>
+    <el-form v-bind:model="inStockModel" label-position="right" label-width="130px" style="width:450px;margin:0px auto;padding:5px 0px;">
+        <el-form-item label="退单号（无原单）">
+            <el-input v-model="inStockModel.returnOrderCode"></el-input>
+        </el-form-item>
+        <el-form-item label="供应商编码">
+            <el-input v-model="inStockModel.supplierCode"></el-input>
+            @*<supplier-selector v-model="inStockModel.supplierCode"></supplier-selector>*@
+        </el-form-item>
+        <el-form-item label="成本价">
+            <el-input-number v-model="inStockModel.costPrice" v-bind:precision="2" v-bind:min="0" v-bind:max="99999" v-on:change="numberChanged(inStockModel, 'costPrice', 1)" style="width:100%;"></el-input-number>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" v-on:click="inStock">提交</el-button>
+            <el-button v-on:click="clearInStockModel"><i class="fa fa-eraser"></i>清空</el-button>
+        </el-form-item>
+    </el-form>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/supplier-selector/supplier-selector.js"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: "#app",
+            data: {
+                createModel: {
+                    storeCode: "",
+                    productCode: "",
+                    snCode: "",
+                    quantity: 1,
+                    realPrice: 0
+                },
+                inStockModel: {
+                    returnOrderCode: "",
+                    supplierCode: "",
+                    costPrice: 0
+                }
+            },
+            methods: {
+                numberChanged: function (item, p, defaultValue) {
+                    var number = this.validateNumber(item[p], defaultValue);
+                    if (item[p] != number) item[p] = number;
+                },
+
+                validateNumber: function (value, defaultValue) {
+                    var number = parseFloat(value);
+                    if (number.toString() == "NaN") {
+                        return defaultValue;
+                    }
+                    return number;
+                },
+
+                clearCreateModel: function () {
+                    this.createModel.storeCode = "";
+                    this.createModel.productCode = "";
+                    this.createModel.snCode = "";
+                    this.createModel.quantity = 1;
+                    this.createModel.realPrice = 0;
+                },
+
+                clearInStockModel: function () {
+                    this.inStockModel.returnOrderCode = "";
+                    this.inStockModel.supplierCode = "";
+                    this.inStockModel.costPrice = 0;
+                },
+
+                validateCreateModel: function () {
+                    if (!this.createModel.storeCode.trim()) {
+                        this.$message.error("请录入门店编码！");
+                        return false;
+                    }
+                    if (!this.createModel.productCode.trim()) {
+                        this.$message.error("请录入商品编码！");
+                        return false;
+                    }
+                    if (this.createModel.snCode && this.createModel.quantity > 1) {
+                        this.$message.error("串码商品数量只能为1！");
+                        return false;
+                    }
+                    return true;
+                },
+
+                validateInStockModel: function () {
+                    if (!this.inStockModel.returnOrderCode.trim()) {
+                        this.$message.error("请录入退单号！");
+                        return false;
+                    }
+                    if (!this.inStockModel.supplierCode.trim()) {
+                        this.$message.error("请录入供应商编码！");
+                        return false;
+                    }
+                    return true;
+                },
+
+                createRO: function () {
+                    var $this = this;
+                    if (!this.validateCreateModel()) return;
+                    $.post("/Api/CreateROWithNoSourceSO", this.createModel, function (result) {
+                        if (result.success) {
+                            $this.clearCreateModel();
+                            $this.clearInStockModel();
+                            $this.inStockModel.returnOrderCode = result.Code;
+                            $this.$message.success("退单制单成功！");
+                            return;
+                        }
+                        $this.$message.error(result.error);
+                    });
+                },
+
+                inStock: function () {
+                    var $this = this;
+                    if (!this.validateInStockModel()) return;
+                    $.post("/Api/ROInStockWithNoSourceSO", this.inStockModel, function (result) {
+                        if (result.success) {
+                            $this.clearInStockModel();
+                            $this.$message.success("退单入库成功！");
+                            return;
+                        }
+                        $this.$message.error(result.error);
+                    });
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E349624E-9C0A-4E9E-9C99-9DF8F9531EC2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Guoc.BigMall.Domain</RootNamespace>
+    <AssemblyName>Guoc.BigMall.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.50.1\lib\net45\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper.DBContext">
+      <HintPath>..\packages\Dapper.DBContext.1.0.0\lib\net45\Dapper.DBContext.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseEntity.cs" />
+    <Compile Include="Entity\Account.cs" />
+    <Compile Include="Entity\AccountLoginHistory.cs" />
+    <Compile Include="Entity\AccountManageStore.cs" />
+    <Compile Include="Entity\Area.cs" />
+    <Compile Include="Entity\BrandRechargeVoucher.cs" />
+    <Compile Include="Entity\CategoryCard.cs" />
+    <Compile Include="Entity\CategoryRechargeVoucher.cs" />
+    <Compile Include="Entity\ExceptProduct.cs" />
+    <Compile Include="Entity\ParticipantCategory.cs" />
+    <Compile Include="Entity\ProductPrice.cs" />
+    <Compile Include="Entity\Product.cs" />
+    <Compile Include="Entity\ProductPurchasePrice.cs" />
+    <Compile Include="Entity\PurchaseOrderReceiveItem.cs" />
+    <Compile Include="Entity\PurchaseOrderReceive.cs" />
+    <Compile Include="Entity\BillSequence.cs" />
+    <Compile Include="Entity\Brand.cs" />
+    <Compile Include="Entity\Category.cs" />
+    <Compile Include="Entity\Menu.cs" />
+    <Compile Include="Entity\RechargeVoucherHistory.cs" />
+    <Compile Include="Entity\SaleOrder.cs" />
+    <Compile Include="Entity\SaleOrderItem.cs" />
+    <Compile Include="Entity\Stocktaking.cs" />
+    <Compile Include="Entity\StocktakingItem.cs" />
+    <Compile Include="Entity\StocktakingPlan.cs" />
+    <Compile Include="Entity\StocktakingPlanItem.cs" />
+    <Compile Include="Entity\StoreCustomerMap.cs" />
+    <Compile Include="Entity\StoreInventoryBatchUpdate.cs" />
+    <Compile Include="Entity\StoreInventoryHistorySAP.cs" />
+    <Compile Include="Entity\StoreInventoryUpdate.cs" />
+    <Compile Include="Entity\StoreTag.cs" />
+    <Compile Include="Entity\Supplier.cs" />
+    <Compile Include="Entity\SystemSetup.cs" />
+    <Compile Include="Entity\TransferOrder.cs" />
+    <Compile Include="Entity\ProcessHistory.cs" />
+    <Compile Include="Entity\PurchaseOrder.cs" />
+    <Compile Include="Entity\PurchaseOrderItem.cs" />
+    <Compile Include="Entity\Role.cs" />
+    <Compile Include="Entity\RoleMenu.cs" />
+    <Compile Include="Entity\Store.cs" />
+    <Compile Include="Entity\StoreAccountMapping.cs" />
+    <Compile Include="Entity\StoreInventory.cs" />
+    <Compile Include="Entity\StoreInventoryBatch.cs" />
+    <Compile Include="Entity\StoreInventoryBatchSNCode.cs" />
+    <Compile Include="Entity\StoreInventoryHistory.cs" />
+    <Compile Include="Entity\TransferOrderItem.cs" />
+    <Compile Include="ISAPService.cs" />
+    <Compile Include="Objects\Order.cs" />
+    <Compile Include="Objects\POReceive.cs" />
+    <Compile Include="Objects\TransferStockIn.cs" />
+    <Compile Include="Objects\TransferStockOut.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SAPServiceMock.cs" />
+    <Compile Include="Service\BillSequenceService.cs" />
+    <Compile Include="Service\ProcessHistoryService.cs" />
+    <Compile Include="Service\ProductPurchasePriceService.cs" />
+    <Compile Include="Service\RoleService.cs" />
+    <Compile Include="ValueObject\AccountStatus.cs" />
+    <Compile Include="ValueObject\BillIdentity.cs" />
+    <Compile Include="ValueObject\CBPurchaseOrderStatus.cs" />
+    <Compile Include="ValueObject\RechargeVoucherType.cs" />
+    <Compile Include="ValueObject\InStockType.cs" />
+    <Compile Include="ValueObject\InvokeSapServiceType.cs" />
+    <Compile Include="ValueObject\ProductPriceType.cs" />
+    <Compile Include="ValueObject\PurchaseOrderType.cs" />
+    <Compile Include="ValueObject\OrderType.cs" />
+    <Compile Include="ValueObject\PaymentWay.cs" />
+    <Compile Include="ValueObject\PurchaseOrderBillType.cs" />
+    <Compile Include="ValueObject\LoginStatus.cs" />
+    <Compile Include="ValueObject\MenuUrlType.cs" />
+    <Compile Include="ValueObject\RechargeVoucherStatus.cs" />
+    <Compile Include="ValueObject\SaleOrderBillType.cs" />
+    <Compile Include="ValueObject\SaleOrderLevel.cs" />
+    <Compile Include="ValueObject\SaleOrderStatus.cs" />
+    <Compile Include="ValueObject\StocktakingPlanStatus.cs" />
+    <Compile Include="ValueObject\StoerType.cs" />
+    <Compile Include="ValueObject\StoreInventoryHistorySapType.cs" />
+    <Compile Include="ValueObject\SupplierType.cs" />
+    <Compile Include="ValueObject\SupplyStatus.cs" />
+    <Compile Include="ValueObject\TransferStatus.cs" />
+    <Compile Include="ValueObject\TransferType.cs" />
+    <Compile Include="ValueObject\StoreInventoryStatus.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Guoc.BigMall.Infrastructure\Guoc.BigMall.Infrastructure.csproj">
+      <Project>{0aa21be3-b59f-42c7-83dc-ccc1fb3d8fb1}</Project>
+      <Name>Guoc.BigMall.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

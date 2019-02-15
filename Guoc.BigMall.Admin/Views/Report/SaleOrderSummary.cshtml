@@ -1,0 +1,414 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section styles{
+    <style type="text/css">
+        .el-select {
+            width: 100%;
+        }
+    </style>
+}
+
+<!-- demo root element -->
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/Report/SaleOrderSummary"><i class="fa fa-dashboard"></i> 销售汇总</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                <div class="col-xs-3 col-sm-2">
+                    <product-selector v-model="table.args.productCodeOrBarCode" placeholder="商品" ref="producttable"></product-selector>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <brand-selector v-model="checkBrandIds" placeholder="品牌"></brand-selector>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <category-selector v-model="table.args.categoryId" placeholder="品类"></category-selector>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <store-selector v-model="table.args.storeId" placeholder="门店"></store-selector>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <el-input v-model="table.args.buyer" placeholder="客户" debounce="500" clearable />
+                </div>
+            </div>
+
+
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+
+                <div class="col-xs-3 col-sm-2">
+                    <el-select name="BillType" v-model="table.args.billtype" clearable placeholder="出库类型">
+                        <el-option key="1" value="1" label="零售单"></el-option>
+                        <el-option key="2" value="2" label="批发单"></el-option>
+                        <el-option key="3" value="3" label="预售单"></el-option>
+                        <el-option key="4" value="4" label="换机单"></el-option>
+
+                    </el-select>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+
+                    <el-select name="createuser" v-model="table.args.createuser" clearable placeholder="制单人">
+                        @foreach (var item in ViewBag.CreateUserList)
+                        {
+                            <el-option key="@item.Id" value="@item.Id" label="@item.UserName"></el-option>
+                        }
+                    </el-select>
+
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <el-select name="SummaryMethod" v-model="table.args.summaryMethod" clearable placeholder="汇总方式">
+                        <el-option key="1" value="1" label="商品（编码+商品名称）"></el-option>
+                        <el-option key="2" value="2" label="品牌"></el-option>
+                        <el-option key="3" value="3" label="类别"></el-option>
+                        <el-option key="4" value="4" label="日期"></el-option>
+                        <el-option key="5" value="5" label="仓库"></el-option>
+                        <el-option key="6" value="6" label="客户"></el-option>
+                        <el-option key="8" value="8" label="单号"></el-option>
+                    </el-select>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <el-select name="PriceMethod" v-model="table.args.priceMethod" clearable placeholder="价格段">
+                        <el-option key="1" value="1" label="500元以下"></el-option>
+                        <el-option key="2" value="2" label="500-999元"></el-option>
+                        <el-option key="3" value="3" label="1000-1999元"></el-option>
+                        <el-option key="4" value="4" label="2000-2999元"></el-option>
+                        <el-option key="5" value="5" label="3000元-3999元"></el-option>
+                        <el-option key="6" value="6" label="4000元-4999元"></el-option>
+                        <el-option key="7" value="7" label="5000元-6499元"></el-option>
+                        <el-option key="8" value="8" label="6500元以上"></el-option>
+                    </el-select>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <div class="input-group">
+                        <span class="input-group-addon">选择时间</span>
+                        <el-date-picker v-model="table.args.time" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+                        </el-date-picker>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+
+            </div>
+
+            <el-row class="row-bottom">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>
+                        <button type="button" class="btn btn-warning btn-flat" v-on:click="exportExecl()">导 出</button>
+                    </span>
+                </el-col>
+            </el-row>
+
+            @*<el-row id="divtable">{{table.args.show}}</el-row>*@
+
+            <el-row>
+                <el-col v-bind:span="24">
+                    <el-table class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" summary-method="getSummaries" show-summary v-bind:height="table.height">
+
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="SaleOrderCode" label="单号" width="150" v-if="table.saleordercodeflag"></el-table-column>
+                        <el-table-column prop="PaidDateStr" label="日期" width="200" v-if="table.createdateflag"></el-table-column>
+                        <el-table-column prop="ProductCode" label="商品编码" width="150" v-if="table.productflag"></el-table-column>
+                        <el-table-column prop="ProductName" label="商品名称" width="250" v-if="table.productflag"></el-table-column>
+                        <el-table-column prop="CategoryName" label="类别" width="150" v-if="table.categoryflag"></el-table-column>
+                        <el-table-column prop="BrandName" label="品牌" width="150" v-if="table.brandflag"></el-table-column>
+                        <el-table-column prop="StoreName" label="门店" width="150" v-if="table.storeflag"></el-table-column>
+                        <el-table-column prop="Buyer" label="客户" width="150" v-if="table.buyerflag"></el-table-column>
+                        <el-table-column prop="BusinessUser" label="业务员" width="150" v-if="table.businessflag"></el-table-column>
+                        <el-table-column prop="Quantity" label="数量" width="100" sortable></el-table-column>
+                        <el-table-column prop="RealPrice" label="单价" width="100" sortable></el-table-column>
+                        <el-table-column prop="Amount" label="金额" width="100" sortable></el-table-column>
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                   layout="total,sizes,prev,pager,next,jumper"
+                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                    </el-pagination>
+                </el-col>
+            </el-row>
+
+
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="clearfix"></div>
+
+</div>
+
+@section scripts{
+    <script src="~/Content/vue/plugins/brand-selector/brand-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/category-selector/category-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/supplier-selector/supplier-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/product-selector/product-selector.js" type="text/javascript"></script>
+    <script>
+
+        var demo = new Vue({
+            components: {
+
+            },
+            el: '#app',
+            data: {
+
+                table: {
+                    height:450,
+                    rows: [],
+                    args: { productCodeOrBarCode: '', productName: '',  brandId: '',storeId:'', time: '', categoryId: '',  billtype: '',buyer:'',createuser:'',summaryMethod:'',priceMethod:'',toExcel:false},
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize },
+                    saleordercodeflag:false,
+                    productflag:false,
+                    categoryflag:false,
+                    brandflag:false,
+                    createdateflag:false,
+                    storeflag:false,
+                    buyerflag:false,
+                    businessflag:false,
+
+                },
+                checkBrandIds: [],
+            },
+            methods: {
+
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+                    var _self = this;
+
+                    if (_self.table.args.time.toString() == '')
+                    {
+                        _self.$message({
+                            message: "请选择时间！",
+                            type: 'error'
+                        });
+                        return;
+                    }
+                    if (_self.table.args.summaryMethod == '')
+                    {
+                        _self.$message({
+                            message: "请选择汇总方式！",
+                            type: 'error'
+                        });
+                        return;
+                    }
+                    var times = _self.table.args.time;
+                    _self.table.page.pageIndex = 1;
+                    _self.table.args.brandId = _self.checkBrandIds.toString();
+                    _self.table.args.categoryId = _self.table.args.categoryId.toString();
+                    _self.table.args.billtype = _self.table.args.billtype.toString();
+                    _self.table.args.priceMethod = _self.table.args.priceMethod.toString();
+                    _self.table.args.summaryMethod = _self.table.args.summaryMethod;
+                    _self.table.args.createuser = _self.table.args.createuser.toString();
+                    _self.table.args.time = _self.table.args.time.toString();
+
+                    _self.showColTable(_self.table.args.summaryMethod);
+
+                    var url = "/Report/LoadSaleOrderSummaryData";
+                    var data = Object.assign({}, _self.table.page, _self.table.args);
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                    _self.table.args.time = times;
+                },
+
+                exportExecl:function()
+                {
+                    var _self = this;
+
+                    if (_self.table.args.time.toString() == '')
+                    {
+                        _self.$message({
+                            message: "请选择时间！",
+                            type: 'error'
+                        });
+                        return;
+                    }
+                    _self.table.args.toExcel=true;
+                    var data = Object.assign({}, _self.table.page, _self.table.args);
+
+                    var str='';
+                    for(var key in data){
+                        if(!data[key]==''){//判断为空就不传
+                            str= str+"&"+key+"="+data[key];
+                        }
+
+                    }
+
+                    window.location.href = "/Report/LoadSaleOrderSummaryData?"+str;
+
+
+                },
+                clearQuery:function(){
+                    window.location.href = "/Report/PurchaseSaleInventorySummary";
+                },
+                showColTable:function(sumMethod)
+                {
+                    var _self = this;
+                    var flag = false;
+                    switch(sumMethod)
+                    {
+                        case "1":
+                            _self.table.saleordercodeflag =false;
+                            _self.table.productflag=true;
+                            _self.table.categoryflag=false;
+                            _self.table.brandflag=false;
+                            _self.table.createdateflag=false;
+                            _self.table.storeflag=false;
+                            _self.table.buyerflag=false;
+                            _self.table.businessflag=false;
+                            break;
+                        case "3":
+                            _self.table.saleordercodeflag =false;
+                            _self.table.saleordercodeflag=false;
+                            _self.table.productflag=false;
+                            _self.table.categoryflag=true;
+                            _self.table.brandflag=false;
+                            _self.table.createdateflag=false;
+                            _self.table.storeflag=false;
+                            _self.table.buyerflag=false;
+                            _self.table.businessflag=false;
+                            break;
+                        case "2":
+
+                            _self.table.saleordercodeflag=false;
+                            _self.table.productflag=false;
+                            _self.table.categoryflag=false;
+                            _self.table.brandflag=true;
+                            _self.table.createdateflag=false;
+                            _self.table.storeflag=false;
+                            _self.table.buyerflag=false;
+                            _self.table.businessflag=false;
+                            break;
+                        case "4":
+                            _self.table.saleordercodeflag =false;
+                            _self.table.saleordercodeflag=false;
+                            _self.table.productflag=false;
+                            _self.table.categoryflag=false;
+                            _self.table.brandflag=false;
+                            _self.table.createdateflag=true;
+                            _self.table.storeflag=false;
+                            _self.table.buyerflag=false;
+                            _self.table.businessflag=false;
+                            break;
+                        case "5":
+                            _self.table.saleordercodeflag =false;
+                            _self.table.saleordercodeflag=false;
+                            _self.table.productflag=false;
+                            _self.table.categoryflag=false;
+                            _self.table.brandflag=false;
+                            _self.table.createdateflag=false;
+                            _self.table.storeflag=true;
+                            _self.table.buyerflag=false;
+                            _self.table.businessflag=false;
+                            break;
+                        case "6":
+                            _self.table.saleordercodeflag =false;
+                            _self.table.saleordercodeflag=false;
+                            _self.table.productflag=false;
+                            _self.table.categoryflag=false;
+                            _self.table.brandflag=false;
+                            _self.table.createdateflag=false;
+                            _self.table.storeflag=false;
+                            _self.table.buyerflag=true;
+                            _self.table.businessflag=false;
+                            break;
+                        case "7":
+                            _self.table.saleordercodeflag =false;
+                            _self.table.saleordercodeflag=false;
+                            _self.table.productflag=false;
+                            _self.table.categoryflag=false;
+                            _self.table.brandflag=false;
+                            _self.table.createdateflag=false;
+                            _self.table.storeflag=false;
+                            _self.table.buyerflag=false;
+                            _self.table.businessflag=true;
+                            break;
+                        case "8":
+                            _self.table.saleordercodeflag =true;
+                            _self.table.productflag=false;
+                            _self.table.categoryflag=false;
+                            _self.table.brandflag=false;
+                            _self.table.createdateflag=false;
+                            _self.table.storeflag=false;
+                            _self.table.buyerflag=false;
+                            _self.table.businessflag=false;
+                            break;
+
+                    }
+
+                },
+                getSummaries(param) {
+                                const { columns, data } = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+            if (index === 1) {
+            sums[index] = '合计';
+        return;
+        }
+        if (index === 2) {
+            sums[index] = '';
+            return;
+        }
+        if (index === 5 || index ===7) {
+            const values = data.map(item => Number(item[column.property]));
+            if (!values.every(value => isNaN(value))) {
+                sums[index] = values.reduce((prev, curr) => {
+                    const value = Number(curr);
+                if (!isNaN(value)) {
+                    return prev + curr;
+                } else {
+                    return '';
+                }
+            }, 0);
+            sums[index] ;
+        } else {
+            sums[index] = '';
+        }
+        }
+
+
+
+        });
+        return sums;
+        },
+        },
+        created: function () {
+            setListPage(this.table, 303 );
+        }
+        })
+
+
+
+    </script>
+}
+
+

@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- demo root element -->
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/StoreInventory/History"><i class="fa fa-dashboard"></i> 单品库存明细账</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                <div class="col-xs-3 col-sm-2">
+                    <el-input v-model="table.args.billCode" placeholder="单据号" debounce="500" clearable />
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <el-input v-model="table.args.productCodeOrBarCode" placeholder="商品编码" debounce="500" clearable />
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <el-input v-model="table.args.productName" placeholder="商品名" debounce="500" clearable />
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <store-selector v-model="table.args.storeId" placeholder="门店"></store-selector>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <input class="form-control" v-model="table.args.snCode" placeholder="商品串码" debounce="500" />
+                </div>
+
+            </div>
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                <div class="col-xs-3 col-sm-2">
+                    <div class="input-group">
+                        <span class="input-group-addon">选择时间</span>
+                        <el-date-picker v-model="table.args.time" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+                        </el-date-picker>
+                    </div>
+                </div>
+            </div>
+
+            <el-row class="row-bottom">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">
+                        <el-button type="primary" class="btn btn-flat" v-on:click="loadData">查询</el-button>
+                        <el-button class="btn btn-flat" v-on:click="clearQuery">清除条件</el-button>
+
+                    </span>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col v-bind:span="24">
+                    <el-table class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" v-bind:height="table.height">
+
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="CreateTime" label="记账日期"></el-table-column>
+                        <el-table-column prop="StoreName" label="门店" width="260"></el-table-column>
+                        <el-table-column prop="ProductCode" label="商品编码"></el-table-column>
+                        <el-table-column prop="ProductName" label="商品名称" width="260"></el-table-column>
+                        <el-table-column prop="Specification" label="规格"></el-table-column>
+                        <el-table-column prop="ChangeQuantity" label="入库/出库" width="100"></el-table-column>
+                        <el-table-column prop="Price" label="进价" width="80"></el-table-column>
+                        <el-table-column prop="SNCode" label="商品串码"></el-table-column>
+                        <el-table-column prop="BillCode" label="单据"></el-table-column>
+                        <el-table-column prop="BillTypeName" label="单据类型"></el-table-column>
+
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                   layout="total,sizes,prev,pager,next,jumper"
+                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                    </el-pagination>
+                </el-col>
+            </el-row>
+
+
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="clearfix"></div>
+
+</div>
+
+@section scripts{
+
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js" type="text/javascript"></script>
+
+    <script>
+
+        var demo = new Vue({
+            components: {
+
+            },
+            el: '#app',
+            data: {
+
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: { billCode: '', storeId: '', productCodeOrBarCode: '', time: '', productName: '', snCode: '' },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize },
+
+                },
+
+            },
+            methods: {
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+
+                    var _self = this;
+                    var times = _self.table.args.time;
+                    _self.table.args.storeId = _self.table.args.storeId.toString();
+                    _self.table.args.time = _self.table.args.time.toString();
+                    var url = "/StoreInventory/LoadDataHistory";
+                    var data = Object.assign({}, _self.table.page, _self.table.args);
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                    _self.table.args.time = times;
+                },
+
+
+                clearQuery: function () {
+                    this.table.args = { billCode: '', storeId: '', productCodeOrBarCode: '', time: '', productName: '', snCode: '' };
+
+                },
+            },
+            created: function () {
+                setListPage(this.table, 293);
+            },
+        })
+
+
+    </script>
+}
+
+

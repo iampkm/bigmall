@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- demo root element -->
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/Brand/Index"><i class="fa fa-dashboard"></i> 品牌管理</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+
+                <div class="col-xs-2">
+                    <input class="form-control" v-model="table.args.code" placeholder="编码" debounce="500" />
+                </div>
+                <div class="col-xs-2">
+                    <input class="form-control" v-model="table.args.name" placeholder="名称" debounce="500" />
+                </div>
+
+            </div>
+            <el-row class="row-bottom">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>
+
+                    </span>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col v-bind:span="24">
+                    <el-table class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" v-bind:height="table.height">
+                        @*<el-table-column type="selection" width="55"></el-table-column>*@
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="Name" label="名称" width="150"></el-table-column>
+                        <el-table-column prop="Code" label="编码" width="150"></el-table-column>
+
+
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                   layout="total,sizes,prev,pager,next,jumper"
+                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                    </el-pagination>
+                </el-col>
+            </el-row>
+
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+@section scripts{
+
+    <script>
+
+        // bootstrap the demo
+        var vue = new Vue({
+            components: {
+            },
+            el: '#app',
+            data: {
+                table: {
+                    height: 450,
+                    rows: [], 
+                    args: { name: '', code: '' },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize, IsPaging: true }
+                },
+
+            },
+            methods: {
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+                    var _self = this;
+                    var url = "/Brand/LoadData";
+                    var data = Object.assign({}, _self.table.page, _self.table.args);
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                },
+            },
+            created: function () {
+                setListPage(this.table, 254);
+            },
+
+        })
+
+    </script>
+}
+
+

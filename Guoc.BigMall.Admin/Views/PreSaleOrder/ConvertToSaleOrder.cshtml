@@ -1,0 +1,222 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style type="text/css">
+        h3.title {
+            font-weight: bold;
+            padding-bottom: 1px;
+            border-bottom: 2px solid;
+        }
+
+        .first-row {
+            margin-top: 15px;
+        }
+
+        .label-col {
+            text-align: right;
+        }
+
+        .btn-print {
+            color: white;
+            border-color: #8EBCED;
+            background-color: #8EBCED;
+        }
+
+            .btn-print:hover {
+                color: white;
+                border-color: rgba(142,188,237,0.7);
+                background-color: rgba(142,188,237,0.7);
+            }
+
+        .clear-margin-left {
+            margin-left: 0px !important;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 9pt;
+        }
+    </style>
+}
+<div id="app" class="box box-primary">
+    <div>
+        <el-row v-bind:gutter="20" class="first-row">
+            <el-col v-bind:span="5">
+                <el-input v-model="fjCode" autofocus="true" placeholder="新富基小票" clearable></el-input>
+            </el-col>
+        </el-row>
+        <el-row type="flex" justify="center">
+            <el-col v-bind:span="9">
+                <h3 class="text-center text-danger title">预售单</h3>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="20">门店：{{model.StoreName}}</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="6">单据状态：{{model.StatusName}}</el-col>
+            <el-col v-bind:span="6">预售单号：{{model.Code}}</el-col>
+            <el-col v-bind:span="6">制单日期：{{model.CreatedOnTime}}</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="6">备注：{{model.Remark}}</el-col>
+            <el-col v-bind:span="6">会员姓名：{{model.Buyer}}</el-col>
+            <el-col v-bind:span="6">会员电话：{{model.Phone}}</el-col>
+        </el-row>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>编码</th>
+                    <th>串号</th>
+                    <th>名称</th>
+                    <th>数量</th>
+                    <th>单价</th>
+                    <th>金额</th>
+                    <th>品类卡</th>
+                    <th>品类优惠</th>
+                    <th>品牌优惠</th>
+                    <th>店员一</th>
+                    <th>店员二</th>
+                    <th>赠品</th>
+                    <th>富基单号</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in model.Items">
+                    <td>{{index+1}}</td>
+                    <td>{{item.ProductCode}}</td>
+                    <td> {{item.SNCode}}</td>
+                    <td>{{item.ProductName}}</td>
+                    <td>{{item.Quantity}}</td>
+                    <td>{{item.RealPrice}}</td>
+                    <td>{{item.Amount}}</td>
+                    <td>{{item.CategoryCardNumber}}</td>
+                    <td>{{item.CategoryPreferential}}</td>
+                    <td>{{item.BrandPreferential}}</td>
+                    <td>{{item.SaleClerkOne}}</td>
+                    <td>{{item.SaleClerkTwo}}</td>
+                    @* 循环展现赠品 *@
+                    <td>
+                        <table>
+                            <tr v-for="(giftItem,giftindex) in item.GiftItems">
+                                <td>赠品名称： {{giftItem.GiftProductName}}&nbsp;&nbsp;</td>
+                                <td>赠品数量：{{giftItem.GiftQuantity}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        {{item.FJCode}}
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>合计：</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{model.TotalQuantity}}</td>
+                    <td></td>
+                    <td>{{model.OrderAmount}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+        <el-row>
+            <el-col v-bind:span="6">制单人：{{model.CreatedByName}}</el-col>
+        </el-row>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                totalQuantity:"",
+                lock: false,
+                lockClearRow: false,
+                productSearchArgs:{ storeId: "0" },
+                StoreErrorMsg:"",
+                model: @Html.Raw(ViewBag.PreSaleOrder),
+                // totalAmount:0,
+                AuditedRemark:"",
+                fjCode:''
+            },
+            watch:{
+
+            },
+            methods: {
+                //转正
+                ConvertToSaleOrder: function (dialog, button,callback) {
+                    var $this=this;
+                    if(!this.fjCode.trim()){
+                        this.$message.error("请录入富基小票号");button.unlock();
+                        return;
+                    }
+                    var data = { OrderCode: this.model.Code, FJCode: this.fjCode.trim() };
+                    $.ajax({
+                        type: 'post',
+                        url: "/PreSaleOrder/ConvertToSaleOrder",
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        contentType: 'application/json',
+                        success: function (result) {
+                            if (result.success) {
+                                $this.$message.success({
+                                    message:"转正成功！",
+                                    onClose:function(){
+                                        button.unlock();
+                                        dialog.close();
+                                        if(callback)
+                                        {
+                                            callback();
+                                        }
+                                    }
+                                });
+                            }else {
+                                button.unlock();
+                                $this.$message.error(result.error);
+                            }
+                        }
+                    });
+                },
+            },
+            computed:{
+                //totalQuantity:function(){
+                //    var $this=this;
+                //    var totalQty=0;
+                //    this.totalAmount=0;
+                //    this.model.Items.forEach(function(item,index){
+                //        if(!item.Quantity)
+                //            item.Quantity = 1;
+                //        totalQty += parseInt(item.Quantity);
+                //        //操作明细
+                //        item.GiftItems.forEach(function(gift,index){
+                //            if(!gift.Quantity)
+                //                gift.Quantity = 1;
+                //            totalQty += parseInt(gift.GiftQuantity);
+                //        });
+                //        item.Amount = item.Price * item.Quantity;
+                //        $this.totalAmount += item.Amount;
+                //    });
+                //    return totalQty;
+                //}
+            },
+            created:function(){
+                var dialog=window.parent.activeDialog;
+                dialog.bindEvent("ConvertToSaleOrder",this.ConvertToSaleOrder);
+                // this.addRow();
+            }
+        });
+    </script>
+}

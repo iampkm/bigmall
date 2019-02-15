@@ -1,0 +1,263 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- demo root element -->
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            @*<h3 class="box-title">菜单管理</h3>*@
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/Menu/Index"><i class="fa fa-dashboard"></i> 菜单管理</a></li>
+                @*<li class="active">Dashboard</li>*@
+            </ol>
+        </div>
+        <div class="box-body">
+            @*<vue-table v-ref:vtable v-bind:columns="gridColumns"
+            v-bind:url="url"
+            v-bind:args="searchArgs" v-bind:data.sync="rows">*@
+            <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                <div class="col-xs-3">
+                    <input class="form-control" v-model="table.args.name" placeholder="菜单名" debounce="500" />
+                </div>
+            </div>
+            @*<span class="input-group-btn" slot="customButtons">
+                <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>      
+                <a class="btn btn-warning btn-flat" href="/Menu/Create">新 增</a>
+                <button type="button" class="btn btn-default btn-flat" v-on:click="remove()">删 除</button>
+            </span>*@
+            <el-row class="row-bottom">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>      
+                        <a class="btn btn-warning btn-flat" href="/Menu/Create">新 增</a>
+                        <button type="button" class="btn btn-default btn-flat" v-on:click="remove()">删 除</button>
+                    </span>
+                    </el-col>
+                </el-row>
+            <el-row>
+                <el-col v-bind:span="24">
+                    <el-table class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" v-bind:height="table.height">
+                        <el-table-column type="selection" width="55"></el-table-column>
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="Name" label="菜单名" width="200"></el-table-column>
+                        <el-table-column prop="Url" label="链接" width="200"></el-table-column>
+                        <el-table-column prop="Icon" label="图标" width="100" sortable></el-table-column>
+                        <el-table-column prop="DisplayOrder" label="排序" width="250"></el-table-column>
+
+                        <el-table-column label="操作">
+                            <template slot-scope="scope">
+                                <el-button-group>
+                                    @*<el-button v-on:click="detailRow(scope.row)" size="small" type="primary">查看</el-button>*@
+                                    <el-button v-on:click="editRow(scope.row)" size="small" type="success">编辑</el-button>
+                                    <el-button v-on:click="deleteRow(scope.row)" size="small" type="danger">删除</el-button>
+                                </el-button-group>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                   layout="total,sizes,prev,pager,next,jumper" @*v-bind:page-sizes="table.args.pageSize"*@
+                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                    </el-pagination>
+                </el-col>
+            </el-row>
+                  
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+@section scripts{
+
+    <script>
+
+        // bootstrap the demo
+        var vue = new Vue({
+            components: {
+            },
+            el: '#app',
+            data: {
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: { name: '' },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize }
+                },
+                //searchQuery: '',
+                //gridColumns: [
+                //    { name: 'Name', localName: '菜单名', style: "<a href='/Menu/Edit/{id}'>{column}</a>" },
+                //    { name: 'Url', localName: '链接' ,width:'400'},
+                //    { name: 'Icon', localName: '图标' },
+                //    { name: 'DisplayOrder', localName: '排序' }
+                //],
+                //url: "/Menu/LoadData",
+                //searchArgs: { name: '' },
+                //rows: []
+            },
+            methods: {
+                remove: function () { 
+                    var selectRows = this.$refs.$table.selection;
+                    var ids = [];
+                    selectRows.forEach(function (item, index) {
+                        ids.push(item.Id);
+                    });
+                    var data=ids.join(',');
+                    this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                       
+                        $.post("/StoreCustomer/Delete", { ids: data }, function (result) {
+                            if (result.success) {
+                                vue.$alert('删除成功', '成功', {
+                                    confirmButtonText: '确定',
+                                    callback: action => {
+                                        vue.loadData();
+                            }
+                        });
+                                 
+                            }
+                            else {
+                                this.$message({
+                                    type: 'error',
+                                    message: result.error
+                                });
+                            }
+                        }, "json");
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+        });
+               
+                },
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                //获取选中的列
+                selsChange: function (sels) {
+                    this.sels = sels;
+                },
+                loadData: function () {
+                    var _self = this;
+
+                    var url = "/Menu/LoadData";
+                    var data = Object.assign({}, _self.table.page, _self.table.args);
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                },
+                detailRow: function (row) {
+                    this.$message({
+                        message: '查看详细' + row.Id,
+                        type: 'success'
+                    });
+                },
+        editRow: function (row) {
+            window.location.href = "/Menu/Edit/"+row.Id;
+                    //this.$message({
+                    //    message: '编辑' + row.Id,
+                    //    type: 'success'
+                    //});
+                },
+                deleteRow: function (row) {
+                    //this.$message({
+                    //    message: '删除' + row.Name,
+                    //    type: 'success'
+                    //});
+                    var id='';
+                    id=row.Id;
+                    this.$confirm('此操作将删除该菜单【'+row.Name+'】, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+
+                        $.post("/Menu/Delete",{ids:id}, function (result) {
+                                    if (result.success) {
+                                        //bootbox.alert("保存成功！", function () {
+                                        //    window.location.href = "/Role/Index";
+                                        //});
+                                        vue.$alert('删除成功', '成功', {
+                                            confirmButtonText: '确定',
+                                            callback: action => {
+                                                vue.loadData();
+                                    }
+                                });
+                        }
+                        else {
+                        //bootbox.alert(result.error);
+                                                    vue.$message({
+                                                        type: 'error',
+                                                        message: result.error
+                                                    });
+                        }
+                        }, "json");
+                        //this.$message({
+                        //    type: 'success',
+                        //    message: '删除成功!'
+                        //});
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+                },
+                submit: function () {
+                    var selectRows = this.$refs.$table.selection;
+                    var ids = [];
+                    selectRows.forEach(function (item, index) {
+                        ids.push(item.Code);
+                    });
+                    this.$message({
+                        message: '你选择了' + ids.join(","),
+                        type: 'success'
+                    });
+                },
+                getSummaries: function (tb) {
+                    var sums = [];
+                    tb.columns.forEach(function (column, index) {
+                        if (index == 0) {
+                            sums[index] = '合计';
+                        }
+                        if (column.property == "PaidStatus") {
+                            sums[index] = "100.00"
+                        }
+
+                    });
+                    return sums;
+                },
+
+
+
+
+
+        },
+        created: function () {
+            setListPage(this.table, 253 );
+        },
+        })
+
+    </script>
+}
+
+

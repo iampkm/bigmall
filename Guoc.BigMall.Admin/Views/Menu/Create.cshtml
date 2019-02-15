@@ -1,0 +1,163 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- demo root element -->
+<div id="app" class="box box-primary" >
+
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/Menu/Index"><i class="fa fa-dashboard"></i>菜单管理</a></li>
+            <li class="active"><a href="/Menu/Create">新增菜单</a></li>
+        </ol>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="100px" style="margin: 20px;" class="demo-ruleForm">
+        <el-form-item label="菜单名" prop="name">
+            <el-col span="6">
+                <el-input v-model="ruleForm.name" placeholder="输入菜单名"></el-input>
+            </el-col>
+        </el-form-item>
+        <el-form-item label="链接" prop="url">
+            <el-col span="6">
+                <el-input v-model="ruleForm.url" placeholder="输入菜单名"></el-input>
+            </el-col>
+        </el-form-item>
+        <el-form-item label="链接类型" prop="urlType">
+            <el-col span="6">
+                <el-select v-model="ruleForm.urlType">
+
+                    @foreach (var item in ViewBag.menutypes)
+                    {
+                        //<el-option :key="@item.Value" :label="@item.Value" :value="@item.Key"></el-option>
+                        <el-option key="@item.Key" value="@item.Key" label="@item.Value"></el-option>
+                    }
+
+                </el-select>
+
+            </el-col>
+        </el-form-item>
+        <el-form-item label="父菜单" prop="parentId">
+            <menu-selector v-model="ruleForm.parentId" placeholder="选择父菜单"></menu-selector>
+
+        </el-form-item>
+      
+        <el-form-item label="图标" prop="icon">
+            <el-col :span="6">
+                <el-input v-model="ruleForm.icon"  placeholder="输入图标"></el-input>
+            </el-col>
+        </el-form-item>
+        <el-form-item label="排序" prop="displayOrder">
+            <el-col :span="6">
+                <el-input v-model.number="ruleForm.displayOrder" placeholder="输入排序"></el-input>
+            </el-col>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" v-on:click="submitForm('ruleForm')">保存</el-button>
+            <el-button v-on:click="resetForm">取消</el-button>
+        </el-form-item>
+    </el-form>
+ 
+    @*<el-dialog title="选择菜单" :visible.sync="dialogVisible" >
+    
+        <menu-table ></menu-table>
+        <span slot="footer" class="dialog-footer">
+            <el-button  v-on:click="show()" >取 消</el-button>
+            <el-button type="primary" v-on:click="selectRow()">确 定</el-button>
+       </span>
+    </el-dialog>*@
+</div>
+
+@section scripts{
+<script src="~/Content/vue/plugins/menu-selector/menu-selector.js"></script>
+    <script>
+     
+            var validatePass = (rule, value, callback) => {
+                var first=value.substring(0,1);
+                        if (first!== '#'&&first!=="/") {
+                            callback(new Error('输入#或者/开头的链接地址'));
+        }  else {
+          callback();
+        }
+        };
+        
+            var demo = new Vue({
+              
+                el: '#app',
+                data: {
+                   
+                    dialogVisible: false,
+                    ruleForm: {
+                        name: '',
+                        parentId: 0,
+                        parentName: '',
+                        url: '',
+                        icon: 'fa-folder', //文件夹
+                        displayOrder: 0,
+                        urlType:'',
+                    },
+                  
+                    
+                    rules: {
+                        name: [
+                            { required: true, message: '请输入菜单名', trigger: 'blur' }                           
+                        ],
+                        displayOrder: [
+                          {type:"integer",message:'请输入数字！',trigger:'blur'}
+                        
+                        ],
+                        url: [
+                           { required: true, message: '请输入链接！', trigger: 'blur' },
+                           { validator: validatePass, trigger: 'blur' }
+                        ],
+                        urlType:[   { required: true, message: '请选择链接类型！', trigger: 'blur' }]
+
+                    }
+                   
+                },
+              
+                methods: {
+                   resetForm:function() {
+                       window.location="/Menu/Index";
+                    },
+                 
+                   submitForm:function(formName) {
+                       var v_data = this.ruleForm;
+                     
+                             var v_data = this.ruleForm;
+                             this.$refs[formName].validate((valid) => {
+                                 if (valid) {
+                                     $.post("/Menu/Create", v_data, function (result) {
+                                         if (result.success) {
+                                             //bootbox.alert("保存成功！", function () {
+                                             //    window.location.href = "/Role/Index";
+                                             //});
+                                             demo.$alert('保存成功', '成功', {
+                                                 confirmButtonText: '确定',
+                                                 callback: action => {
+                                                     window.location.href = "/Menu/Index";
+                                         }
+                                     });
+                         }
+                else {
+                    //bootbox.alert(result.error);
+                                        demo.$message({
+                                            type: 'error',
+                                            message: result.error
+                                        });
+                }
+                }, "json");
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+                })
+                },
+
+                }
+            })
+
+    </script>
+}
+

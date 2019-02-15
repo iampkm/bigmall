@@ -1,0 +1,334 @@
+2018-10-19 10:29:10.9335|9|Info|串码商品30008833001        不存在
+2018-10-19 11:38:02.9904|14|Info|
+
+2018-10-19 11:38:03.0615|14|Info|提交发货过账数据=====================================>
+2018-10-19 11:38:03.3432|14|Info|data：[{"Code":"7000003678","Type":1,"ProductId":99,"ProductCode":"30008833001       ","StoreId":20,"StoreCode":"A011","Quantity":2,"SNCodes":"131,141","BillCode":"130001102100000056","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T10:30:43.88","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000022 ","BillItemId":713,"Unit":"EA","Id":792},{"Code":"7000003678","Type":1,"ProductId":102,"ProductCode":"30008834001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":"900000000000008","BillCode":"130001102100000056","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T10:30:43.88","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000022 ","BillItemId":714,"Unit":"EA","Id":793}]
+2018-10-19 11:38:03.9946|14|Info|request：{"I_HEAD":[{"BILLCODE":"7000003678","ORDERCODE":"130001102100000056","SENDTIME":"20181019","VBELN":"900000022 "},{"BILLCODE":"7000003678","ORDERCODE":"130001102100000056","SENDTIME":"20181019","VBELN":"900000022 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"713","ORDERROW":"792","MATNR":"30008833001       ","MEINS":"EA","LFIMG":"2","SN":"131,141","WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"714","ORDERROW":"793","MATNR":"30008834001       ","MEINS":"EA","LFIMG":"1","SN":"900000000000008","WERKS":"P010","LGORT":"A011"}]}
+2018-10-19 11:38:05.1534|14|Info|response：{"OFLAG":"E","OMSG":"商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,","VBELN":"","BILLCODE":"7000003678","O_ITEM":null}
+
+2018-10-19 11:38:05.1675|14|Info|商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,
+2018-10-19 11:38:05.3506|14|Error|原因:商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,,堆栈：   在 CBest.Infrastructure.Utils.Ensure.EqualThan[T](T expected, T actual, String message) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.Infrastructure\Utils\Ensure.cs:行号 80
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 219
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 405
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 399
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToASP(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 172
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   在 System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2018-10-19 14:38:05.5969|10|Info|
+
+2018-10-19 14:38:05.7170|10|Info|提交发货过账数据=====================================>
+2018-10-19 14:38:05.8541|10|Info|data：[{"Code":"7000003678","Type":1,"ProductId":99,"ProductCode":"30008833001       ","StoreId":20,"StoreCode":"A011","Quantity":2,"SNCodes":"131,141","BillCode":"130001102100000056","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T10:30:43.88","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000022 ","BillItemId":713,"Unit":"EA","Id":792},{"Code":"7000003678","Type":1,"ProductId":102,"ProductCode":"30008834001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":"900000000000008","BillCode":"130001102100000056","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T10:30:43.88","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000022 ","BillItemId":714,"Unit":"EA","Id":793}]
+2018-10-19 14:38:06.1317|10|Info|request：{"I_HEAD":[{"BILLCODE":"7000003678","ORDERCODE":"130001102100000056","SENDTIME":"20181019","VBELN":"900000022 "},{"BILLCODE":"7000003678","ORDERCODE":"130001102100000056","SENDTIME":"20181019","VBELN":"900000022 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"713","ORDERROW":"792","MATNR":"30008833001       ","MEINS":"EA","LFIMG":"2","SN":"131,141","WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"714","ORDERROW":"793","MATNR":"30008834001       ","MEINS":"EA","LFIMG":"1","SN":"900000000000008","WERKS":"P010","LGORT":"A011"}]}
+2018-10-19 14:38:06.6893|10|Info|response：{"OFLAG":"E","OMSG":"商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,","VBELN":"","BILLCODE":"7000003678","O_ITEM":null}
+
+2018-10-19 14:38:06.7053|10|Info|商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,
+2018-10-19 14:38:06.8214|10|Error|原因:商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,,堆栈：   在 CBest.Infrastructure.Utils.Ensure.EqualThan[T](T expected, T actual, String message) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.Infrastructure\Utils\Ensure.cs:行号 80
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 219
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 405
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 399
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToASP(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 172
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   在 System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2018-10-19 15:17:12.7536|16|Info|
+
+2018-10-19 15:17:12.8366|16|Info|提交发货过账数据=====================================>
+2018-10-19 15:17:12.8637|16|Info|data：[{"Code":"7000003682","Type":1,"ProductId":99,"ProductCode":"30008833001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":"3210002","BillCode":"130001102200000070","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T15:17:12.437","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000026 ","BillItemId":719,"Unit":"EA","Id":795}]
+2018-10-19 15:17:12.9627|16|Info|request：{"I_HEAD":[{"BILLCODE":"7000003682","ORDERCODE":"130001102200000070","SENDTIME":"20181019","VBELN":"900000026 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"719","ORDERROW":"795","MATNR":"30008833001       ","MEINS":"EA","LFIMG":"1","SN":"3210002","WERKS":"P010","LGORT":"A011"}]}
+2018-10-19 15:17:13.9935|16|Info|response：{"OFLAG":"E","OMSG":"商玛特销售订单号130001102200000070找不到商玛特销售订单行号719,","VBELN":"","BILLCODE":"7000003682","O_ITEM":null}
+
+2018-10-19 15:17:14.1907|16|Info|商玛特销售订单号130001102200000070找不到商玛特销售订单行号719,
+2018-10-19 15:52:53.2556|15|Error|原因:列名 'IsPushSap' 无效。,堆栈：   在 System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   在 System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   在 System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   在 System.Data.SqlClient.SqlDataReader.get_MetaData()
+   在 System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   在 System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   在 System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   在 System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   在 Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior)
+   在 Dapper.SqlMapper.<QueryImpl>d__125`1.MoveNext()
+   在 System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   在 System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   在 Dapper.SqlMapper.Query[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Boolean buffered, Nullable`1 commandTimeout, Nullable`1 commandType)
+   在 Dapper.DBContext.Data.DataBaseService.Query[TEntity](String sql, Object param)
+   在 System.Dynamic.UpdateDelegates.UpdateAndExecute3[T0,T1,T2,TRet](CallSite site, T0 arg0, T1 arg1, T2 arg2)
+   在 CBest.SMT.Application.Facade.StocktakingPlanFacade.GetPageList(Pager page, SearchInventoryPlan condition) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\StocktakingPlanFacade.cs:行号 131
+   在 CBest.SMT.Admin.Controllers.StocktakingPlanController.LoadDetailData(Pager page, SearchInventoryPlan condition) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\StocktakingPlanController.cs:行号 51
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-19 15:53:01.0169|18|Error|原因:列名 'IsPushSap' 无效。,堆栈：   在 System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   在 System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   在 System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   在 System.Data.SqlClient.SqlDataReader.get_MetaData()
+   在 System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   在 System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   在 System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   在 System.Data.Common.DbCommand.System.Data.IDbCommand.ExecuteReader(CommandBehavior behavior)
+   在 Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior)
+   在 Dapper.SqlMapper.<QueryImpl>d__125`1.MoveNext()
+   在 System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   在 System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   在 Dapper.SqlMapper.Query[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Boolean buffered, Nullable`1 commandTimeout, Nullable`1 commandType)
+   在 Dapper.DBContext.Data.DataBaseService.Query[TEntity](String sql, Object param)
+   在 CBest.SMT.Application.Facade.StocktakingPlanFacade.GetPageList(Pager page, SearchInventoryPlan condition) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\StocktakingPlanFacade.cs:行号 131
+   在 CBest.SMT.Admin.Controllers.StocktakingPlanController.LoadDetailData(Pager page, SearchInventoryPlan condition) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\StocktakingPlanController.cs:行号 51
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-19 17:03:29.6659|27|Info|
+
+2018-10-19 17:03:29.7470|27|Info|提交发货过账数据=====================================>
+2018-10-19 17:03:29.7740|27|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-19 17:03:29.8340|27|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-19 17:03:30.2528|27|Info|response：{"OFLAG":"E","OMSG":"##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:","VBELN":"","BILLCODE":"7000003688","O_ITEM":null}
+
+2018-10-19 17:03:30.2778|27|Info|##需要完全交货##需要完全交货##对象类型 OutboundDelivery 没有被创建的实例. 外部参考:
+2018-10-19 17:21:12.2207|54|Info|
+
+2018-10-19 17:21:12.2307|54|Info|提交发货过账数据=====================================>
+2018-10-19 17:21:12.2307|54|Info|data：[{"Code":"7000003678","Type":1,"ProductId":99,"ProductCode":"30008833001       ","StoreId":20,"StoreCode":"A011","Quantity":2,"SNCodes":"131,141","BillCode":"130001102100000056","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T10:30:43.88","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000022 ","BillItemId":713,"Unit":"EA","Id":792},{"Code":"7000003678","Type":1,"ProductId":102,"ProductCode":"30008834001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":"900000000000008","BillCode":"130001102100000056","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T10:30:43.88","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000022 ","BillItemId":714,"Unit":"EA","Id":793}]
+2018-10-19 17:21:12.2487|54|Info|request：{"I_HEAD":[{"BILLCODE":"7000003678","ORDERCODE":"130001102100000056","SENDTIME":"20181019","VBELN":"900000022 "},{"BILLCODE":"7000003678","ORDERCODE":"130001102100000056","SENDTIME":"20181019","VBELN":"900000022 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"713","ORDERROW":"792","MATNR":"30008833001       ","MEINS":"EA","LFIMG":"2","SN":"131,141","WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"714","ORDERROW":"793","MATNR":"30008834001       ","MEINS":"EA","LFIMG":"1","SN":"900000000000008","WERKS":"P010","LGORT":"A011"}]}
+2018-10-19 17:21:12.3651|54|Info|response：{"OFLAG":"E","OMSG":"商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,","VBELN":"","BILLCODE":"7000003678","O_ITEM":null}
+
+2018-10-19 17:21:12.3721|54|Info|商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,
+2018-10-19 17:21:12.4391|54|Error|原因:商玛特销售订单号130001102100000056找不到商玛特销售订单行号713,商玛特销售订单号130001102100000056找不到商玛特销售订单行号714,,堆栈：   在 CBest.Infrastructure.Utils.Ensure.EqualThan[T](T expected, T actual, String message) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.Infrastructure\Utils\Ensure.cs:行号 79
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 222
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 406
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToASP(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 198
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   在 System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2018-10-19 17:23:27.1658|54|Info|
+
+2018-10-19 17:23:27.2399|54|Info|提交发货过账数据=====================================>
+2018-10-19 17:23:27.5371|54|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-19 17:23:27.5911|54|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-19 17:24:28.0547|54|Error|原因:请求通道在等待 00:00:59.9719816 以后答复时超时。增加传递给请求调用的超时值，或者增加绑定上的 SendTimeout 值。分配给此操作的时间可能已经是更长超时的一部分。,堆栈：
+Server stack trace: 
+   在 System.ServiceModel.Channels.RequestChannel.Request(Message message, TimeSpan timeout)
+   在 System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs, TimeSpan timeout)
+   在 System.ServiceModel.Channels.ServiceChannelProxy.InvokeService(IMethodCallMessage methodCall, ProxyOperationRuntime operation)
+   在 System.ServiceModel.Channels.ServiceChannelProxy.Invoke(IMessage message)
+
+Exception rethrown at [0]: 
+   在 System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   在 System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData& msgData, Int32 type)
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYN.SI_DN_DELIVERY_OUT_SYN(SI_DN_DELIVERY_OUT_SYNRequest request)
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYNClient.CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYN.SI_DN_DELIVERY_OUT_SYN(SI_DN_DELIVERY_OUT_SYNRequest request) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\Service References\SubmitDeliveryService\Reference.cs:行号 488
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYNClient.SI_DN_DELIVERY_OUT_SYN(DT_DN_DELIVERY_REQ MT_DN_DELIVERY_REQ) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\Service References\SubmitDeliveryService\Reference.cs:行号 494
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 216
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 405
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 399
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 197
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-19 17:24:28.0637|54|Error|内部异常原因:对“http://piqas01.cbest.com:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=SMT&receiverParty=&receiverService=&interface=SI_DN_DELIVERY_OUT_SYN&interfaceNamespace=urn:cb:smt:sale_data_out”的 HTTP 请求已超过为 00:00:59.9950000 分配的超时。为此操作分配的时间可能是较长超时的一部分。,堆栈：   在 System.ServiceModel.Channels.HttpChannelUtilities.ProcessGetResponseWebException(WebException webException, HttpWebRequest request, HttpAbortReason abortReason)
+   在 System.ServiceModel.Channels.HttpChannelFactory`1.HttpRequestChannel.HttpChannelRequest.WaitForReply(TimeSpan timeout)
+   在 System.ServiceModel.Channels.RequestChannel.Request(Message message, TimeSpan timeout)
+2018-10-19 17:24:28.0887|54|Error|原因:请求通道在等待 00:00:59.9719816 以后答复时超时。增加传递给请求调用的超时值，或者增加绑定上的 SendTimeout 值。分配给此操作的时间可能已经是更长超时的一部分。,堆栈：
+Server stack trace: 
+   在 System.ServiceModel.Channels.RequestChannel.Request(Message message, TimeSpan timeout)
+   在 System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs, TimeSpan timeout)
+   在 System.ServiceModel.Channels.ServiceChannelProxy.InvokeService(IMethodCallMessage methodCall, ProxyOperationRuntime operation)
+   在 System.ServiceModel.Channels.ServiceChannelProxy.Invoke(IMessage message)
+
+Exception rethrown at [0]: 
+   在 System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   在 System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData& msgData, Int32 type)
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYN.SI_DN_DELIVERY_OUT_SYN(SI_DN_DELIVERY_OUT_SYNRequest request)
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYNClient.CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYN.SI_DN_DELIVERY_OUT_SYN(SI_DN_DELIVERY_OUT_SYNRequest request) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\Service References\SubmitDeliveryService\Reference.cs:行号 488
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYNClient.SI_DN_DELIVERY_OUT_SYN(DT_DN_DELIVERY_REQ MT_DN_DELIVERY_REQ) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\Service References\SubmitDeliveryService\Reference.cs:行号 494
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 216
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 405
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 399
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 197
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   在 System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2018-10-19 17:24:28.0967|54|Error|内部异常原因:对“http://piqas01.cbest.com:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=SMT&receiverParty=&receiverService=&interface=SI_DN_DELIVERY_OUT_SYN&interfaceNamespace=urn:cb:smt:sale_data_out”的 HTTP 请求已超过为 00:00:59.9950000 分配的超时。为此操作分配的时间可能是较长超时的一部分。,堆栈：   在 System.ServiceModel.Channels.HttpChannelUtilities.ProcessGetResponseWebException(WebException webException, HttpWebRequest request, HttpAbortReason abortReason)
+   在 System.ServiceModel.Channels.HttpChannelFactory`1.HttpRequestChannel.HttpChannelRequest.WaitForReply(TimeSpan timeout)
+   在 System.ServiceModel.Channels.RequestChannel.Request(Message message, TimeSpan timeout)
+2018-10-19 17:25:25.6943|39|Info|
+
+2018-10-19 17:25:25.7794|39|Info|提交发货过账数据=====================================>
+2018-10-19 17:25:26.1316|39|Info|data：[{"Code":"7000003688","Type":1,"ProductId":348,"ProductCode":"30008865001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000010","BillSapCode":"900000031 ","BillItemId":728,"Unit":"EA","Id":798},{"Code":"7000003688","Type":1,"ProductId":351,"ProductCode":"30008866001       ","StoreId":20,"StoreCode":"A011","Quantity":1,"SNCodes":null,"BillCode":"1300003686","BillType":13,"SAPCode":"","SAPRow":"","CreatedOn":"2018-10-19T17:03:29.157","CreatedBy":1,"BillSapRow":"000020","BillSapCode":"900000031 ","BillItemId":729,"Unit":"EA","Id":799}]
+2018-10-19 17:25:26.1976|39|Info|request：{"I_HEAD":[{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "},{"BILLCODE":"7000003688","ORDERCODE":"1300003686","SENDTIME":"20181019","VBELN":"900000031 "}],"IT_ITEM":[{"POSNR":"000010","SAPROW":"728","ORDERROW":"798","MATNR":"30008865001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"},{"POSNR":"000020","SAPROW":"729","ORDERROW":"799","MATNR":"30008866001       ","MEINS":"EA","LFIMG":"1","SN":null,"WERKS":"P010","LGORT":"A011"}]}
+2018-10-19 17:26:26.3019|39|Error|原因:请求通道在等待 00:00:59.9679789 以后答复时超时。增加传递给请求调用的超时值，或者增加绑定上的 SendTimeout 值。分配给此操作的时间可能已经是更长超时的一部分。,堆栈：
+Server stack trace: 
+   在 System.ServiceModel.Channels.RequestChannel.Request(Message message, TimeSpan timeout)
+   在 System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs, TimeSpan timeout)
+   在 System.ServiceModel.Channels.ServiceChannelProxy.InvokeService(IMethodCallMessage methodCall, ProxyOperationRuntime operation)
+   在 System.ServiceModel.Channels.ServiceChannelProxy.Invoke(IMessage message)
+
+Exception rethrown at [0]: 
+   在 System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   在 System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData& msgData, Int32 type)
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYN.SI_DN_DELIVERY_OUT_SYN(SI_DN_DELIVERY_OUT_SYNRequest request)
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYNClient.CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYN.SI_DN_DELIVERY_OUT_SYN(SI_DN_DELIVERY_OUT_SYNRequest request) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\Service References\SubmitDeliveryService\Reference.cs:行号 488
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYNClient.SI_DN_DELIVERY_OUT_SYN(DT_DN_DELIVERY_REQ MT_DN_DELIVERY_REQ) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\Service References\SubmitDeliveryService\Reference.cs:行号 494
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 216
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 405
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 399
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 197
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+2018-10-19 17:26:26.3109|39|Error|内部异常原因:对“http://piqas01.cbest.com:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=SMT&receiverParty=&receiverService=&interface=SI_DN_DELIVERY_OUT_SYN&interfaceNamespace=urn:cb:smt:sale_data_out”的 HTTP 请求已超过为 00:00:59.9930000 分配的超时。为此操作分配的时间可能是较长超时的一部分。,堆栈：   在 System.ServiceModel.Channels.HttpChannelUtilities.ProcessGetResponseWebException(WebException webException, HttpWebRequest request, HttpAbortReason abortReason)
+   在 System.ServiceModel.Channels.HttpChannelFactory`1.HttpRequestChannel.HttpChannelRequest.WaitForReply(TimeSpan timeout)
+   在 System.ServiceModel.Channels.RequestChannel.Request(Message message, TimeSpan timeout)
+2018-10-19 17:26:26.3109|39|Error|原因:请求通道在等待 00:00:59.9679789 以后答复时超时。增加传递给请求调用的超时值，或者增加绑定上的 SendTimeout 值。分配给此操作的时间可能已经是更长超时的一部分。,堆栈：
+Server stack trace: 
+   在 System.ServiceModel.Channels.RequestChannel.Request(Message message, TimeSpan timeout)
+   在 System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs, TimeSpan timeout)
+   在 System.ServiceModel.Channels.ServiceChannelProxy.InvokeService(IMethodCallMessage methodCall, ProxyOperationRuntime operation)
+   在 System.ServiceModel.Channels.ServiceChannelProxy.Invoke(IMessage message)
+
+Exception rethrown at [0]: 
+   在 System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   在 System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData& msgData, Int32 type)
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYN.SI_DN_DELIVERY_OUT_SYN(SI_DN_DELIVERY_OUT_SYNRequest request)
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYNClient.CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYN.SI_DN_DELIVERY_OUT_SYN(SI_DN_DELIVERY_OUT_SYNRequest request) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\Service References\SubmitDeliveryService\Reference.cs:行号 488
+   在 CBest.SMT.RPC.SubmitDeliveryService.SI_DN_DELIVERY_OUT_SYNClient.SI_DN_DELIVERY_OUT_SYN(DT_DN_DELIVERY_REQ MT_DN_DELIVERY_REQ) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\Service References\SubmitDeliveryService\Reference.cs:行号 494
+   在 CBest.SMT.RPC.SAPService.SubmitDelivery(List`1 entitys) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.RPC\SAPService.cs:行号 216
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToASP(SaleOrder order, List`1 saps) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 405
+   在 CBest.SMT.Application.Facade.BatchSaleOrderFacade.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Application.Facade\BatchSaleOrderFacade.cs:行号 399
+   在 CBest.SMT.Admin.Controllers.BatchSaleOrderController.PostOrderToSap(String code) 位置 e:\svn\CB_BusinessMart\30-产品实现\CBest.SMT\CBest.SMT.Admin\Controllers\BatchSaleOrderController.cs:行号 197
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass48.<InvokeActionMethodFilterAsynchronouslyRecursive>b__41()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   在 System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   在 System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2018-10-19 17:26:26.3339|39|Error|内部异常原因:对“http://piqas01.cbest.com:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=SMT&receiverParty=&receiverService=&interface=SI_DN_DELIVERY_OUT_SYN&interfaceNamespace=urn:cb:smt:sale_data_out”的 HTTP 请求已超过为 00:00:59.9930000 分配的超时。为此操作分配的时间可能是较长超时的一部分。,堆栈：   在 System.ServiceModel.Channels.HttpChannelUtilities.ProcessGetResponseWebException(WebException webException, HttpWebRequest request, HttpAbortReason abortReason)
+   在 System.ServiceModel.Channels.HttpChannelFactory`1.HttpRequestChannel.HttpChannelRequest.WaitForReply(TimeSpan timeout)
+   在 System.ServiceModel.Channels.RequestChannel.Request(Message message, TimeSpan timeout)

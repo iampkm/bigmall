@@ -1,0 +1,141 @@
+﻿@using Guoc.BigMall.Infrastructure.Extension;
+@model Guoc.BigMall.Application.ViewObject.PurchaseOrderDto
+@{
+    //Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = null;
+    var title = string.Format("{0}", Model.OrderType.Description());
+}
+<style>
+    .dataRow div {
+        margin-bottom: 0px;
+    }
+</style>
+<!-- demo root element -->
+<div class="box box-primary">
+    <form>
+        <div id="printTemplate" class="box-body visible-print">
+            <div class="row">
+                <div class="col-xs-4 col-sm-4"></div>
+                <div class="col-xs-4 col-sm-4">
+                    <h3 class="text-center text-success" style="border-bottom:2px solid;padding-bottom:1px;">
+                        <b>@title</b>
+                    </h3>
+                </div>
+                <div class="col-xs-4 col-sm-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>供应商：@Model.SupplierName</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span>单据号：@Model.Code</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span>备注：@Model.Remark</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>门店：@Model.StoreName</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span class="text-danger">单据状态：@Model.PurchaseOrderStatus</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span>制单日期：@Model.CreatedOn</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-printfontsize">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px;">序号</th>
+                                    <th style="width:120px;">商品编码</th>
+                                    <th>品名</th>
+                                    <th>规格</th>
+                                    <th>单位</th>
+                                    <th>进价</th>
+                                    <th style="width:100px;">订货数</th>
+                                    <th style="width:100px;">实发数</th>
+                                    <th style="width:100px;">实收数</th>
+                                    <th>实收金额</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody">
+                                @{
+                                    var totalQuantity = 0;
+                                    var totalActualQuantity = 0;
+                                    var totalActualShipQuantity = 0;
+                                    decimal countTotal = 0;
+                                    var index = 1;
+                                }
+                                @foreach (var item in Model.Items)
+                                {
+                                    totalQuantity += item.Quantity;
+                                    totalActualQuantity += item.ActualQuantity;
+                                   
+                                    countTotal += item.CostPrice * item.ActualQuantity;
+                                    <tr>
+                                        <td class="text-center">@(index++)</td>
+                                        <td>@item.ProductCode</td>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.Specification</td>
+                                        <td>@item.Unit</td>
+                                        <td>@item.CostPrice.ToString("F4")</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.ActualQuantity</td>
+                                        <td>@item.ActualQuantity</td>
+                                        <td>@item.ActualAmount.ToString("F2")</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td>合计：</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>@totalQuantity</td>
+                                    <td>@totalActualQuantity</td>
+                                    <td>@totalActualQuantity</td>
+                                    <td>@countTotal.ToString("F2")</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-sm-3">
+                    <span>制单人：@Model.CreatedByName </span>
+                </div>
+                @*<div class="col-xs-3 col-sm-3">
+                    <span>供应商：</span>
+                </div>*@
+                <div class="col-xs-3 col-sm-3">
+                    <span>更新人：@Model.UpdatedByName</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span>更新时间：@Model.UpdatedTime</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">
+                    <span>门店地址：@Model.Address</span>
+                </div>
+                <div class="col-xs-3 col-sm-3">
+                    <span></span>
+                </div>
+                <div class="col-xs-3 col-sm-3">
+                    <span></span>
+                </div>
+            </div>
+            @*<div style="page-break-after: always;"></div>*@
+        </div>
+    </form>
+</div>

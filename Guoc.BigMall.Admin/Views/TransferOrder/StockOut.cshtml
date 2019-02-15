@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "StockOut";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div id="app" class="box box-primary">
+    <div class="box-header with-border no-print">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/TransferOrder/StockOutIndex"><i class="fa fa-dashboard"></i>调拨单 - 出库</a></li>
+            <li class="active"><a v-bind:href="'/TransferOrder/StockOut/'+model.Id">调拨出库</a></li>
+        </ol>
+    </div>
+
+    <div style="min-width:700px;padding:10px;">
+
+        <el-button-group class="no-print">
+            <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">出库</el-button>
+            <el-button class="btn-print" v-on:click="print" v-bind:disabled="lock">打印</el-button>
+            <el-button v-on:click="closeTab" v-bind:disabled="lock">取消</el-button>
+        </el-button-group>
+
+        <el-row v-bind:gutter="20" class="first-row no-print">
+            <el-col v-bind:span="5">
+                <sncode-selector v-bind:search-args="productSearchArgs" v-on:initialize="onSncodeSelectorInitialize" v-on:callback="selectSNCodeCallback" placeholder="扫描串码"></sncode-selector>
+                <span class="error-msg">{{scanSNCodeErrorMsg}}</span>
+            </el-col>
+        </el-row>
+
+        <el-row type="flex" justify="center">
+            <el-col v-bind:span="9">
+                <h3 class="text-center text-danger title">调拨单</h3>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col v-bind:span="20">调出门店：[{{model.FromStoreCode}}]{{model.FromStoreName}}</el-col>
+            <el-col v-bind:span="4">调拨单号：{{model.Code}}</el-col>
+        </el-row>
+        <el-row>
+            <el-col v-bind:span="10">调入门店：[{{model.ToStoreCode}}]{{model.ToStoreName}}</el-col>
+            <el-col v-bind:span="10">单据状态：{{model.StatusDesc}}</el-col>
+            <el-col v-bind:span="4">制单日期：{{model.CreatedOn.toDate().format("yyyy-MM-dd hh:mm:ss")}}</el-col>
+        </el-row>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width="60px">序号</th>
+                    <th width="105px">编码</th>
+                    <th>名称</th>
+                    <th>型号</th>
+                    <th width="120px">库存</th>
+                    <th width="120px">单价</th>
+                    <th width="120px">调拨数量</th>
+                    <th width="120px">出库数量</th>
+                    <th>出库串码</th>
+                    <th width="120px">金额</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in model.Items">
+                    <td>{{index+1}}</td>
+                    <td>{{item.ProductCode}}</td>
+                    <td>{{item.ProductName}}</td>
+                    <td>{{item.Spec}}</td>
+                    <td>{{item.InventoryQuantity}}</td>
+                    <td>{{item.Price.toFixed(4)}}</td>
+                    <td>{{item.Quantity}}</td>
+                    <td>
+                        <span v-if="item.HasSNCode">{{item.ActualShipmentQuantity}}</span>
+                        <span v-else>
+                            <el-input-number v-model="item.ActualShipmentQuantity" v-bind:precision="0" v-bind:min="0" v-bind:max="item.Quantity"></el-input-number>
+                            <span class="error-msg">{{item.ActualShipmentQuantityErrorMsg}}</span>
+                        </span>
+                    </td>
+                    <td>
+                        <el-tag v-for="(SNCode,index) in item.SNCodes" v-bind:key="SNCode" v-on:close="removeSNCode(item,index)" disable-transitions="false" closable>{{SNCode}}</el-tag>
+                    </td>
+                    <td>{{item.Amount.toFixed(2)}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>合计：</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{totalQuantity}}</td>
+                    <td>{{totalActualShipmentQuantity}}</td>
+                    <td></td>
+                    <td>{{totalAmount.toFixed(2)}}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <el-row>
+            <el-col>备&ensp;&ensp;注：{{model.Remark}}</el-col>
+        </el-row>
+
+        <el-row>
+            <el-col v-bind:span="6">制单人：{{model.CreatedByName}}</el-col>
+            <el-col v-bind:span="6">审核人：{{model.AuditByName}}</el-col>
+            <el-col v-bind:span="6">审核时间：{{model.AuditOn ? model.AuditOn.toDate().format("yyyy-MM-dd hh:mm:ss") : ""}}</el-col>
+            <el-col v-bind:span="6">审核意见：{{model.AuditRemark}}</el-col>
+        </el-row>
+    </div>
+    <div class="text-primary">小提示：在chrome浏览器打印预览，更多设置中，把“边距”设置为 “最小”</div>
+    <div id="printDiv"></div>
+</div>
+@section scripts{
+    @*<script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>*@
+    @*<script src="~/Content/vue/plugins/product-selector/product-selector.js"></script>*@
+    <script src="~/Content/vue/plugins/sncode-selector/sncode-selector.js"></script>
+    <script src="~/Scripts/jquery.PrintArea.js"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: '#app',
+            data: {
+                lock: false,
+                scanSNCodeErrorMsg: "",
+                productSearchArgs: { storeId: "0" },
+                model: JsExt.mergeObjectProps(@Html.Raw(ViewBag.Model),{ Items: [{ SNCodes: [], ActualShipmentQuantity: 0, ActualShipmentQuantityErrorMsg: "" }] }),
+                totalAmount: 0,
+                postModel: { Id: 0, Items: [{ Id: 0, SNCodes: [""], ActualShipmentQuantity: 0 }] }
+            },
+            methods: {
+                onSubmit: function () {
+                    if (this.validate()) {
+                        var partOut = this.model.Items.contains(function(item){ return item.ActualShipmentQuantity < item.Quantity; });
+                        var $this = this;
+                        this.$confirm(
+                            (partOut ? "部分商品 <span style='color:red'>出库数量 < 调拨数量</span>，" : "") + "确定要执行出库操作吗？",
+                            "出库确认",
+                            { dangerouslyUseHTMLString : true, showCancelButton : false }
+                            ).then(function(){
+                                $this.lock = true;
+                                var data = JsExt.map($this.model, $this.postModel, true);
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/TransferOrder/OutStock",
+                                    data: JSON.stringify(data),
+                                    dataType: "JSON",
+                                    contentType: "application/json",
+                                    success: function (result) {
+                                        if (result.success) {
+                                            $this.$message.success({
+                                                message: "保存成功！",
+                                                onClose: function () {
+                                                   // $this.backToList();
+                                                    $this.closeTab();
+                                                }
+                                            });
+                                        } else {
+                                            $this.$message.error(result.error);
+                                        }
+                                        $this.lock = false;
+                                    }
+                                });
+                            });
+                    }
+                },
+                validate: function () {
+                    if (this.model.Items.length == 0) {
+                        this.$message.error("调拨单至少应包含一条商品明细。");
+                        return false;
+                    }
+
+                    if (this.totalActualShipmentQuantity == 0) {
+                        this.$message.error("调拨单出库数量不能为0。");
+                        return false;
+                    }
+                    return true;
+                },
+                backToList: function () {
+                    window.location = "/TransferOrder/StockOutIndex";
+                },
+                removeSNCode: function (item, index) {
+                    item.SNCodes.splice(index, 1);
+                    item.ActualShipmentQuantity = item.SNCodes.length;
+                },
+                onSncodeSelectorInitialize: function (selector, dataKey) {
+                    selector.addColumns(["BatchCostPrice", "批次成本", 100]);
+                },
+                //扫描串码后回调
+                selectSNCodeCallback: function (selectedSNCodes) {
+                    var $this = this;
+                    if (selectedSNCodes.length > 0) {
+                        var snCodes = selectedSNCodes.splice(0);
+                        var errors = [];
+                        snCodes.forEach(function (snCode) {
+                            var item=$this.model.Items.first(function(item){ return item.ProductId == snCode.Id; });
+                            if(item){
+                                if(!item.SNCodes.contains(snCode.SNCode)){
+                                    if(item.ActualShipmentQuantity < item.Quantity){
+                                        item.SNCodes.push(snCode.SNCode);
+                                        item.ActualShipmentQuantity = item.SNCodes.length;
+                                    }else{
+                                        errors.push("串码【{0}】对应的商品【{1}】出库数量已满。".format(snCode.SNCode, snCode.Code));
+                                    }
+                                }else{
+                                    errors.push("串码【{0}】已包含在单据中。".format(snCode.SNCode));
+                                }
+                            }else{
+                                errors.push("调拨单不包含串码【{0}】对应的商品【{1}】。".format(snCode.SNCode, snCode.Code));
+                            }
+                        });
+                        if(errors.length>0){
+                            this.$message.error({
+                                dangerouslyUseHTMLString:true,
+                                message:errors.join("<br/>")
+                            });
+                        }
+                    }
+                },
+                print: function () {
+                    var data = {ids:this.model.Id};
+                    $.get("/transferOrder/Print", data, function (result) {
+                        $("#printDiv").html(result);
+                        $("#printTemplate").printArea();
+                        $("#printDiv").html("");
+                    });
+                },
+                closeTab: function () {
+                    window.parent.document.closeCurrentTab();
+                }
+            },
+            computed: {
+                totalQuantity: function () {
+                    var $this = this;
+                    var totalQty = 0;
+                    this.totalAmount = 0;
+                    this.model.Items.forEach(function (item, index) {
+                        if (!item.Quantity)
+                            item.Quantity = 1;
+                        totalQty += parseInt(item.Quantity);
+                        item.Amount = item.Price * item.Quantity;
+                        $this.totalAmount += item.Amount;
+                    });
+                    return totalQty;
+                },
+                totalActualShipmentQuantity: function () {
+                    var $this = this;
+                    var totalQty = 0;
+                    //this.totalAmount = 0;
+                    this.model.Items.forEach(function (item, index) {
+                        if (!item.ActualShipmentQuantity)
+                            item.ActualShipmentQuantity = 0;
+                        totalQty += parseInt(item.ActualShipmentQuantity);
+                        //item.Amount = item.Price * item.ActualShipmentQuantity;
+                        //$this.totalAmount += item.Amount;
+                    });
+                    return totalQty;
+                }
+            },
+            created: function () {
+                this.productSearchArgs.storeId = this.model.FromStoreId;
+            }
+        });
+    </script>
+}

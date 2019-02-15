@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    @*<style>
+        body {
+            height: 100%;
+            margin: 0px;
+        }
+
+        .el-table .disabled-row {
+            background: #eee;
+        }
+
+        .row-bottom {
+            padding-top: 10px;
+        }
+
+        .el-pagination {
+            padding-top: 15px;
+        }
+    </style>*@
+}
+<!-- demo root element -->
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/Store/Index"><i class="fa fa-dashboard"></i>门店管理</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+            <div id="toolbar" class="sections-search">
+                <el-row v-bind:gutter="20">
+                    <el-col v-bind:span="3">
+                        <el-input v-model="table.args.Code" placeholder="门店编码" clearable></el-input>
+                    </el-col>
+                    <el-col v-bind:span="3">
+                        <el-input v-model="table.args.Name" placeholder="门店名称" clearable></el-input>
+                    </el-col>
+                    <el-col v-bind:span="3">
+                        <el-input v-model="table.args.Tag" placeholder="门店标签" clearable></el-input>
+                    </el-col>
+                </el-row>
+                <el-row class="row-bottom">
+                    <el-col>                       
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>
+                            <a class="btn btn-warning btn-flat" href="/Store/Create">新 增</a>                            
+                            @*<el-button type="danger" class="btn btn-flat">删除</el-button>*@
+                        </span>                       
+                    </el-col>
+                </el-row>
+            </div>
+            <div id="table-data">
+                <el-row>
+                    <el-col>
+                        <el-table v-bind:data="table.rows" v-bind:height="table.height" border v-on:selection-change="onSelectionChange">
+                            <el-table-column type="selection" width="55"></el-table-column>
+                            <el-table-column type="index"></el-table-column>
+                            <el-table-column prop="Code" label="门店编码" width="150"></el-table-column>
+                            <el-table-column prop="Name" label="门店名称" width="150"></el-table-column>
+                            <el-table-column prop="Tag" label="标签" width="150"></el-table-column>
+                            <el-table-column prop="Phone" label="门店电话"></el-table-column>
+                            <el-table-column prop="Address" label="门店地址"></el-table-column>
+                            <el-table-column prop="CreatedOn" label="创建时间" width="150" v-bind:formatter="dateCellFormatter"></el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button-group>
+                                        @*<el-button v-on:click="detailRow(scope.row)" size="small" type="primary">查看</el-button>*@
+                                        <el-button v-on:click="editRow(scope.row)" size="small" type="success">编辑</el-button>
+                                        @*<el-button v-on:click="deleteRow(scope.row)" v-if="scope.row.Status!=2" size="small" type="danger">删除</el-button>*@
+                                    </el-button-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination v-bind:current-page="table.page.pageIndex"
+                                       v-bind:page-size="table.page.pageSize"
+                                       v-bind:total="table.page.total"
+                                       v-bind:layout="table.page.layout"
+                                       v-on:size-change="onPageSizeChange"
+                                       v-on:current-change="onPageChange">
+                        </el-pagination>
+                    </el-col>
+                </el-row>
+            </div>            
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: { Code: "", Name: "",Tag:"" },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize, layout: global_config.page.layout }
+                },
+                checkedIds: []
+            },
+            methods: {
+                onSelectionChange: function (selection) {
+                    var $this = this;
+                    this.checkedIds = [];
+                    selection.forEach(function (row) {
+                        $this.checkedIds.push(row.Id);
+                    });
+                },
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+                    var $this = this;
+                    var data = Object.assign({}, this.table.page, this.table.args);
+                    $.get("/Store/LoadData", data, function (result) {
+                        if (result.success) {
+                            $this.table.rows = result.data;
+                            $this.table.page.total = result.total;
+                        } else {
+                            $this.$message.error(result.error);
+                        }
+                    }, "Json");
+                },
+                dateCellFormatter: function (row, column, cellValue, index) {
+                    return cellValue.toDate().format("yyyy-MM-dd hh:mm");
+                },
+                editRow: function (row) {
+                    window.location = "/Store/Edit?id=" + row.Id;
+                },
+            },
+            created: function () {
+                setListPage(this.table, 224);
+            }
+        });
+    </script>
+}
+
+

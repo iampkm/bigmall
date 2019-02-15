@@ -1,0 +1,98 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@model StoreModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- demo root element -->
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/Store/Index"><i class="fa fa-dashboard"></i>门店管理</a></li>
+            <li class="active"><a href="/Store/Edit/@Model.Id">修改门店</a></li>
+        </ol>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-4">
+                <el-form ref="form" v-bind:model="form" v-bind:rules="formRules" label-width="80px">
+                    <el-form-item label="门店名" prop="name">
+                        <el-input v-model="form.name" placeholder="工号" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="标签" prop="tag">
+                        <el-input v-model="form.tag" placeholder="标签用来分组门店" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="区域" prop="areaId">
+                        <area-selector v-model="form.areaId" placeholder="区域"></area-selector>
+                    </el-form-item>
+                    <el-form-item label="联系人" prop="contact">
+                        <el-input v-model="form.contact" placeholder="联系人" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="电话" prop="phone">
+                        <el-input v-model="form.phone" placeholder="电话" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="地址" prop="address">
+                        <el-input v-model="form.address" placeholder="地址" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>
+                        <el-button v-on:click="backToList" v-bind:disabled="lock">取消</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/area-selector/area-selector.js" type="text/javascript"></script>
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data: {
+                lock: false,
+                form: {
+                    id:  @Model.Id,
+                    name: '@Model.Name',
+                    contact: '@Model.Contact',
+                    phone: '@Model.Phone',
+                    address: '@Model.Address',
+                    areaId: '@Model.AreaId',
+                    tag: '@Model.Tag'
+                },
+                formRules: {
+                    name: [{ required: true, message: '请输入门店名称', trigger: 'blur' },],
+                    areaId: [{ required: true, message: '请选择区域', trigger: 'blur' },]
+                },
+            },
+            methods: {
+                onSubmit: function () {
+                    var $this = this;
+                    $this.lock = true;
+                    this.$refs.form.validate(function (valid) {
+                        if (!valid) return false;
+                        $.post("/Store/Edit", $this.form, function (result) {
+                            if (result.success) {
+                                $this.$message.success({
+                                    message: "保存成功！",
+                                    onClose: function () {
+                                        $this.backToList();
+                                    }
+                                });
+                            } else {
+                                $this.$message.error(result.error);
+                            }
+                            $this.lock = false;
+                        }, "json")
+                    });
+                    this.lock = false;
+                },
+                backToList: function () {
+                    window.location = "/Store/Index";
+                }
+            }
+        });
+
+    </script>
+}

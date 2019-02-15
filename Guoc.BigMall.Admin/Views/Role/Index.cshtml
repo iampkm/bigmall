@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- demo root element -->
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-body">
+            <div id="toolbar">                
+                <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                    <div class="col-xs-3">
+                        <el-input v-model="table.args.userName" placeholder="角色名" clearable></el-input>
+                    </div>
+                </div>
+                <el-row class="row-bottom">
+                    <el-col v-bind:sm="12" v-bind:md="12">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>
+                            <a class="btn btn-warning btn-flat" href="/Role/Create">新 增</a>
+                            <button type="button" class="btn btn-default btn-flat" v-on:click="remove()">删 除</button>
+                        </span>
+                    </el-col>
+                </el-row>
+            </div>            
+            <div id="table-data">
+                <el-row>
+                    <el-col v-bind:span="24">
+                        <el-table v-on:cell-click="cellClick" class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" v-on:selection-change="selsChange" @*show-summary v-bind:summary-method="getSummaries"*@>
+                            <el-table-column type="selection" width="55"></el-table-column>
+                            <el-table-column type="index"></el-table-column>
+                            <el-table-column prop="Name" label="角色名" width="100">
+                                <template slot-scope="scope">
+                                    <a v-bind:href="'/Role/Edit/'+scope.row.Id">{{scope.row.Name}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="Description" label="描述" width="150"></el-table-column>
+                        </el-table>
+                        <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                       layout="total,sizes,prev,pager,next,jumper" @*v-bind:page-sizes="table.args.pageSize"*@
+                                       v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                        </el-pagination>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts{
+    <script>
+        var demo = new Vue({
+            components: {
+            },
+            el: '#app',
+            data: {
+                table: {
+                    rows: [],
+                    args: { userName: '', nickName: '', storeId: -1,name:'' },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize }
+                },
+            },
+            methods: {
+                cellClick: function (row, column, cell, event) {
+
+                },
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+                    var _self = this;
+                    var url = "/Role/LoadData";
+                    var data = Object.assign({}, _self.table.page, _self.table.args,_self.table.args.name);
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                },
+                //获取选中的列
+                selsChange: function (sels) {
+                    this.sels = sels;
+                },
+                remove: function () {
+                    var selectRows = this.sels;
+                    var ids = [];
+                    selectRows.forEach(function (item, index) {
+                        ids.push(item.Id);
+                    });
+                    var v_ids = ids.join();
+                    if (v_ids == "") {
+                        this.$message({
+                            message: '请选择一条记录',
+                            type: 'warning'
+                        });
+                    };
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        $.post("/Role/Delete", { ids: v_ids }, function (result) {
+                            if (result.success) {
+                                //从新加载外部方法调用
+                                //this.$options.methods.loadData();
+                                demo.$message({
+                                    type: 'success',
+                                    message: '删除成功!'
+                                });
+                                demo.loadData();
+                            }
+                            else {
+                                demo.$message({
+                                    type: 'error',
+                                    message: result.error
+                                });
+                            }
+                        }, "json");
+                }).catch(() => {
+                    demo.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+        });
+        }
+        },
+        created: function () {
+            setListPage(this.table, 253);
+        }
+        });
+    </script>
+}
+
+
+
+
+
+

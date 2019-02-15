@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="/Content/bootstrap/css/bootstrap.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/Content/AdminLTE/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/Content/AdminLTE/css/AdminLTE.css">   
+
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    @*<link rel="stylesheet" href="/Content/AdminLTE/css/skins/_all-skins.min.css">*@
+    <!--element UI-->
+    @*<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">*@
+    <link rel="stylesheet" href="/Content/AdminLTE/css/index.css">
+    <link href="~/Content/element/element-custom.css" rel="stylesheet" />
+    @*<script src="~/Scripts/modernizr-2.6.2.js"></script>*@
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+        /*列表页样式*/
+        .row-bottom {
+            padding-top: 10px;
+        }
+
+        .el-pagination {
+            padding-top: 2px;
+        }
+        /*列表页样式*/
+
+
+        /*单据页样式*/
+        h3.title {
+            font-weight: bold;
+            padding-bottom: 1px;
+            border-bottom: 2px solid;
+        }
+
+        .first-row {
+            margin-top: 15px;
+        }
+
+        .box {
+            margin-bottom: 2px;           
+        }
+        .box-header {
+             padding:10px 10px 0px 10px;
+        }
+
+        .btn-print {
+            color: white;
+            border-color: #8EBCED;
+            background-color: #8EBCED;
+        }
+
+        .btn-print:hover {
+            color: white;
+            border-color: rgba(142,188,237,0.7);
+            background-color: rgba(142,188,237,0.7);
+        }
+
+        .clear-margin-left {
+            margin-left: 0px !important;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 9pt;
+        }
+
+        .el-button.is-circle {
+            padding: 7px;
+        }
+
+        .el-tag:nth-child(n+1) {
+            margin-left: 1px;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            padding-top: 10px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        /*单据页样式*/
+
+        /*日期控件样式*/
+        .el-date-editor--daterange.el-input__inner {
+            width: 100%;
+        }
+
+        /*串码组件二维码扫码框样式*/
+        .snCodeBatchScanningBox textarea {
+            height: 200px;
+        }
+
+        /*popover样式*/
+        .popover-red.el-popover {
+            border: 1px solid red;
+        }
+
+        .popover-red.el-popper[x-placement^=top] .popper__arrow {
+            border-top-color: red;
+        }
+
+        .popover-blue.el-popover {
+            border: 1px solid #409EFF;
+        }
+
+        .popover-blue.el-popper[x-placement^=top] .popper__arrow {
+            border-top-color: #409EFF;
+        }
+
+        .popover-green.el-popover {
+            border: 1px solid #67c23a;
+        }
+
+        .popover-green.el-popper[x-placement^=top] .popper__arrow {
+            border-top-color: #67c23a;
+        }
+    </style>
+
+    @RenderSection("styles", required: false)
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <!-- Site wrapper -->
+    @RenderBody()
+    <!-- Site wrapper -->
+    <!-- jQuery 2.2.3 -->
+    <script src="~/Scripts/jquery-2.1.3.min.js"></script>
+    <script src="/Scripts/vue.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="/Scripts/bootstrap.min.js"></script>   
+    <!-- AdminLTE App -->
+    <script src="/Content/AdminLTE/js/app.min.js"></script>
+    <!--element js-->
+    @*<script src="https://unpkg.com/element-ui/lib/index.js"></script>*@
+    <script src="/Content/AdminLTE/js/index.js"></script>
+    <script src="~/Scripts/JsExtension.js"></script>
+    <script>
+        // bootbox.setLocale("zh_CN");
+        var global_config = {
+            page: { pageSize: 50, layout: "total,sizes,prev,pager,next,jumper" },
+            listPage: { element: null, reservedHeight: 0 }
+        };
+        Vue.prototype.$ELEMENT = { size: 'small' };   // medium / small / mini
+        //控制表格自适应一屏显示，无滚动条
+        $(function () {
+              $(window).resize(function () {  //110
+                  $(".el-table").height(($(this).height() - $("#toolbar").height()-150));              
+            }).resize();
+        });
+
+        function setListPage(element, reservedHeight) {
+            global_config.listPage.element = element;
+            global_config.listPage.reservedHeight = reservedHeight;
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>

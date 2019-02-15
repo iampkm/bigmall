@@ -1,0 +1,249 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <link href="~/Content/zTree.min.css" rel="stylesheet" />
+    <style>
+        .el-table .disabled-row {
+            background: #eee;
+        }
+    </style>
+}
+<!-- demo root element -->
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">           
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/Account/Index"><i class="fa fa-dashboard"></i>账户管理</a></li>              
+            </ol>
+        </div>
+        <div class="box-body">
+            <div id="toolbar">
+                <div class="row">
+                    <div class="col-xs-3 col-sm-2">
+                        <el-input v-model="table.args.userName" placeholder="工号" clearable></el-input>
+                    </div>
+                    <div class="col-xs-3 col-sm-2">
+                        <el-input v-model="table.args.nickName" placeholder="姓名" clearable></el-input>
+                    </div>
+                    <div class="col-xs-3 col-sm-2">
+                        <label class="open checkbox success active">
+                            @*<input type="checkbox" v-model="table.args.storeId" v-bind:true-value="0" v-bind:false-value="-1" />*@
+                            <el-checkbox v-model="table.args.storeId" v-bind:true-label="0" v-bind:false-label="-1">总公司</el-checkbox>
+                        </label>
+                    </div>
+                </div>
+                <el-row class="row-bottom">
+                    <el-col v-bind:sm="12" v-bind:md="12">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>
+                            <a class="btn btn-warning btn-flat" href="/Account/Create">新 增</a>
+                            <button type="button" class="btn btn-success btn-flat" v-on:click="reset()">重置密码</button>
+                            <button type="button" class="btn btn-danger btn-flat" v-on:click="disabled()">禁 用</button>
+                            <button type="button" class="btn btn-info btn-flat" v-on:click="actived()">激 活</button>
+                        </span>
+                    </el-col>
+                </el-row>
+            </div>
+            <div id="table-data">
+                <el-row>
+                    <el-col v-bind:span="24">
+                        <el-table class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" @*v-bind:height="table.height"*@ v-on:selection-change="onSelectionChange" v-bind:row-class-name="rowClassName" @*show-summary v-bind:summary-method="getSummaries"*@>
+                            <el-table-column type="selection" width="55"></el-table-column>
+                            <el-table-column type="index"></el-table-column>
+                            <el-table-column prop="UserName" label="工号" width="150"></el-table-column>
+                            <el-table-column prop="NickName" label="姓 名" width="150"></el-table-column>
+                            <el-table-column prop="RoleName" label="角色名" width="100" sortable></el-table-column>
+                            <el-table-column prop="StoreCodes" label="门店" width="250"></el-table-column>
+                            <el-table-column prop="StatusName" label="状态" width="80" sortable></el-table-column>
+                            <el-table-column prop="LoginErrorCount" label="登录失败次数"></el-table-column>
+                            <el-table-column prop="CreatedOn" label="创建时间"></el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button-group>
+                                        @*<el-button v-on:click="detailRow(scope.row)" size="small" type="primary">查看</el-button>*@
+                                        <el-button v-on:click="editRow(scope.row)" size="small" type="success">编辑</el-button>
+                                        <el-button v-on:click="deleteRow(scope.row)" v-if="scope.row.Status!=2" size="small" type="danger">删除</el-button>
+                                    </el-button-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                       layout="total,sizes,prev,pager,next,jumper" @*v-bind:page-sizes="table.page.pageSizes"*@
+                                       v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+
+                        </el-pagination>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="clearfix"></div>   
+</div>
+@section scripts{
+    <script>
+        // bootstrap the demo
+        var vue = new Vue({
+            components: {
+            },
+            el: '#app',
+            data: {
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: { userName: '', nickName: '', storeId: -1 },
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize }
+                },
+                checkedIds: []
+            },
+            methods: {
+                rowClassName: function (row, rowIndex) {
+                    return row.row.Status == 3 ? "disabled-row" : "";
+                },
+                onSelectionChange: function (selection) {
+                    var $this = this;
+                    this.checkedIds = [];
+                    selection.forEach(function (row) {
+                        $this.checkedIds.push(row.Id);
+                    });
+                },
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData();
+                },
+                loadData: function () {
+                    var _self = this;
+                    var url = "/Account/LoadData";
+                    var data = Object.assign({}, _self.table.page, _self.table.args);
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        }
+                        else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                },
+                detailRow: function (row) {
+                    window.location = "/Account/Edit?id=" + row.Id;
+                },
+                editRow: function (row) {
+                    window.location = "/Account/Edit?id=" + row.Id;
+                },
+                deleteRow: function (row) {
+                    var $this = this;
+                    $.post("/Account/Deleted", { id: row.Id }, function (result) {
+                        if (result && result.success) {
+                            $this.$message.success({
+                                message: "账户已删除！",
+                                onClose: function () {
+                                    $this.loadData();
+                                }
+                            });
+                        } else {
+                            $this.$message.error("账户删除失败！");
+                        }
+                    }, "json");
+                },
+                disabled: function () {
+                    if (this.checkedIds.length == 0) {
+                        this.$message.warning("请选择要禁用的用户！");
+                        return;
+                    }
+                    var $this = this;
+                    $.post("/Account/Disabled", { ids: this.checkedIds.toString() }, function (result) {
+                        if (result && result.success) {
+                            $this.$message.success({
+                                message: "账户已禁用！",
+                                onClose: function () {
+                                    $this.loadData();
+                                }
+                            });
+                        } else {
+                            $this.$message.error("账户禁用失败！");
+                        }
+                    }, "json");
+                },
+                actived: function () {
+                    if (this.checkedIds.length == 0) {
+                        this.$message.warning("请选择要启用的用户！");
+                        return;
+                    }
+                    var $this = this;
+                    $.post("/Account/Actived", { ids: this.checkedIds.toString() }, function (result) {
+                        if (result && result.success) {
+                            $this.$message.success({
+                                message: "账户已启用！",
+                                onClose: function () {
+                                    $this.loadData();
+                                }
+                            });
+                        } else {
+                            $this.$message.error("账户启用失败！");
+                        }
+                    }, "json");
+                },
+                reset: function () {
+                    if (this.checkedIds.length == 0) {
+                        this.$message.warning("请选择要重置密码的用户！");
+                        return;
+                    }
+                    var $this = this;
+                    $.post("/Account/ResetPassword", { ids: this.checkedIds.toString() }, function (result) {
+                        if (result && result.success) {
+                            $this.$message.success({
+                                message: "账户密码已重置！",
+                                onClose: function () {
+                                    $this.loadData();
+                                }
+                            });
+                        } else {
+                            $this.$message.error("账户密码重置失败！");
+                        }
+                    }, "json");
+                },
+                submit: function () {
+                    var selectRows = this.$refs.$table.selection;
+                    var ids = [];
+                    selectRows.forEach(function (item, index) {
+                        ids.push(item.Code);
+                    });
+                    this.$message({
+                        message: '你选择了' + ids.join(","),
+                        type: 'success'
+                    });
+                },
+                getSummaries: function (tb) {
+                    var sums = [];
+                    tb.columns.forEach(function (column, index) {
+                        if (index == 0) {
+                            sums[index] = '合计';
+                        }
+                        if (column.property == "PaidStatus") {
+                            sums[index] = "100.00"
+                        }
+
+                    });
+                    return sums;
+                }
+            },
+            created: function () {               
+            }
+        })
+
+    </script>
+}
+
+
+
+

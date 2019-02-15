@@ -1,0 +1,349 @@
+﻿@model Guoc.BigMall.Application.ViewObject.PurchaseOrderDto
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .dataRow div {
+        margin-bottom: 0px;
+    }
+</style>
+<!-- demo root element -->
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/Purchase/RefundSendIndex"><i class="fa fa-dashboard"></i>退单-出库</a></li>
+            <li class="active"><a href="/Purchase/RefundSend/@Model.Id">出库</a></li>
+        </ol>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+  
+        <div class="box-body">
+            <div class="row">
+                <div class="form-group col-sm-4 col-xs-6">
+
+                    <button type="button" class="btn btn-success btn-flat" v-on:click="saveInventory" v-bind:disabled="isSubmit">发货</button>
+                    <button type="button" class="btn btn-primary btn-flat" v-on:click="print">打 印</button>
+                    <a class="btn btn-default btn-flat" v-on:click="backToList">取 消</a>
+                    <input type="hidden" v-model="model.id" />
+                    <input type="hidden" class="form-control" v-model="model.supplierId">
+                    <input type="hidden" class="form-control" v-model="model.storeId">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 col-xs-3">
+
+                    <div class="input-group">
+                        <sncode-selector v-bind:search-args="productSearchArgs" v-on:initialize="onSncodeSelectorInitialize" v-on:callback="selectSNCodeCallback" placeholder="扫描串码"></sncode-selector>
+                        <span class="error-msg">{{scanSNCodeErrorMsg}}</span>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4"></div>
+                <div class="col-xs-4 col-sm-4"><h3 class="text-center text-success" style="border-bottom:2px solid;padding-bottom:1px;"><b>采购退单</b></h3></div>
+                <div class="col-xs-4 col-sm-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>供应商：{{model.supplierName}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span>单据号：{{model.code}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span>备注：{{model.remark}}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>门店：{{model.storeName}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span class="text-danger">单据状态：@Model.PurchaseOrderStatus</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span>制单日期：@Model.CreatedTime</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px;">序号</th>
+                                    <th style="width:150px;">商品编码</th>
+                                    <th style="width:150px;">品名</th>
+                                    <th>规格</th>
+                                    <th>单位</th>
+                                    <th>进价</th>
+                                    <th>订货数</th>
+                                    <th>已出数</th>
+                                    <th>本次出库货数量</th>
+                                    <th>串号</th>
+                                    <th>金额</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody">
+                                <tr v-for="(item,index) in model.Items" v-bind:class="item.BgColor">
+                                    <td class="text-center">{{index+1}}</td>
+                                    <td>
+                                        {{item.ProductCode}}
+                                    </td>
+                                    <td>{{item.ProductName}}</td>
+                                    <td>{{item.Specification}}</td>
+                                    <td>{{item.Unit}}</td>
+                                    <td>{{item.CostPrice.toFixed(2)}}</td>
+                                    <td>{{item.Quantity}}</td>
+                                    <td>{{item.ActualQuantity}}</td>
+
+                                    <td>
+                                        <span v-if="item.HasSNCode">{{item.SNQuantity}}</span>
+                                        <span v-else>
+                                            <el-input-number v-model="item.SNQuantity" v-bind:precision="0" v-bind:min="0" v-bind:max="item.Quantity"></el-input-number>
+                                            <span class="error-msg">{{item.SNQuantityErrorMsg}}</span>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <el-tag v-for="(SNCode,index) in item.SNCodes" v-bind:key="SNCode" v-on:close="removeSNCode(item,index)" disable-transitions="false" closable>{{SNCode}}</el-tag>
+                                    </td>
+                                    <td>{{item.Amount.toFixed(2)}}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td style="width:50px;"></td>
+                                    <td>合计：</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{totalQuantity}}</td>
+                                    <td>{{totalActualQuantity}}</td>
+                                    <td>{{totalSNCodesQuantity}}</td>
+                                    <td></td>
+                                    <td>{{countTotal.toFixed(2)}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>制单人：@Model.CreatedByName </span>
+                </div>
+
+                <div class="col-xs-4 col-sm-4">
+                    <span>更新人：@Model.UpdatedByName</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span>更新时间：@Model.UpdatedTime</span>
+                </div>
+            </div>
+        </div>
+ 
+    <br />
+    <div id="printDiv"></div>
+
+</div>
+
+@section scripts{
+    <script src="~/Content/vue/plugins/sncode-selector/sncode-selector.js"></script>
+    <script src="~/Scripts/jquery.PrintArea.js"></script>
+    <script>
+      
+            var demo = new Vue({
+                components: {
+
+                },
+                el: '#app',
+                data: {
+
+                    productSearchArgs: { storeId: "0" },
+                    model: {
+                        Id: @Model.Id,
+                        code: '@Model.Code',
+                        storeId: @Model.StoreId,
+                        storeName:'@Model.StoreName',
+                        supplierId: @Model.SupplierId,
+                        supplierName:'@Model.SupplierName',
+                        remark:'@Model.Remark',
+                        status:'@Model.PurchaseOrderStatus',
+                        createdOn:'@Model.CreatedOn',
+                        createdByName:'@Model.CreatedByName',
+                        confirmVerifyCode:'',
+
+                        Items:@Html.Raw(ViewBag.PurchaseOrderItems),
+                    },
+                    itemTemplate: {
+                        ProductId: 0,
+                        ProductName: "",
+                        InventoryQuantity: 0,
+                        Quantity: 0,
+                        CostPrice: 0,
+                        BatchNo: 0,
+                        SNCodes: [""],
+                        Amount: 0,
+                        SNQuantity:0,
+                        Bgcolor:'bg-danger',
+                        HasSNCode:false
+
+                    },
+                  
+                    totalQuantity: 0,
+                    totalActualQuantity:0,
+                    totalActualShipQuantity:0,
+                    totalSNCodesQuantity:0,
+                    isSubmit:false,
+                    scanSNCodeErrorMsg: "",
+                    postModel:{ Id: 0,  Items: [{ Id:0, ProductId:0, SNQuantity: 0,HasSNCode:false,IsSnCode:false,SNCodes:[""]}]}
+                },
+                methods: {
+                    backToList:function()
+                    {
+                        window.location.href="/Purchase/RefundSendIndex";
+                    },
+
+                    saveInventory: function () {
+                        //获取选择节点
+                        var _self = this;
+                        _self.isSubmit = true;
+                        var data = "";
+                        for (var i = 0; i < _self.model.Items.length; i++) {
+                            var item = _self.model.Items[i];
+                            if(item.Quantity!=item.SNQuantity)
+                            {
+                                this.$message.error("商品["+item.ProductName+"]实发数不正确");
+                                _self.isSubmit = false;
+                                return;
+                            }
+
+                        }
+                        this.postModel={ Id: 0,  Items: [{ Id:0, ProductId:0, SNQuantity: 0,HasSNCode:false,IsSnCode:false,SNCodes:[""]}]};
+                        var data = JsExt.map(this.model,this.postModel, true);
+                        data.Items.forEach(function(item)
+                        {
+                            item.SNCodes=item.SNCodes.toString();
+                            item.IsSnCode=item.HasSNCode;
+                        })
+                        data.items = JSON.stringify(data.Items);
+                        if (data == "") {
+                            this.$message.error("请导入商品");
+                            _self.isSubmit = false;
+                            return;
+                        }
+                        $.post("/Purchase/OutStock", data, function (result) {
+                            if (result.success) {
+                                 _self.$message.success({
+                                    message: "出库成功！",
+                                    onClose: function () {
+                                        _self.backToList();
+                                    }
+                                });
+                            }
+                            else {
+                                _self.$message.error(result.error);
+
+                            }
+                            _self.isSubmit = false;
+                        }, "json");
+
+                        _self.isSubmit = false;
+
+                    },
+
+                   
+                    removeSNCode: function (item, index) {
+                        item.SNCodes.splice(index, 1);
+                        item.SNQuantity--;
+                    },
+                    onSncodeSelectorInitialize: function (selector, dataKey) {
+                        selector.addColumns(["BatchCostPrice", "批次成本", 100]);
+                    },
+                    //扫描串码后回调
+                    selectSNCodeCallback: function (selectedSNCodes) {
+                        var $this = this;
+                        if (selectedSNCodes.length > 0) {
+                            var snCodes = selectedSNCodes.splice(0);
+                            var errors = [];
+                            snCodes.forEach(function (snCode) {
+                                var item=$this.model.Items.first(function(item){ return item.ProductId == snCode.Id; });
+                                if(item){
+                                    if(!item.SNCodes.contains(snCode.SNCode)){
+                                        if(item.SNQuantity<item.Quantity){
+                                            item.SNCodes.push(snCode.SNCode);
+                                            item.SNQuantity = item.SNCodes.length;
+                                        }else{
+                                            errors.push("串码【{0}】对应的商品【{1}】出库数量已满。".format(snCode.SNCode, snCode.Code));
+                                        }
+                                    }else{
+                                        errors.push("串码【{0}】已包含在单据中。".format(snCode.SNCode, snCode.Code));
+                                    }
+                                }else{
+                                    errors.push("该单据不包含串码【{0}】对应的商品【{1}】。".format(snCode.SNCode, snCode.Code));
+                                }
+                            });
+                            if (errors.length!=0) {
+                                this.$message.error({
+                                    dangerouslyUseHTMLString:true,
+                                    message:errors.join("<br/>")
+                                });
+                            }
+                        }
+                    },
+                    print: function () {
+                        var data = {id:this.model.Id};
+                        $.get("/Purchase/Print", data, function (result) {
+                            $("#printDiv").html(result);
+                            $("#printTemplate").printArea();
+                            $("#printDiv").html("");
+                        });
+                    },
+                },
+                computed: {
+                    countTotal: function () {
+                        var total = 0;
+                        var bookQty = 0;
+                        var totalActualQty = 0;
+
+                        var totalSNCodesQuantity=0;
+                        var _self = this;
+                        this.model.Items.forEach(function (item) {
+                            var snqty=0;
+                            var qty = parseInt(item.Quantity);
+                            var actualQty = parseInt(item.ActualQuantity);
+
+                            var snQuantity=parseInt(item.SNQuantity);
+                            var price = item.CostPrice;
+                            item.Amount = price * actualQty;
+                            bookQty += qty;
+                            total += item.Amount;
+                            totalActualQty+= actualQty;
+                            totalSNCodesQuantity+=snQuantity;
+                            //设置颜色
+
+                            item.BgColor = item.Quantity==item.SNQuantity ?"bg-success":"bg-danger";
+                        })
+                        _self.totalQuantity = bookQty;
+                        _self.totalActualQuantity = totalActualQty;
+                        _self.totalSNCodesQuantity=totalSNCodesQuantity;
+
+                        return total;
+                    }
+                },
+               
+                created: function () {
+                    this.productSearchArgs.storeId = this.model.storeId.toString();
+                }
+            });
+
+          
+     
+    </script>
+}

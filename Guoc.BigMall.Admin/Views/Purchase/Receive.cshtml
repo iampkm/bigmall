@@ -1,0 +1,581 @@
+﻿@model Guoc.BigMall.Application.ViewObject.PurchaseOrderDto
+@using Guoc.BigMall.Application.Configuration;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .dataRow div {
+        margin-bottom: 0px;
+    }
+
+    .bg-red {
+        background-color: #FF5757 !important;
+    }
+</style>
+<!-- demo root element -->
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/Purchase/WaitedReceive"><i class="fa fa-dashboard"></i>采购-待收货</a></li>
+            <li class="active"><a href="/Purchase/Receive/@Model.Id">收货入库</a></li>
+        </ol>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form>
+        <div class="box-body">
+            <div class="row">
+                <div class="form-group col-sm-4 col-xs-6">
+                    @*<button type="button" class="btn btn-warning btn-flat" v-on:click="onSubmit" v-bind:disabled="isSubmit">收 货</button>*@
+                    <button type="button" class="btn btn-success btn-flat" v-on:click="saveInventory" v-bind:disabled="isSubmit">入 库</button>
+                    <button type="button" class="btn btn-primary btn-flat" v-on:click="print">打 印</button>
+                    <button type="button" class="btn btn-primary btn-fla" v-on:click="showD">导入商品</button>
+                    <a class="btn btn-default btn-flat" href="javascript:history.back()">取 消</a>
+                    <button type="button" class="btn btn-primary btn-fla" v-on:click="Close" v-bind:disabled="isSubmit" v-show="@ViewBag.ShowClose">关单</button>
+                    <input type="hidden" v-model="model.id" />
+                    <input type="hidden" class="form-control" v-model="model.supplierId">
+                    <input type="hidden" class="form-control" v-model="model.storeId">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 col-xs-3">
+
+                    <div class="input-group">
+                        <el-input type="text" v-model="inputProductCodeOrBarCode" v-on:keyup.enter.native="inputProduct()" placeholder="扫入商品编码查找商品"></el-input>
+                        @*<span class="input-group-btn">
+                                <button type="button" class="btn btn-warning btn-flat" v-on:click="toggleScan">扫码({{toggleScanText}})</button>
+                            </span>*@
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4"></div>
+                <div class="col-xs-4 col-sm-4"><h3 class="text-center text-success" style="border-bottom:2px solid;padding-bottom:1px;"><b>采购订单</b></h3></div>
+                <div class="col-xs-4 col-sm-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>供应商：{{model.supplierName}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span>单据号：{{model.code}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span>备注：{{model.remark}}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4">
+                    <span>门店：{{model.storeName}}</span>
+                </div>
+                <div class="col-xs-4 col-sm-4 ">
+                    <span class="text-danger">单据状态：@Model.PurchaseOrderStatus</span>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+                    <span>制单日期：@Model.CreatedTime</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px;">序号</th>
+                                    <th style="width:150px;">商品编码</th>
+                                    <th style="width:150px;">品名</th>
+                                    <th>规格</th>
+                                    <th>单位</th>
+                                    <th>进价</th>
+                                    <th>订货数</th>
+                                    <th>已收数</th>
+                                    <th>本次收货数量</th>
+                                    @*<th>是否串码</th>*@
+                                    <th>串号</th>
+                                    <th>扫码</th>
+                                    <th>金额</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody">
+                                <tr v-for="(item,index) in model.Items" v-bind:class="item.BgColor">
+                                    <td class="text-center">{{index+1}}</td>
+                                    <td>
+                                        {{item.ProductCode}}
+                                    </td>
+                                    <td>{{item.ProductName}}</td>
+                                    <td>{{item.Specification}}</td>
+                                    <td>{{item.Unit}}</td>
+                                    <td>{{item.CostPrice.toFixed(2)}}</td>
+                                    <td>{{item.Quantity}}</td>
+                                    <td>{{item.ActualQuantity}}</td>
+                                    <td>
+                                        <span v-if="item.HasSNCode">{{item.SNQuantity}}</span>
+                                        <span v-else>
+                                            <el-input-number v-model="item.SNQuantity" v-bind:precision="0" v-bind:min="0" v-bind:max="item.Quantity"></el-input-number>
+
+                                        </span>
+                                    </td>
+                                    @*<td>
+
+                                            <el-checkbox v-model="item.IsSnCode"></el-checkbox>
+
+                                        </td>*@
+                                    <td>
+                                        <el-tag key="tag"
+                                                v-for="(tag,index) in item.SNCodes"
+                                                closable v-on:close="handleClose(index,item)"
+                                                disable-transitions="false">
+                                            {{tag}}
+                                        </el-tag>
+
+                                    </td>
+                                    <td>
+                                        <el-input v-if="item.HasSNCode" v-bind:id="'snCodeScanner_'+item.ProductCode" clearable v-model="item.inputSNCode" v-on:keyup.native.enter="InputSNCode(item,$event)">
+                                            <el-tooltip slot="prepend" content="扫描二维码" placement="right" effect="light">
+                                                <el-button icon="el-icon-view" v-on:click="batchScanning(item)"></el-button>
+                                            </el-tooltip>
+                                        </el-input>
+                                    </td>
+                                    <td>{{item.Amount.toFixed(2)}}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td style="width:50px;"></td>
+                                    <td>合计：</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{totalQuantity}}</td>
+                                    <td>{{totalActualQuantity}}</td>
+                                    <td>{{totalSNCodesQuantity}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{countTotal.toFixed(2)}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-sm-3">
+                    <span>制单人：系统（Sap）</span>
+                </div>
+
+                <div class="col-xs-3 col-sm-3">
+                    <span>收货人：@Model.UpdatedByName</span>
+                </div>
+
+            </div>
+        </div>
+    </form>
+    <br />
+    <div id="printDiv"></div>
+    <el-dialog title="提示"
+               visible.sync="dialogVisible"
+               width="50%">
+
+        <el-input type="textarea" v-model="inputProducts" placeholder="输入商品" autosize="{ minRows: 4}"></el-input>
+        <span style="margin-top:5px;">请将excel中商品编码和串码两列粘贴到文本框中 </span>
+        <span slot="footer" class="dialog-footer">
+            <el-button v-on:click="closeD">取 消</el-button>
+            <el-button type="primary" v-on:click="importProduct">确 定</el-button>
+        </span>
+    </el-dialog>
+</div>
+
+@section scripts{
+
+    <script src="~/Scripts/jquery.PrintArea.js"></script>
+    <script>
+        $("doucument").ready(function () {
+            var demo = new Vue({
+                components: {
+
+                },
+                el: '#app',
+                data: {
+                    dialogVisible: false,
+                    inputProductCodeOrBarCode:'',
+                    ItemMaxSNCodeQuantity:@SystemConfig.ItemMaxSNCodeQuantity,
+
+                    model: {
+                        id: @Model.Id,
+                        code: '@Model.Code',
+                        storeId: @Model.StoreId,
+                        storeName:'@Model.StoreName',
+                        supplierId: @Model.SupplierId,
+                        supplierName:'@Model.SupplierName',
+                        remark:'@Model.Remark',
+                        status:'@Model.PurchaseOrderStatus',
+                        createdOn:'@Model.CreatedOn',
+                        createdByName:'@Model.CreatedByName',
+                        confirmVerifyCode:'',
+                        items: '',
+                        Items:@Html.Raw(ViewBag.PurchaseOrderItems),
+                    },
+                    itemTemplate: {
+                        ProductId: 0,
+                        ProductName: "",
+                        InventoryQuantity: 0,
+                        Quantity: 0,
+                        CostPrice: 0,
+                        BatchNo: 0,
+                        SNCodes: "",
+                        Amount: 0,
+                        SNQuantity:0,
+                        Bgcolor:'bg-danger',     inputSNCode:'',
+
+                    },
+                    products: @Html.Raw(ViewBag.PurchaseOrderItems),
+                    totalQuantity: 0,
+                    totalActualQuantity:0,
+                    totalActualShipQuantity:0,
+                    totalSNCodesQuantity:0,
+                    toggleScanText:'关',
+                    isSubmit:false,
+                    bgcolor:'bg-danger',
+                    SNCodes:[],
+                    importproducts: [{  ProductId: 0, ProductCode: '', BarCode: '', ProductName: '', Specification: '',  Unit: '', LimitQuantity: 0}],
+                    inputProducts: ''
+                },
+                methods: {
+                    showD:function(){
+                        this.dialogVisible=true;
+
+                    },
+                    closeD:function(){
+                        this.dialogVisible=false;
+
+                    },
+                    importProduct: function () {
+                        var inputItems = this.inputProducts;
+                        //this.resetItems();
+                        var _self = this;
+                        if (inputItems == "") { return; }
+
+                        var productlist = $.trim(inputItems).split("\n");
+                        if (!_self.CheckImportProduct()) {
+                            return;
+                        }
+                        for(var nRow=0;nRow <= productlist.length-1;nRow++)
+                        {
+                            var product = productlist[nRow].split("\t");
+                            this.model.Items.forEach(function (item) {
+                                if (item.ProductCode==product[0]) {
+                                    if (product[1]!=null&&product[1]!="") {
+
+                                        item.SNCodes.push(product[1]);
+                                        item.SNQuantity++;
+                                    }
+                                    else {
+                                        item.SNQuantity++;
+                                    }
+
+                                }
+
+                            })
+
+                        }
+                        _self.dialogVisible=false;
+                        _self.inputProducts="";
+                    },
+                    CheckImportProduct:function()
+                    {
+                        var _self = this;
+                        var inputItems = _self.inputProducts;
+                        var productlist = $.trim(inputItems).split("\n");
+                        var result=true;
+                        for(var nRow=0;nRow <= productlist.length-1;nRow++)
+                        {
+                            var product = productlist[nRow].split("\t");
+                            if (product[1]!=null&&product[1]!="") {
+                                this.model.Items.forEach(function (item) {
+                                    if(item.SNCodes.indexOf(product[1]) > -1) {//则包含该元素
+                                        _self.$message.error("商品"+product[0]+"的串码："+product[1]+"已存在,请修改收操作！");
+                                        result=false;
+
+                                        return result;
+
+                                    }
+                                })
+                            }
+
+                        }
+                        return result;
+                    },
+                    saveInventory: function () {
+                        //获取选择节点
+                        var _self = this;
+                        _self.isSubmit = true;
+                        var data = "";
+                        for (var i = 0; i < _self.model.Items.length; i++) {
+                            var item = _self.model.Items[i];
+                            if(item.SNQuantity < 0||(item.Quantity-item.ActualQuantity)<item.SNQuantity)
+                            {
+                                this.$message.error("商品["+item.ProductName+"]实收数不正确");
+                                _self.isSubmit = false;
+                                return;
+                            }
+
+                            if (item.ProductId > 0 && item.SNQuantity > 0) {//、SNCodes
+                                if (item.SNCodes!=null&&item.SNCodes!="") {
+                                    data += "{\"Id\":" + item.Id + ",\"SNQuantity\":" + item.SNQuantity + ",\"IsSnCode\":" + item.HasSNCode +  ",\"ProductId\":" + item.ProductId +  ",\"SNCodes\":\"" + item.SNCodes + "\",\"ProductCode\":\"" + item.ProductCode +"\"},";
+                                }
+                                else
+                                    data += "{\"Id\":" + item.Id + ",\"SNQuantity\":" + item.SNQuantity + ",\"IsSnCode\":" + item.HasSNCode +  ",\"ProductId\":" + item.ProductId +   ",\"ProductCode\":\"" + item.ProductCode +"\"},";
+                            }
+                        }
+                        if (data == "") {
+                            this.$message.error("没有符合入库的商品！");
+                            _self.isSubmit = false;
+                            return;
+                        }
+                        data = data.substring(0, data.length - 1);
+                        data = "[" + data + "]";
+
+                        _self.model.items = data;
+                        var v_data = _self.model;
+
+                        var result=confirm("您确定提交该记录？");
+
+                        if (result) {
+                            $.post("/Purchase/StockIn", _self.model, function (result) {
+                                if (result.success) {
+                                    _self.$message.success({
+                                        message: "入库成功！",
+                                        onClose: function () {
+                                            window.location.href = "/Purchase/WaitedReceive";
+                                        }
+                                    });
+                                }
+                                else {
+                                    _self.$message.error(result.error);
+
+                                }
+                                _self.isSubmit = false;
+                            }, "json");
+                        }
+                        _self.isSubmit = false;
+
+                    },
+
+                    inputShelfLife:function(){
+                        var target = event.target;
+                        var row = $(target).parent().parent();
+                        if (row.next().length > 0) {
+                            row.next().find("input.shelfLife").focus().select();
+                        }
+                    } ,
+                    // 扫码
+                    inputProduct:function(){
+                        var _self = this;
+                        this.model.Items.forEach(function (item) {
+                            if(item.ProductCode.trim()==_self.inputProductCodeOrBarCode)
+                            {
+                                item.BgColor ="bg-warning";
+                                _self.inputProductCodeOrBarCode = "";
+                                item.inputSNCode="";
+                                $("#snCodeScanner_"+item.ProductCode).select();
+                                return false;
+                            }
+                            item.BgColor ="bg-danger";
+                        })
+                    },
+
+                    print: function () {
+                        var data = {id:this.model.id};
+                        $.get("/Purchase/Print", data, function (result) {
+                            $("#printDiv").html(result);
+                            $("#printTemplate").printArea();
+                            $("#printDiv").html("");
+                        });
+                    },
+                    handleClose:function(inde,item)
+                    {
+                        item.SNCodes.splice(inde, 1);
+                        item.SNQuantity--;
+
+                    },
+
+                    validateSNCode: function (snCode) {
+                        if (!snCode || !snCode.trim()) {
+                            this.$message.error("串码不能为空！");
+                            return false;
+                        }
+
+                        if (/[^a-zA-Z0-9]/.test(snCode)) {
+                            this.$message.error("串码不能包含特殊字符！【{0}】".format(snCode));
+                            return false;
+                        }
+
+                        if (snCode.length > 18) {
+                            this.$message.error("串码无效，长度超过限制！【{0}】".format(snCode));
+                            return false;
+                        }
+
+                        var exists = this.model.Items.contains(function(item){ return item.SNCodes.contains(snCode); });
+                        if(exists){
+                            this.$message.error("串码已存在！【{0}】".format(snCode));
+                            return false;
+                        }
+
+                        return true;
+                    },
+
+                    InputSNCode:function(item,ev)
+                    {
+                        var _self = this;
+                        item.inputSNCode = item.inputSNCode.trim().toUpperCase();
+                        if(this.validateSNCode(item.inputSNCode) == false)return;
+
+                        //var result=true;
+                        //this.model.Items.forEach(function (existitem) {
+                        //    if(existitem.SNCodes.indexOf(item.inputSNCode) > -1) {
+                        //        _self.$message.error("串码："+item.inputSNCode+"已存在！");
+                        //        result=false;
+                        //        return result;
+                        //    }
+                        //})
+                        //if (!result) {
+                        //    return;
+                        //}
+
+                        if(item.SNQuantity >= this.ItemMaxSNCodeQuantity){
+                            this.$message.error("商品{0}串码总数不能超过{1}个！".format(item.ProductCode, this.ItemMaxSNCodeQuantity));
+                            return;
+                        }
+
+                        item.SNCodes.push(item.inputSNCode);
+                        item.SNQuantity++;
+                        item.inputSNCode="";
+                    },
+
+                    batchScanning:function(item){
+                        var $this = this;
+                        function lockSubmit(box, lock) {
+                            box.showClose = !lock;
+                            box.closeOnPressEscape = !lock;
+                            box.closeOnClickModal = !lock;
+                            box.showCancelButton = !lock;
+                            box.confirmButtonLoading = lock;
+                            box.confirmButtonText = lock ? "执行中..." : "确定";
+                        }
+
+                        this.$msgbox({
+                            title: '批量扫码',
+                            showInput: true,
+                            inputType: "textarea",
+                            inputPlaceholder: "扫描二维码",
+                            showCancelButton: true,
+                            showConfirmButton: true,
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            customClass: "snCodeBatchScanningBox",
+                            beforeClose: function (action, instance, done) {
+                                if (action === "confirm") {
+                                    var value = instance.inputValue;
+                                    if (!value || !value.trim()) {
+                                        $this.$message.error("串码不能为空！");
+                                        return;
+                                    }
+
+                                    value = value.trim();
+                                    var snCodes = value.toUpperCase().split("\n").select(function (snCode) { return snCode ? snCode.trim() : snCode; }).remove(function (snCode) { return !snCode || !snCode.trim(); }).distinct();
+                                    if (snCodes.length == 0) {
+                                        $this.$message.error("串码不能为空！");
+                                        return;
+                                    }
+
+                                    for (var i = 0; i < snCodes.length; i++) {
+                                        if ($this.validateSNCode(snCodes[i]) == false) return;
+                                    }
+
+                                    if(item.SNQuantity >= $this.ItemMaxSNCodeQuantity){
+                                        $this.$message.error("商品{0}串码总数不能超过{1}个！".format(item.ProductCode, $this.ItemMaxSNCodeQuantity));
+                                        return;
+                                    }
+
+                                    item.SNCodes = item.SNCodes.concat(snCodes);
+                                    item.SNQuantity += snCodes.length;
+                                }
+                                lockSubmit(instance, false);
+                                done();
+                            }
+                        });
+                    },
+
+                    Close: function () {
+                        var _self=this;
+                        _self.isSubmit=true;
+                        var data = {id:_self.model.id};
+                        $.post("/Purchase/Close", data, function (result) {
+                            if (result.success) {
+                                $this.$message.success({
+                                    message: "保存成功！",
+                                    onClose: function () {
+
+                                    }
+                                });
+                            } else {
+                                _self.$message.error(result.error);
+                            }
+                        });
+                        _self.isSubmit=false;
+                    },
+
+                },
+
+                computed: {
+                    countTotal: function () {
+                        var total = 0;
+                        var bookQty = 0;
+                        var totalActualQty = 0;
+                        var totalSNCodesQuantity=0;
+                        var _self = this;
+                        var sncodesss=[];
+                        this.model.Items.forEach(function (item) {
+                            var snqty=0;
+
+                            var qty = parseInt(item.Quantity);
+                            var actualQty = parseInt(item.ActualQuantity);
+
+                            var snQuantity=parseInt(item.SNQuantity);
+                            var price = item.CostPrice;
+                            item.Amount = price * snQuantity;
+                            bookQty += qty;
+                            total += item.Amount;
+                            totalActualQty+= actualQty;
+                            totalSNCodesQuantity+=snQuantity;
+
+                            //设置颜色
+                            //item.BgColor = (item.Quantity-item.ActualQuantity)==item.SNQuantity ?"bg-success":"bg-danger";
+                            var diff = item.Quantity - item.ActualQuantity - item.SNQuantity;
+                            item.BgColor = diff == 0 ? "bg-success" : ( diff > 0 ? "bg-danger" : "bg-red" );
+                        })
+                        _self.totalQuantity = bookQty;
+                        _self.totalActualQuantity = totalActualQty;
+                        _self.totalSNCodesQuantity=totalSNCodesQuantity;
+                        return total;
+                    }
+                },
+                watch:{
+
+                },
+
+
+            });
+
+            $(".productCode").focus();
+        });
+    </script>
+}
+
+
+
+
+

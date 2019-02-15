@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Error";
+    Layout = "~/Views/Shared/Error.cshtml";
+}
+
+@section styles{
+    <style type="text/css">
+        .errorColor {
+            color: red;
+        }
+    </style>
+}
+
+<h2 class="errorColor">@ViewBag.ErrorMsg</h2>
+

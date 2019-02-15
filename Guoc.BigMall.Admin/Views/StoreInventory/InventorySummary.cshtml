@@ -1,0 +1,209 @@
+﻿@{
+    ViewBag.Title = "InventorySummary";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section styles{
+    <style type="text/css">
+        .el-select {
+            width: 100%;
+        }
+    </style>
+}
+
+<div id="app">
+    <div class="box box-primary">
+        <div class="box-header">
+            <ol class="breadcrumb" style="padding:0px;margin:1px;">
+                <li><a href="/StoreInventory/InventorySummary"><i class="fa fa-dashboard"></i> 库存汇总</a></li>
+            </ol>
+        </div>
+        <div class="box-body">
+
+            <div class="row" style="margin-bottom:10px;">
+                <div class="col-xs-3 col-sm-2">
+                    <product-selector v-model="table.args.ProductIds" placeholder="商品"></product-selector>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <brand-selector v-model="table.args.BrandIds" placeholder="品牌"></brand-selector>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <category-selector v-on:value-changed="onSelectCategory" placeholder="品类"></category-selector>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <store-selector v-model="table.args.StoreIds" placeholder="门店"></store-selector>
+                </div>
+            </div>
+
+
+            <div class="row" style="margin-bottom:10px;">
+
+                <div class="col-xs-3 col-sm-2">
+                    <div class="input-group">
+                        <span class="input-group-addon">汇总方式</span>
+                        <el-select v-model="table.args.SummaryMethod" v-on:change="onSummaryMethodChanged" placeholder="汇总方式">
+                            <el-option key="1" value="1" label="商品"></el-option>
+                            <el-option key="2" value="2" label="品牌"></el-option>
+                            <el-option key="3" value="3" label="类别"></el-option>
+                            <el-option key="4" value="4" label="日期"></el-option>
+                            <el-option key="5" value="5" label="仓位"></el-option>
+                        </el-select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3 col-sm-2">
+                    <div class="input-group">
+                        <span class="input-group-addon">选择时间</span>
+                        <el-date-picker v-model="table.args.Time" value-format="yyyy-MM-dd" type="daterange" range-separator="—" start-placeholder="开始日期" end-placeholder="结束日期">
+                        </el-date-picker>
+                    </div>
+                </div>
+
+            </div>
+
+            <el-row class="row-bottom">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">
+                        <el-button type="primary" class="btn btn-flat" v-on:click="loadData(1)">查 询</el-button>
+                        <el-button type="success" class="btn btn-flat" v-on:click="exportExecl()">导 出</el-button>
+                        <el-button class="btn btn-flat" v-on:click="clearQuery"><i class="fa fa-eraser"></i>清除条件</el-button>
+                    </span>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col v-bind:span="24">
+                    <el-table class="form-group" v-bind:data="table.rows" border style="width: 100%" v-bind:height="table.height">
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="ProductCode" label="商品编码" width="150" v-if="table.args.SummaryMethod==1"></el-table-column>
+                        <el-table-column prop="ProductName" label="商品名称" width="300" v-if="table.args.SummaryMethod==1"></el-table-column>
+                        <el-table-column prop="BrandCode" label="品牌编码" width="150" v-if="table.args.SummaryMethod==2"></el-table-column>
+                        <el-table-column prop="BrandName" label="品牌名称" width="300" v-if="table.args.SummaryMethod==2"></el-table-column>
+                        <el-table-column prop="CategoryCode" label="品类编码" width="150" v-if="table.args.SummaryMethod==3"></el-table-column>
+                        <el-table-column prop="CategoryName" label="品类名称" width="300" v-if="table.args.SummaryMethod==3"></el-table-column>
+                        <el-table-column prop="CreatedOnString" label="日期" width="150" v-if="table.args.SummaryMethod==4"></el-table-column>
+                        <el-table-column prop="StoreCode" label="门店编码" width="150" v-if="table.args.SummaryMethod==5"></el-table-column>
+                        <el-table-column prop="StoreName" label="门店名称" width="300" v-if="table.args.SummaryMethod==5"></el-table-column>
+                        <el-table-column prop="Quantity" label="数量" width="100" sortable></el-table-column>
+                        <el-table-column prop="CostAmount" label="成本总金额" width="115" sortable></el-table-column>
+                    </el-table>
+                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                   layout="total,sizes,prev,pager,next,jumper"
+                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
+                    </el-pagination>
+                </el-col>
+            </el-row>
+
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/vue/plugins/brand-selector/brand-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/category-selector/category-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/supplier-selector/supplier-selector.js" type="text/javascript"></script>
+    <script src="~/Content/vue/plugins/product-selector/product-selector.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var demo = new Vue({
+            components: {
+
+            },
+            el: '#app',
+            data: {
+                table: {
+                    height: 450,
+                    rows: [],
+                    args: {},
+                    page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize, toExcel: false, IsPaging: true },
+                    argsTemplate: { StoreIds: "", ProductIds: "", BrandIds: "", CategoryIds: "", CategoryCode: "", Time: "", SummaryMethod: "1" }
+                },
+                checkBrandIds: [],
+            },
+            methods: {
+                onPageChange: function (page) {
+                    this.table.page.pageIndex = page;
+                    this.loadData();
+                },
+                onPageSizeChange: function (pageSize) {
+                    this.table.page.pageSize = pageSize;
+                    this.loadData(1);
+                },
+
+                onSummaryMethodChanged: function () {
+                    this.table.rows = [];
+                    this.table.page.total = 0;
+                },
+
+                onSelectCategory: function (checkedNodes) {
+                    this.table.args.CategoryCode = checkedNodes && checkedNodes.length > 0 ? checkedNodes[0].Code : "";
+                },
+
+                validate: function () {
+                    if (!this.table.args.Time || this.table.args.Time.length == 0) {
+                        this.$message({
+                            message: "请选择时间！",
+                            type: 'error'
+                        });
+                        return false;
+                    }
+
+                    if (!this.table.args.SummaryMethod) {
+                        this.$message({
+                            message: "请选择汇总方式！",
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    return true;
+                },
+
+                loadData: function (pageIndex) {
+                    if (!this.validate()) return;
+
+                    if (pageIndex)
+                        this.table.page.pageIndex = pageIndex;
+
+                    var _self = this;
+                    var url = "/StoreInventory/LoadInventorySummary";
+                    var data = Object.assign({}, this.table.page, this.table.args, { Time: this.table.args.Time.toString() });
+
+                    $.get(url, data, function (result) {
+                        if (result.success) {
+                            _self.table.rows = result.data;
+                            _self.table.page.total = result.total;
+                        } else {
+                            _self.$message({
+                                message: result.error,
+                                type: 'error'
+                            });
+                        }
+                    }, "Json");
+                },
+
+                exportExecl: function () {
+                    if (!this.validate()) return;
+                    var data = Object.assign({}, this.table.page, this.table.args, { Time: this.table.args.Time.toString(), toExcel: true, IsPaging: false });
+                    var params = "";
+                    for (var key in data) {
+                        if (data[key])
+                            params += "&{0}={1}".format(key, data[key]);
+                    }
+                    window.location.href = "/StoreInventory/LoadInventorySummary?" + params.substr(1);
+                },
+
+                clearQuery: function () {
+                    this.table.args = JsExt.clone(this.table.argsTemplate, true);
+                }
+            },
+            created: function () {
+                setListPage(this.table, 291);
+                this.clearQuery();
+            }
+        });
+    </script>
+}
+
+

@@ -1,0 +1,134 @@
+﻿@using Guoc.BigMall.Application.DTO;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+}
+<!-- demo root element -->
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/Account/Index"><i class="fa fa-dashboard"></i>账号管理</a></li>
+            <li class="active"><a href="/Account/Create">注册账号</a></li>
+        </ol>
+    </div>
+
+    <div style="max-width:500px;padding:10px 0px 10px 0px;">
+        <el-form ref="form" v-bind:model="form" v-bind:rules="formRules" label-width="80px">
+            <el-form-item label="工号" prop="UserName">
+                <el-input v-model="form.UserName" placeholder="工号" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="姓名" prop="NickName">
+                <el-input v-model="form.NickName" placeholder="姓名" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="电话" prop="Phone">
+                <el-input v-model="form.Phone" placeholder="电话" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="初始密码">
+                {{form.Password}}
+            </el-form-item>
+            <el-form-item label="角色" prop="RoleId">
+                <template>
+                    <el-select v-model="form.RoleId" placeholder="请选择">
+                        @*<el-option label="cccc" value="dddd"></el-option>*@
+                        @*<el-option v-bind:label="aaaa" v-bind:value="bbbbb"></el-option>*@
+                        @foreach (var item in ViewBag.Roles)
+                        {
+                            <el-option key="@item.Id" label="@item.Name" value="@item.Id"></el-option>
+                        }
+                    </el-select>
+                </template>
+            </el-form-item>
+            <el-form-item label="门店" prop="CanViewStores">
+                <store-selector v-model="form.CanViewStores" placeholder="门店" multi-select="true"></store-selector>
+            </el-form-item>
+            <el-form-item label="账户授权">
+                <el-radio-group v-model="form.mapKey" v-on:change="onChange">
+                    <el-radio label="store-all">所有门店</el-radio>
+                    <el-radio label="store-tag">标签门店</el-radio>
+                    <el-radio label="store-id">指定门店</el-radio>
+                </el-radio-group>
+
+                <div id="store-tag" v-show="form.mapKey=='store-tag'">
+                    <el-select v-model="form.mapValue" multiple filterable placeholder="请选择">
+                        <el-option v-for="item in tags"
+                                   v-bind:key="item.id"
+                                   v-bind:label="item.name"
+                                   v-bind:value="item.id">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div id="store-id" v-show="form.mapKey=='store-id'">
+                    <store-selector v-model="form.CanViewStores" placeholder="可以查看门店的权限" multi-select="true"></store-selector>
+                </div>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>
+                <el-button v-on:click="backToList" v-bind:disabled="lock">取消</el-button>
+            </el-form-item>
+        </el-form>
+
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/vue/plugins/store-selector/store-selector.js"></script>
+    <script type="text/javascript">
+        var rules = @Html.Raw(FormRules.GetRules(typeof(AccountCreateModel)));
+
+        var vue = new Vue({
+            el: '#app',
+            data: {
+                lock: false,
+                form: {
+                    UserName:'',
+                    NickName:'',
+                    Phone:'',
+                    RoleId:'',
+                    storeId:0,
+                    Password:"123456",
+                    CanViewStores:"",
+                    mapKey:'store-all',
+                    mapValue:'1'
+                },
+                formRules: rules,
+                tags: @ViewBag.StoreTags;
+            },
+            methods: {
+                onSubmit: function () {
+                    var $this=this;
+                    this.lock=true;
+                    this.$refs.form.validate(function(valid){
+                        if(!valid)return false;
+                        $this.form.CanViewStores = $this.form.CanViewStores.toString().split(",");
+                        $.ajax({
+                            type:"POST",
+                            url:"/Account/Create",
+                            data:$this.form,
+                            traditional:true,
+                            success:function(result){
+                                if (result.success) {
+                                    $this.$message.success({
+                                        message:"保存成功！",
+                                        onClose:function(){
+                                            $this.backToList();
+                                        }
+                                    });
+                                }else {
+                                    $this.$message.error(result.error);
+                                }
+                            }
+                        });
+                    });
+                    this.lock=false;
+                },
+                backToList:function(){
+                    window.location="/Account/Index";
+                },
+                onChange: function () { }
+            }
+        });
+    </script>
+}
+
+

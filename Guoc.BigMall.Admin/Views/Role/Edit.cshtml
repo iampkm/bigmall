@@ -1,0 +1,205 @@
+﻿@model Guoc.BigMall.Domain.Entity.Role
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div id="app" class="box box-primary">
+    <div class="box-header with-border">
+        <ol class="breadcrumb" style="padding:0px;margin:1px;">
+            <li><a href="/Role/Index"><i class="fa fa-dashboard"></i>角色管理</a></li>
+            <li class="active"><a href="/Role/Edit/@Model.Id">修改角色</a></li>
+        </ol>
+    </div>
+    <el-form v-bind:model="ruleForm" v-bind:rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-input type="hidden" v-model="ruleForm.id" size="small"></el-input>
+        <el-form-item label="角色名" prop="name">
+            <el-col v-bind:span="6">
+                <el-input v-model="ruleForm.name" size="small" placeholder="角色名"></el-input>
+            </el-col>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="description">
+            <el-col v-bind:span="6">
+                <el-input type="textarea" v-model="ruleForm.description" placeholder="角色描述"></el-input>
+            </el-col>
+        </el-form-item>
+        <el-form-item label="权限配置">
+            <el-tree ref="tree" v-bind:data="data2"
+                     show-checkbox="true"
+                     node-key="Key"
+                     v-bind:default-expand-all="false"
+                     v-bind:default-expanded-keys="defaultExpandedKeys"
+                     v-bind:default-checked-keys="defaultKeys"
+                     v-bind:props="defaultProps">
+            </el-tree>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" v-on:click="submitForm('ruleForm')"  v-bind:disabled="isSubmit">保存</el-button>
+            <el-button v-on:click="resetForm('ruleForm')">取消</el-button>
+        </el-form-item>
+    </el-form>
+
+</div>
+@section scripts{
+
+    <script>
+        $("doucument").ready(function () {
+            var zNodes =@Html.Raw(ViewBag.menuTree);
+            var currentNodes =@Html.Raw(ViewBag.curentItems);
+            var demo = new Vue({
+                components: {
+                },
+                el: '#app',
+                data: {
+                    valid: false,
+                    isSubmit: false,
+                    //model: {
+                    //    name: '',
+                    //    description:'',
+                    //    menuIds:''
+                    //},
+                    data2: zNodes,
+                    defaultExpandedKeys: currentNodes,
+                    defaultKeys: currentNodes,
+                    defaultProps: {
+                        children: 'Children',
+                        label: 'Label'
+                    },
+                    ruleForm: {
+                        id:@Model.Id,
+                        name: '@Model.Name',
+                        description: '@Model.Description',
+                        menuIds: ''
+                    },
+                    rules: {
+                        name: [
+                            { required: true, message: '请输入角色名', trigger: 'blur' }
+                            //{ min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                        ]
+                    }
+                },
+                methods: {
+                    submitForm:function(formName){
+                    //submitForm(formName) {
+                        var v_data = this.ruleForm;
+                        v_data.menuIds = this.$refs.tree.getCheckedKeys();
+                        var menuIdsParent =this.$refs.tree.getHalfCheckedKeys();
+                        v_data.menuIds = $.merge(v_data.menuIds, menuIdsParent);       
+                        if (v_data.menuIds.length == 0) {
+                            this.$message({
+                                type: 'error',
+                                message: '"请勾选权限"'
+                            });
+                            return;
+                        }
+                        v_data.menuIds = v_data.menuIds.toString();
+                        this.$refs[formName].validate((valid) => {
+                            if (valid) {
+                                //防止重复提交
+                                this.isSubmit = true;
+                                $.post("/Role/Edit", v_data, function (result) {
+                                    if (result.success) {
+                                        demo.$alert('修改成功', '成功', {
+                                            confirmButtonText: '确定',
+                                            callback: action => {
+                                                window.location.href = "/Role/Index";
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        demo.$message({
+                                            type: 'error',
+                                            message: result.error
+                                        });
+                                    }
+                                }, "json");
+                            } else {
+                                console.log('error submit!!');
+                                return false;
+                            }
+                        });
+                        //防止重复提交
+                        this.isSubmit = false;
+                    },
+                    resetForm:function(formName) {
+                        window.location.href = "/Role/Index";
+                    }
+                }
+            });
+
+        });
+        
+    </script>
+
+    @*<script src="~/Scripts/jquery.ztree.all-3.5.min.js"></script>*@
+    @*<script>
+            $("doucument").ready(function () {
+                var demo = new Vue({
+                    components: {
+                        'v-input': VueStrap.input,
+                        'v-form': VueStrap.formGroup
+                    },
+                    el: '#app',
+                    data: {
+                        valid: false,
+                        model: {
+                            id:@Model.Id,
+                            name: '@Model.Name',
+                            description:'@Model.Description',
+                            menuIds:''
+                        },
+                    },
+                    methods: {
+                        onSubmit: function () {
+                            //获取选择节点
+                            var nodes = zTreeObj.getCheckedNodes(true);
+                            if(nodes.length==0){
+                                bootbox.alert("请勾选权限");
+                                return;
+                            }
+                            var v_data = this.model;
+                            nodes.forEach(function(item){
+                                v_data.menuIds+= item.id+",";
+                            });
+                            v_data.menuIds= v_data.menuIds.substring(0,v_data.menuIds.length-1);
+
+                            $.post("/Role/Edit", v_data, function (result) {
+                                if (result.success) {
+                                    bootbox.alert("保存成功！", function () {
+                                        window.location.href = "/Role/Index";
+                                    });
+                                }
+                                else {
+                                    bootbox.alert(result.error);
+                                }
+                            }, "json");
+                        }
+                    }
+                });
+                var zTreeObj;
+                // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+                var setting = {
+                    check: {
+                        enable:true
+                    },
+                    data: {
+                        key: {
+                            checked: "isChecked"
+                        },
+                        simpleData: {
+                            enable: true,
+                            rootPId: 0
+                        }
+                    }
+                };
+                // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
+                var zNodes =@Html.Raw(ViewBag.menuTree) ;
+                // tree
+                zTreeObj = $.fn.zTree.init($("#ztree"), setting, zNodes);
+
+            });
+
+
+
+        </script>*@
+}
+
