@@ -146,6 +146,8 @@
     <Compile Include="IoC\ITypeFinder.cs" />
     <Compile Include="AutoMapper\IAutoMapperRegistrar.cs" />
     <Compile Include="AutoMapper\AutoMapperConfig.cs" />
+    <Compile Include="Log\ILogger.cs" />
+    <Compile Include="Log\NLogWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queue\IQueueHander.cs" />
     <Compile Include="Queue\ISimpleQueue.cs" />
