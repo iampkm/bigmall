@@ -144,8 +144,6 @@
     <Compile Include="IoC\IContainerManager.cs" />
     <Compile Include="IoC\IDependencyRegistrar.cs" />
     <Compile Include="IoC\ITypeFinder.cs" />
-    <Compile Include="Log\ILogger.cs" />
-    <Compile Include="Log\NLogWriter.cs" />
     <Compile Include="AutoMapper\IAutoMapperRegistrar.cs" />
     <Compile Include="AutoMapper\AutoMapperConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
