@@ -10,7 +10,7 @@ namespace Guoc.BigMall.Application
         AccountInfo CurrentAccount { get; }
 
         List<int> GetAccountStoreIds(int accountId);
-        List<StoreAccountMapping> LoadStoreAccountMappingCache();
+        List<AccountStoreMap> LoadStoreAccountMappingCache();
         void RemoveStoreAccountMappingCache();
     }
 

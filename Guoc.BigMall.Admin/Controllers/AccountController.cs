@@ -68,7 +68,7 @@ namespace Guoc.BigMall.Admin.Controllers
             //加载权限资源  
             ViewBag.View = _context.CurrentAccount.ShowSelectStore() ? "true" : "false";
             ViewBag.Roles = _roleFacade.QueryAll();
-            ViewBag.StoreTags = _storeFacade.GetStoreTags();
+           // ViewBag.StoreTags = _storeFacade.GetStoreTags();
             return View();
         }
 

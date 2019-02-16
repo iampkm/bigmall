@@ -217,12 +217,16 @@ namespace Guoc.BigMall.Application.Facade
                 param.StoreIds = searchArgs.StoreIds.Split(',');
             }
 
-            var fields = "Id, Code, Name, Address, Phone, CreatedOn, CreatedBy,Tag";
-            var dataSql = "SELECT {0} FROM Store WHERE 1=1 " + where;
-            var pageSql = dataSql.FormatWith(fields) + " ORDER BY Id OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY".FormatWith((page.PageIndex - 1) * page.PageSize, page.PageSize);
-            var countSql = dataSql.FormatWith("COUNT(1)");
-            rows = this._db.DataBase.Query<StoreDto>(pageSql, param) as List<StoreDto>;
-            page.Total = this._db.DataBase.ExecuteScalar<int>(countSql, param);
+           // var fields = "Id, Code, Name, Address, Phone, CreatedOn, CreatedBy,Tag";
+            //var dataSql = "SELECT {0} FROM Store WHERE 1=1 " + where;
+            //var pageSql = dataSql.FormatWith(fields) + " ORDER BY Id OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY".FormatWith((page.PageIndex - 1) * page.PageSize, page.PageSize);
+            var sql = "select Id, Code, Name, Address, Phone, CreatedOn, CreatedBy,Tag from store where 1=1  {0} Order By Id desc LIMIT {1},{2}";
+            sql = string.Format(sql, where, (page.PageIndex - 1) * page.PageSize, page.PageSize);
+            rows = this._db.DataBase.Query<StoreDto>(sql, param) as List<StoreDto>;
+
+            var sqlCount = "select count(*) from store where 1=1  {0}";
+            sqlCount = string.Format(sqlCount, where);          
+            page.Total = this._db.DataBase.ExecuteScalar<int>(sqlCount, param);
             return rows;
         }
     }

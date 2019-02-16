@@ -40,28 +40,8 @@
                 </template>
             </el-form-item>
             <el-form-item label="门店" prop="CanViewStores">
-                <store-selector v-model="form.CanViewStores" placeholder="门店" multi-select="true"></store-selector>
-            </el-form-item>
-            <el-form-item label="账户授权">
-                <el-radio-group v-model="form.mapKey" v-on:change="onChange">
-                    <el-radio label="store-all">所有门店</el-radio>
-                    <el-radio label="store-tag">标签门店</el-radio>
-                    <el-radio label="store-id">指定门店</el-radio>
-                </el-radio-group>
-
-                <div id="store-tag" v-show="form.mapKey=='store-tag'">
-                    <el-select v-model="form.mapValue" multiple filterable placeholder="请选择">
-                        <el-option v-for="item in tags"
-                                   v-bind:key="item.id"
-                                   v-bind:label="item.name"
-                                   v-bind:value="item.id">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div id="store-id" v-show="form.mapKey=='store-id'">
-                    <store-selector v-model="form.CanViewStores" placeholder="可以查看门店的权限" multi-select="true"></store-selector>
-                </div>
-            </el-form-item>
+                <store-selector v-model="form.CanViewStores" placeholder="可多选门店" multi-select="true"></store-selector>
+            </el-form-item>            
 
             <el-form-item>
                 <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>
@@ -87,12 +67,9 @@
                     RoleId:'',
                     storeId:0,
                     Password:"123456",
-                    CanViewStores:"",
-                    mapKey:'store-all',
-                    mapValue:'1'
+                    CanViewStores:"",                   
                 },
                 formRules: rules,
-                tags: @ViewBag.StoreTags;
             },
             methods: {
                 onSubmit: function () {

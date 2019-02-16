@@ -25,39 +25,37 @@ namespace Guoc.BigMall.Application.Facade
 
         public List<RoleDTO> QueryAll()
         {
-            return _db.Table<Role>().Where(r => r.Id > 1).ToList().MapToList<RoleDTO>();
+            ////return _db.Table<Role>().Where(r => r.Id > 1).ToList().MapToList<RoleDTO>();
+            return _db.Table<Role>().ToList().MapToList<RoleDTO>();
         }
 
         public IEnumerable<RoleDTO> GetPageList(Pager page, string name)
         {
             IEnumerable<RoleDTO> rows;
             dynamic param = new ExpandoObject();
-            string where = " and  t.Id>1"; //不加载系统超管角色
+            string where = ""; //不加载系统超管角色
             if (!string.IsNullOrEmpty(name))
             {
                 where += "and t.Name like @Name ";
                 param.Name = string.Format("%{0}%", name.Trim());
             }
+            ////if (page.Total < (page.PageIndex - 1) * page.PageSize)
+            ////{
+            ////    page.PageIndex = 1;
+            ////}
+            ////string sql = @" SELECT* FROM (
+            ////                SELECT *,ROW_NUMBER()     OVER(ORDER BY ID DESC) AS  ROWS	
+            ////                FROM dbo.Role t WHERE 1=1  {0} 
+            ////                )   t0    WHERE   ROWS BETWEEN {1} AND {2} ";
 
-
-            string sqlCount = @"SELECT  count(*)  
-                            FROM dbo.Role  t
-                            where 1=1 {0}";
-            sqlCount = string.Format(sqlCount, where);
-            // page.Total = this._query.Context.ExecuteScalar<int>(sqlCount, param);
-            page.Total = _db.DataBase.ExecuteScalar<int>(sqlCount, param);
-            if (page.Total < (page.PageIndex - 1) * page.PageSize)
-            {
-                page.PageIndex = 1;
-            }
-            string sql = @" SELECT* FROM (
-                            SELECT *,ROW_NUMBER()     OVER(ORDER BY ID DESC) AS  ROWS	
-                            FROM dbo.Role t WHERE 1=1  {0} 
-                            )   t0    WHERE   ROWS BETWEEN {1} AND {2} ";
-
-            sql = string.Format(sql, where, (page.PageIndex - 1) * page.PageSize + 1, page.PageIndex * page.PageSize);
-            //rows = this._query.FindAll<RoleDTO>(sql, param);
+            ////sql = string.Format(sql, where, (page.PageIndex - 1) * page.PageSize + 1, page.PageIndex * page.PageSize);
+            var sql = "select * from role t where 1=1 {0} order by t.Id desc LIMIT {1},{2}";
+            sql = string.Format(sql, where, (page.PageIndex - 1) * page.PageSize, page.PageSize);
             rows = _db.Table<RoleDTO>().Query(sql, param);
+
+            string sqlCount = @"SELECT  count(*) FROM Role  t where 1=1 {0}";
+            sqlCount = string.Format(sqlCount, where);
+            page.Total = _db.DataBase.ExecuteScalar<int>(sqlCount, param);
             return rows;
         }
 

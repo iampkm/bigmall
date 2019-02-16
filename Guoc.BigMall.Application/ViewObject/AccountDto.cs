@@ -39,10 +39,10 @@ namespace Guoc.BigMall.Application.ViewObject
         /// <summary>
         ///  关联门店分组名
         /// </summary>
-        public string GroupName { get; set; }
+        public string StoreName { get; set; }
         /// <summary>
         ///  分拣标记
         /// </summary>
-        public string PickingGroupName { get; set; }
+       // public string PickingGroupName { get; set; }
     }
 }

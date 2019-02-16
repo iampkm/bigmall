@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using Dapper.DBContext;
 using Guoc.BigMall.Domain.ValueObject;
 using EBS.Domain.ValueObject;
+using Dapper.DBContext.Schema;
 namespace Guoc.BigMall.Domain.Entity
 {
+    [Table("account_login_history")]
     public class AccountLoginHistory : BaseEntity
     {
        public AccountLoginHistory(int accountId,string userName, string ipAddress,LoginStatus status = LoginStatus.Login)

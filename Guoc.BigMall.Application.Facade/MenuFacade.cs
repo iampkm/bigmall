@@ -101,13 +101,13 @@ namespace Guoc.BigMall.Application.Facade.Service
                  where += "and Name like @Name ";
                  param.Name = string.Format("%{0}%", name);
              }
-             StringBuilder sb = new StringBuilder();
-             sb.Append(" SELECT * FROM ( ");
-             sb.Append(string.Format(@"SELECT *,ROW_NUMBER( )  OVER( ORDER BY id ) rows FROM dbo.Menu    WHERE 1=1 {0}", where));
-
-
-             sb.Append(string.Format(" ) as T where rows between {0} and {1}", (page.PageIndex - 1) * page.PageSize + 1, page.PageIndex * page.PageSize));
-            rows = this._db.DataBase.Query<Menu>(sb.ToString(), param);
+            ////StringBuilder sb = new StringBuilder();
+            ////sb.Append(" SELECT * FROM ( ");
+            ////sb.Append(string.Format(@"SELECT *,ROW_NUMBER( )  OVER( ORDER BY id ) rows FROM dbo.Menu    WHERE 1=1 {0}", where));
+            ////sb.Append(string.Format(" ) as T where rows between {0} and {1}", (page.PageIndex - 1) * page.PageSize + 1, page.PageIndex * page.PageSize));
+            var sql = "select * from menu where 1=1  {0} Order By Id desc LIMIT {1},{2}";
+            sql = string.Format(sql, where, (page.PageIndex - 1) * page.PageSize, page.PageSize);
+            rows = this._db.DataBase.Query<Menu>(sql, param);
             //超级管理员superman不显示
             string sqlCount = @"Select count(*) from Menu   where 1=1 {0}";
             sqlCount = string.Format(sqlCount, where);

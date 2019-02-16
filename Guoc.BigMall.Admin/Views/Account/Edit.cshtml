@@ -18,7 +18,7 @@
 
         <el-form ref="form" v-bind:model="model" v-bind:rules="formRules" label-width="80px">
             <el-form-item label="账号名" prop="UserName">
-                <el-input v-model="model.UserName" placeholder="账号名" clearable></el-input>
+                <el-input v-model="model.UserName" placeholder="账号名" clearable disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="昵称" prop="NickName">
                 <el-input v-model="model.NickName" placeholder="昵称" clearable></el-input>
@@ -37,8 +37,8 @@
                     </el-select>
                 </template>
             </el-form-item>
-            <el-form-item label="门店权限" prop="CanViewStores">
-                <store-selector v-model="model.CanViewStores" placeholder="可以查看门店的权限" multi-select="true"></store-selector>
+            <el-form-item label="门店" prop="CanViewStores">
+                <store-selector v-model="model.CanViewStores" placeholder="可多选门店" multi-select="true"></store-selector>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" v-on:click="onSubmit" v-bind:disabled="lock">保存</el-button>

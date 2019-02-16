@@ -28,7 +28,7 @@ namespace Guoc.BigMall.Application.Facade
         {
             var account = _db.Table<Account>().FirstOrDefault(a => a.Id == id).MapTo<AccountEditModel>();
             //account.CanViewStores = _db.Table<StoreAccountMapping>().Where(m => m.AccountId == account.Id).Select(m => m.StoreId).ToList().ToArray();
-            account.CanViewStores = _db.Table<StoreAccountMapping>().Where(m => m.AccountId == account.Id).ToList().Select(m => m.StoreId).ToArray();
+            account.CanViewStores = _db.Table<AccountStoreMap>().Where(m => m.AccountId == account.Id).ToList().Select(m => m.StoreId).ToArray();
             return account;
         }
 
@@ -61,7 +61,7 @@ namespace Guoc.BigMall.Application.Facade
             var role = _db.Table<Role>().FirstOrDefault(n => n.Id == account.RoleId);
             var storeName = string.Empty;
             var storeCode = string.Empty;
-            var storeMapping = _db.Table<StoreAccountMapping>().Where(m => m.AccountId == account.Id).ToList().FirstOrDefault();
+            var storeMapping = _db.Table<AccountStoreMap>().Where(m => m.AccountId == account.Id).ToList().FirstOrDefault();
             if (storeMapping != null)
             {
                 var store = _db.Table<Store>().FirstOrDefault(n => n.Id == storeMapping.StoreId);
@@ -120,7 +120,7 @@ namespace Guoc.BigMall.Application.Facade
         private void SetStoreMapping(int accountId, int[] canViewStores)
         {
             //删除的时候需要查询数据是否存在
-            var oldEntitys = _db.Table<StoreAccountMapping>().Where(n => n.AccountId == accountId).ToList().ToArray();
+            var oldEntitys = _db.Table<AccountStoreMap>().Where(n => n.AccountId == accountId).ToList().ToArray();
             _db.Delete(oldEntitys);
             if (canViewStores.IsNotEmpty())
             {
@@ -129,7 +129,7 @@ namespace Guoc.BigMall.Application.Facade
                 {
                     throw new FriendlyException("门店不存在!");
                 }
-                var newMapping = canViewStores.Select(storeId => new StoreAccountMapping()
+                var newMapping = canViewStores.Select(storeId => new AccountStoreMap()
                     {
                         AccountId = accountId,
                         StoreId = storeId,
@@ -219,30 +219,36 @@ namespace Guoc.BigMall.Application.Facade
             if (storeId >= 0)
             {
                 where += "AND t2.StoreId = @StoreId ";
-                storeFilter = " LEFT JOIN StoreAccountMapping t2 ON t0.Id=t2.AccountId ";
+                storeFilter = " LEFT JOIN AccountStoreMap t2 ON t0.Id=t2.AccountId ";
                 param.StoreId = storeId;
             }
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append(" SELECT * FROM ( ");
-            sb.AppendFormat(@"
-                SELECT  ROW_NUMBER() OVER ( ORDER BY t0.Id DESC ) AS rownum ,
-                        t0.Id ,
-                        t0.UserName ,
-                        t0.NickName ,
-                        t0.Status ,
-                        t0.CreatedOn ,
-                        t0.LastUpdateDate ,
-                        t0.LoginErrorCount ,
-                        t1.Name AS RoleName ,
-                        STUFF((SELECT ','+s.Code FROM StoreAccountMapping m,Store s WHERE m.StoreId=s.Id AND m.AccountId=t0.Id FOR XML PATH('')),1,1,'') AS StoreCodes ,
-                        t0.Phone
-                FROM    Account t0
-                        INNER JOIN Role t1 ON t0.RoleId = t1.Id
-                        {0}
-                WHERE   t0.Id > 1 {1}", storeFilter, where);
-            sb.Append(string.Format(" ) AS T WHERE rownum BETWEEN {0} AND {1}", (page.PageIndex - 1) * page.PageSize + 1, page.PageIndex * page.PageSize));
-            rows = this._db.DataBase.Query<AccountDto>(sb.ToString(), param);
+            //StringBuilder sb = new StringBuilder();
+            //sb.Append(" SELECT * FROM ( ");
+            //sb.AppendFormat(@"
+            //    SELECT  ROW_NUMBER() OVER ( ORDER BY t0.Id DESC ) AS rownum ,
+            //            t0.Id ,
+            //            t0.UserName ,
+            //            t0.NickName ,
+            //            t0.Status ,
+            //            t0.CreatedOn ,
+            //            t0.LastUpdateDate ,
+            //            t0.LoginErrorCount ,
+            //            t1.Name AS RoleName ,
+            //            STUFF((SELECT ','+s.Code FROM StoreAccountMapping m,Store s WHERE m.StoreId=s.Id AND m.AccountId=t0.Id FOR XML PATH('')),1,1,'') AS StoreCodes ,
+            //            t0.Phone
+            //    FROM    Account t0
+            //            INNER JOIN Role t1 ON t0.RoleId = t1.Id
+            //            {0}
+            //    WHERE   t0.Id > 1 {1}", storeFilter, where);
+            //sb.Append(string.Format(" ) AS T WHERE rownum BETWEEN {0} AND {1}", (page.PageIndex - 1) * page.PageSize + 1, page.PageIndex * page.PageSize));
+
+            string sql = @"Select t0.`Id`,t0.`UserName`,t0.`NickName`,t0.`Status`,t0.`CreatedOn`,t0.`LastUpdateDate`,t0.`LoginErrorCount`,t1.Name as RoleName,
+(select s.Name from account_store_map m left join store s on m.storeId=s.id where m.AccountId=t0.Id LIMIT 1 ) as StoreName 
+from Account t0 inner join Role t1 on t0.RoleId=t1.Id 
+where t0.Id>1 {0} Order By  t0.Id desc LIMIT {1},{2}";
+            sql = string.Format(sql, where, (page.PageIndex - 1) * page.PageSize, page.PageSize);
+            rows = this._db.DataBase.Query<AccountDto>(sql, param);
             //超级管理员superman不显示
             string sqlCount = string.Format("SELECT COUNT(1) FROM Account t0 INNER JOIN Role t1 ON t0.RoleId=t1.Id {0} WHERE t0.Id>1 {1}", storeFilter, where);
             page.Total = this._db.DataBase.ExecuteScalar<int>(sqlCount, param);

@@ -55,6 +55,7 @@
     <Compile Include="Entity\BrandRechargeVoucher.cs" />
     <Compile Include="Entity\CategoryCard.cs" />
     <Compile Include="Entity\CategoryRechargeVoucher.cs" />
+    <Compile Include="Entity\SiteItem.cs" />
     <Compile Include="Entity\ExceptProduct.cs" />
     <Compile Include="Entity\ParticipantCategory.cs" />
     <Compile Include="Entity\ProductPrice.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Entity\RechargeVoucherHistory.cs" />
     <Compile Include="Entity\SaleOrder.cs" />
     <Compile Include="Entity\SaleOrderItem.cs" />
+    <Compile Include="Entity\Site.cs" />
     <Compile Include="Entity\Stocktaking.cs" />
     <Compile Include="Entity\StocktakingItem.cs" />
     <Compile Include="Entity\StocktakingPlan.cs" />
@@ -87,7 +89,7 @@
     <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\RoleMenu.cs" />
     <Compile Include="Entity\Store.cs" />
-    <Compile Include="Entity\StoreAccountMapping.cs" />
+    <Compile Include="Entity\AccountStoreMap.cs" />
     <Compile Include="Entity\StoreInventory.cs" />
     <Compile Include="Entity\StoreInventoryBatch.cs" />
     <Compile Include="Entity\StoreInventoryBatchSNCode.cs" />

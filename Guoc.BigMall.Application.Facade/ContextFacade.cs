@@ -51,11 +51,11 @@ namespace Guoc.BigMall.Application.Facade
             return allMapping.Where(m => m.AccountId == accountId).Select(m => m.StoreId).ToList();
         }
 
-        public List<StoreAccountMapping> LoadStoreAccountMappingCache()
+        public List<AccountStoreMap> LoadStoreAccountMappingCache()
         {
-            var allMapping = _cache.Get<List<StoreAccountMapping>>(STORE_ACCOUNT_MAPPING_CACHE_KEY, 120, () =>
+            var allMapping = _cache.Get<List<AccountStoreMap>>(STORE_ACCOUNT_MAPPING_CACHE_KEY, 120, () =>
             {
-                var storeMapping = _db.Table<StoreAccountMapping>().ToList();
+                var storeMapping = _db.Table<AccountStoreMap>().ToList();
                 return storeMapping;
             });
 
