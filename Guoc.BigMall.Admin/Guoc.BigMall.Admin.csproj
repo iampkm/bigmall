@@ -1184,6 +1184,7 @@
     <Content Include="Scripts\vue.js" />
     <Content Include="Scripts\vue.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="SQL\bigmall.sql" />
     <Content Include="SQL\Dapper.DBContext.dll" />
     <Content Include="SQL\data.sql" />
     <Content Include="SQL\table-new.txt" />
