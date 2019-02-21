@@ -6,38 +6,42 @@ using System.Threading.Tasks;
 using NLog;
 namespace Guoc.BigMall.Infrastructure.Log
 {
-   public class NLogWriter :ILogger
+    public class NLogWriter : ILogger
     {
 
-       NLog.ILogger _log;
-       public NLogWriter( NLog.ILogger log)
-       {
-           this._log = log;
-       }
+        NLog.ILogger _log;
+        public NLogWriter(NLog.ILogger log)
+        {
+            this._log = log;
+        }
+        public NLogWriter()
+        {
+            this._log = NLog.LogManager.GetCurrentClassLogger();
+        }
 
-       public void Info(string message)
-       {
-           this._log.Info(message);
-       }
-       public void Info(string formateMessage, params object[] args)
-       {
-           this._log.Info(formateMessage, args);
-       }
-       public void Error(string message)
-       {
-           this._log.Error(message);
-       }
-       public void Error(Exception exception, string message)
-       {
-         
-           this._log.Error(exception, message,null);
-       }
-       public void Error(Exception exception, string formateMessage, params object[] args)
-       {
-           this._log.Error(exception,formateMessage,args);
-       }
-       public void Error(Exception exception)
-       {
+        public void Info(string message)
+        {
+            this._log.Info(message);
+        }
+        public void Info(string formateMessage, params object[] args)
+        {
+            this._log.Info(formateMessage, args);
+        }
+        public void Error(string message)
+        {
+            this._log.Error(message);
+        }
+        public void Error(Exception exception, string message)
+        {
+
+            this._log.Error(exception, message, null);
+        }
+        public void Error(Exception exception, string formateMessage, params object[] args)
+        {
+            this._log.Error(exception, formateMessage, args);
+        }
+        public void Error(Exception exception)
+        {
             //this._log.Error( exception,"原因:{0},堆栈：{1}",exception.Message,exception.StackTrace);
             //if (exception.InnerException != null)
             //{
@@ -45,6 +49,6 @@ namespace Guoc.BigMall.Infrastructure.Log
             //    this._log.Error(ex, "内部异常原因:{0},堆栈：{1}", ex.Message, ex.StackTrace); 
             //}
             this._log.Error(exception.ToString());
-       }
+        }
     }
 }

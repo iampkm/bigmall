@@ -122,6 +122,10 @@ namespace Guoc.BigMall.Application.Facade.MapperConfig
                .Mapping(x => DateTime.Parse(x.DateRange.Split(',')[0]), y => y.StartDate)
                .Mapping(x => DateTime.Parse(x.DateRange.Split(',')[1] + " 23:59:59"), y => y.EndDate)
                .ReverseMap();
+
+            cfg.CreateMap<BrandModel, Brand>()
+              //.Ignore(m => m.Id)
+              .ReverseMap();
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Guoc.BigMall.Application.DTO;
 
 namespace Guoc.BigMall.Admin.Controllers
 {
@@ -35,5 +36,23 @@ namespace Guoc.BigMall.Admin.Controllers
             var rows = _brandFacade.GetList(page, search);
             return Json(new { success = true, data = rows, total = page.Total }, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult Create(BrandModel model)
+        {
+            _brandFacade.Create(model);
+            return Json(new { success = true});
+        }
+        public JsonResult Edit(BrandModel model)
+        {
+            _brandFacade.Update(model);
+            return Json(new { success = true });
+        }
+
+        public JsonResult Remove(string ids)
+        {
+            _brandFacade.Delete(ids);
+            return Json(new { success = true });
+        }
+
     }
 }

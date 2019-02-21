@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace Guoc.BigMall.Application.DTO
 {
-    public class CategoryTreeNode : TreeNode
+   public class BrandModel
     {
+        public int Id { get; set; }
         public string Code { get; set; }
-        public string ParentCode { get; set; }
-        public int Level { get; set; }
-        /// <summary>
-        /// 节点名称
-        /// </summary>
+
         public string Name { get; set; }
+
+        public string Image { get; set; }
     }
 }

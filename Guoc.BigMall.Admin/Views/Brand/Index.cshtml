@@ -11,55 +11,77 @@
             </ol>
         </div>
         <div class="box-body">
-
-            <div class="row" style="margin-bottom:10px;" slot="customSearch">
-
-                <div class="col-xs-2">
-                    <input class="form-control" v-model="table.args.code" placeholder="编码" debounce="500" />
+            <div id="toolbar">
+                <div class="row" style="margin-bottom:10px;" slot="customSearch">
+                    <div class="col-xs-2">
+                        <el-input v-model="table.args.code" placeholder="编码" clearable></el-input>
+                    </div>
+                    <div class="col-xs-2">
+                        <el-input v-model="table.args.name" placeholder="名称" clearable></el-input>
+                    </div>
                 </div>
-                <div class="col-xs-2">
-                    <input class="form-control" v-model="table.args.name" placeholder="名称" debounce="500" />
-                </div>
-
+                <el-row class="row-bottom">
+                    <el-col v-bind:sm="12" v-bind:md="12">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查询</button>
+                            <button type="button" class="btn btn-warning btn-flat" v-on:click="create()"> 新增</button>
+                            @*<button type="button" class="btn btn-success btn-flat" v-on:click="edit()">修改</button>*@
+                            <button type="button" class="btn btn-danger btn-flat" v-on:click="remove()">删除</button>                            
+                        </span>
+                    </el-col>
+                </el-row>
             </div>
-            <el-row class="row-bottom">
-                <el-col v-bind:sm="12" v-bind:md="12">
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-primary btn-flat" v-on:click="loadData()">查 询</button>
+            <div id="table-data">
+                <el-row>
+                    <el-col v-bind:span="24">
+                        <el-table class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" v-on:selection-change="onSelectionChange" v-bind:height="table.height">
+                            <el-table-column type="selection" width="55"></el-table-column>
+                            <el-table-column type="index"></el-table-column>
+                            <el-table-column prop="Name" label="名称" width="150"></el-table-column>
+                            <el-table-column prop="Code" label="编码" width="150"></el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button-group>
+                                        @*<el-button v-on:click="detailRow(scope.row)" size="small" type="primary">查看</el-button>*@
+                                        <el-button v-on:click="edit(scope.row)" size="small" type="success">编辑</el-button>
+                                        <el-button v-on:click="removeRow(scope.row)" v-if="scope.row.Status!=2" size="small" type="danger">删除</el-button>
+                                    </el-button-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
+                                       layout="total,sizes,prev,pager,next,jumper"
+                                       v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
 
-                    </span>
-                </el-col>
-            </el-row>
-
-            <el-row>
-                <el-col v-bind:span="24">
-                    <el-table class="form-group" ref="$table" v-bind:data="table.rows" border style="width: 100%" v-bind:height="table.height">
-                        @*<el-table-column type="selection" width="55"></el-table-column>*@
-                        <el-table-column type="index"></el-table-column>
-                        <el-table-column prop="Name" label="名称" width="150"></el-table-column>
-                        <el-table-column prop="Code" label="编码" width="150"></el-table-column>
-
-
-                    </el-table>
-                    <el-pagination v-bind:current-page="table.page.pageIndex" v-bind:page-size="table.page.pageSize" v-bind:total="table.page.total"
-                                   layout="total,sizes,prev,pager,next,jumper"
-                                   v-on:size-change="onPageSizeChange" v-on:current-change="onPageChange" background>
-
-                    </el-pagination>
-                </el-col>
-            </el-row>
-
+                        </el-pagination>
+                    </el-col>
+                </el-row>
+            </div>
         </div>
         <!-- /.box-body -->
+        <el-dialog title="品牌维护"
+                   v-bind:visible.sync="form.dialogVisible"
+                   width="50%"
+                   @*v-bind:before-close="save"*@>
+            <el-form v-bind:model="form" status-icon v-bind:rules="formRule" ref="form" label-width="100px">
+                <el-form-item label="品牌编码" prop="code">
+                    <el-input type="text" v-model="form.code" placeholder="品牌编码" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="品牌名" prop="name">
+                    <el-input type="text" v-model="form.name" placeholder="品牌名" clearable></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button v-on:click="form.dialogVisible = false">取 消</el-button>
+                <el-button type="primary" v-on:click="save" v-bind:disabled="lock">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
     <div class="clearfix"></div>
 </div>
 
 @section scripts{
-
     <script>
-
-        // bootstrap the demo
         var vue = new Vue({
             components: {
             },
@@ -67,11 +89,23 @@
             data: {
                 table: {
                     height: 450,
-                    rows: [], 
+                    rows: [],
                     args: { name: '', code: '' },
                     page: { total: 0, pageIndex: 1, pageSize: global_config.page.pageSize, IsPaging: true }
                 },
-
+                checkedIds: [],
+                lock: false,
+                form: {
+                    dialogVisible: false,
+                    id: 0,
+                    name: '',
+                    code: '',
+                    image: ''
+                },
+                formRule: {
+                    name: [{ required: true, message: '请输入名称', trigger: 'blur' }, { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }],
+                    code: [{ required: true, message: '请输入编码', trigger: 'blur' }, { min: 2, max: 20, message: '长度在 1 到 10 个字符', trigger: 'blur' }]
+                }
             },
             methods: {
                 onPageChange: function (page) {
@@ -81,6 +115,13 @@
                 onPageSizeChange: function (pageSize) {
                     this.table.page.pageSize = pageSize;
                     this.loadData();
+                },
+                onSelectionChange: function (selection) {
+                    var $this = this;
+                    this.checkedIds = [];
+                    selection.forEach(function (row) {
+                        $this.checkedIds.push(row.Id);
+                    });
                 },
                 loadData: function () {
                     var _self = this;
@@ -99,9 +140,96 @@
                         }
                     }, "Json");
                 },
+                create: function () {
+                    this.form.dialogVisible = true;
+                    this.form.url = "/Brand/Create";   
+                    this.form.id = 0;
+                    this.form.name = '';
+                    this.form.code = '';
+                },
+                edit: function (row) {                    
+                    this.form.dialogVisible = true;
+                    this.form.url = "/Brand/Edit";
+                    this.form.id = row.Id;
+                    this.form.name = row.Name;
+                    this.form.code = row.Code;
+
+                },
+                removeRow: function (row) {
+                    var $this = this;
+                    this.lock = true;
+                    this.form.url = "/Brand/Remove";
+                    this.form.id = row.Id;
+                    this.$confirm('此操作将永久删除该记录, 是否继续?', '系统消息', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'error'
+                    }).then(() => {
+                        $.post($this.form.url, { ids: $this.form.id }, function (result) {
+                            $this.lock = false;
+                            if (result.success) {
+                                $this.$message.success({
+                                    message: "保存成功！"
+                                });
+                                $this.loadData();
+                            }
+                            else {
+                                $this.$message.error(result.error);
+                            }
+                        }, "json");
+                    }).catch(() => {
+                    });
+                },
+                remove: function () {
+                    if (this.checkedIds.length == 0) {
+                        this.$message.warning("请选择要删除记录！");
+                        return;
+                    }
+                    var $this = this;
+                    this.lock = true;
+                    this.form.url = "/Brand/Remove";                   
+                    this.$confirm('此操作将永久删除该记录, 是否继续?', '系统消息', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'error'
+                    }).then(() => {
+                        $.post($this.form.url, { ids: $this.checkedIds.toString() }, function (result) {
+                            $this.lock = false;
+                            if (result.success) {
+                                $this.$message.success({
+                                    message: "保存成功！"
+                                });
+                                $this.loadData();
+                            }
+                            else {
+                                $this.$message.error(result.error);
+                            }
+                        }, "json");
+                    }).catch(() => {
+                    });
+                },
+                save: function () {
+                    var $this = this;
+                    $this.lock = true;
+                    $this.$refs.form.validate(function (valid) {
+                        if (!valid) return false;
+                        $.post($this.form.url, $this.form, function (result) {
+                            $this.form.dialogVisible = false;
+                            $this.lock = false;
+                            if (result.success) {
+                                $this.$message.success({
+                                    message: "保存成功！"
+                                });
+                                $this.loadData();
+                            }
+                            else {
+                                $this.$message.error(result.error);
+                            }
+                        }, "json");
+                    });
+                },
             },
             created: function () {
-                setListPage(this.table, 254);
             },
 
         })

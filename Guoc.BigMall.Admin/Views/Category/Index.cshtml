@@ -2,16 +2,6 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-@section styles{
-    @*<style type="text/css">
-            .button-row {
-                border-bottom: 1px solid #eee;
-                padding-bottom: 10px;
-            }
-        </style>*@
-}
-
 <div id="app">
     <div class="box box-primary">
         <div class="box-header">
@@ -20,26 +10,48 @@
             </ol>
         </div>
         <div class="box-body">
-
-            @*<el-row class="button-row">
-                    <el-button type="primary">新增</el-button>
-                    <el-button type="warning">编辑</el-button>
-                    <el-button type="danger">删除</el-button>
-                </el-row>*@
-
-            <el-row v-bind:style="treeStyle">
-                <el-tree ref="categoryTree" v-bind:data="categoryData" node-key="Key" v-bind:props="defaultProps" highlight-current v-bind:empty-text='emptyText'></el-tree>
+            <el-row class="button-row">
+                <el-col v-bind:sm="12" v-bind:md="12">
+                    <span class="input-group-btn">                        
+                        <button type="button" class="btn btn-warning btn-flat" v-on:click="create">新增</button>
+                        <button type="button" class="btn btn-success btn-flat" v-on:click="edit">编辑</button>
+                        <button type="button" class="btn btn-danger btn-flat" v-on:click="remove" v-bind:disabled="lock">删除</button>
+                        <button type="button" class="btn btn-default btn-flat" v-on:click="clear">取消选择</button>
+                    </span>
+                </el-col>
             </el-row>
-
+            <el-row v-bind:style="treeStyle" v-bind:gutter="10">
+                @*<p>小提示：通过选中节点,再新增，可以增加下级节点</p>*@
+                <el-col v-bind:span="8">
+                    <el-tree ref="categoryTree" v-bind:data="categoryData" node-key="form.categoryCode" v-bind:props="defaultProps" highlight-current v-bind:empty-text='emptyText' default-expand-all></el-tree>
+                </el-col>
+            </el-row>
+            <el-dialog title="品类维护"
+                       v-bind:visible.sync="form.dialogVisible"
+                       width="50%"
+                       @*v-bind:before-close="save"*@>
+                <el-form v-bind:model="form" status-icon v-bind:rules="formRule" ref="form" label-width="100px">
+                    <el-form-item label="父类别" prop="parentName">
+                        {{form.parentName}}
+                    </el-form-item>
+                    <el-form-item label="品类名" prop="categoryName">
+                        <el-input type="text" v-model="form.categoryName" placeholder="品类名" clearable></el-input>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button v-on:click="form.dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" v-on:click="save" v-bind:disabled="lock">确 定</el-button>
+                </span>
+            </el-dialog>
         </div>
     </div>
 </div>
-
 @section scripts{
     <script type="text/javascript">
         var vue = new Vue({
             el: '#app',
             data: {
+                lock: false,
                 emptyText: "数据加载中...",
                 treeStyle: {
                     borderTop: "1px solid #eee",
@@ -50,25 +62,113 @@
                     children: "Children",
                     label: "Label"
                 },
-                categoryData: []
+                categoryData: [],
+                form: {
+                    dialogVisible: false,
+                    url: "",
+                    code: '',
+                    parentCode: '',
+                    parentName: '',
+                    categoryName: ''
+                },
+                formRule: {
+                    categoryName: [{ required: true, message: '请输入名称', trigger: 'blur' }, { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }]
+                }
             },
             methods: {
-                loadTree: function (parentCode, callback) {
-                    $.post("/Category/LoadCategoryTree", { "parentCode": parentCode }, callback);
+                loadTree: function () {
+                    var $this = this;
+                    $.post("/Category/LoadCategoryTree", {}, function (nodes) {
+                        $this.categoryData = nodes;
+                        if (!nodes || nodes.length == 0)
+                            $this.emptyText = "没有品类数据。";
+                    });
+                },
+                create: function () {
+                    this.form.dialogVisible = true;
+                    this.form.url = "/Category/Create";
+                    var selectNode = this.$refs.categoryTree.getCurrentNode();
+                    if (selectNode) {
+                        this.form.parentCode = selectNode.Code;
+                        this.form.parentName = selectNode.Label;
+                        this.form.code = "";
+                        this.form.categoryName = "";
+                    }
+
+                },
+                edit: function () {
+                    var selectNode = this.$refs.categoryTree.getCurrentNode();
+                    // 选中节点就是要编辑的节点
+                    if (selectNode) {
+                        this.form.code = selectNode.Code;
+                        this.form.parentName = selectNode.ParentCode;
+                        this.form.categoryName = selectNode.Name;
+                    }
+                    else {
+                        this.$message.error("请中一个节点进行编辑");
+                        return;
+                    }
+                    this.form.dialogVisible = true;
+                    this.form.url = "/Category/Edit";
+
+                },
+                remove: function () {
+                    var $this = this;
+                    this.lock = true;
+                    this.form.url = "/Category/Remove";
+                    var selectNode = this.$refs.categoryTree.getCurrentNode();
+                    if (!selectNode) {
+                        this.$message.error("请中一个节点进行删除");
+                        this.lock = false;
+                        return;
+                    }
+                    this.form.code = selectNode.Code;
+                    this.$confirm('此操作将永久删除该品类及子品类, 是否继续?', '系统消息', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'error'
+                    }).then(() => {
+                        $.post($this.form.url, { code: $this.form.code }, function (result) {
+                            $this.lock = false;
+                            if (result.success) {
+                                $this.$message.success({
+                                    message: "保存成功！"
+                                });
+                                $this.loadTree();
+                            }
+                            else {
+                                $this.$message.error(result.error);
+                            }
+                        }, "json");
+                    }).catch(() => {
+                    });
+                },
+                save: function () {
+                    var $this = this;
+                    this.lock = true;
+                    $this.$refs.form.validate(function (valid) {
+                        if (!valid) return false;
+                        $.post($this.form.url, $this.form, function (result) {
+                            $this.form.dialogVisible = false;
+                            $this.lock = false;
+                            if (result.success) {
+                                $this.$message.success({
+                                    message: "保存成功！"
+                                });
+                                $this.loadTree();
+                            }
+                            else {
+                                $this.$message.error(result.error);
+                            }
+                        }, "json");
+                    });
+                },
+                clear: function () {
+                    this.$refs.categoryTree.setCurrentNode([]);
                 }
             },
             created: function () {
-                var $this = this;
-                this.loadTree(null, function (nodes) {
-                    $this.categoryData = nodes;
-                    if (!nodes || nodes.length == 0)
-                        $this.emptyText = "没有品类数据。";
-                });
-
-                //$(window).resize(function () {
-                //    $this.treeStyle.height = ($(this).height() - 90) + "px";
-                //}).resize();
-                setListPage(this.treeStyle, 95);
+                this.loadTree();
             }
         });
     </script>

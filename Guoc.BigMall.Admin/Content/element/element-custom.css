@@ -53,3 +53,7 @@
     background-color: #3c8dbc;
     border-color: #367fa9;
 }
+.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+    background-color: #337ab7;
+    color: #ffffff;
+}

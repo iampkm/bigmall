@@ -28,5 +28,23 @@ namespace Guoc.BigMall.Admin.Controllers
             var childNodes = _categoryFacade.GetCategoryTree(parentCode == string.Empty ? null : parentCode);
             return Json(childNodes);
         }
+
+        public JsonResult Create(string parentCode, string categoryName)
+        {
+            var id = _categoryFacade.Create(parentCode, categoryName);
+            return Json(new { success = true, id = id });
+        }
+
+        public JsonResult Edit(string code, string categoryName)
+        {
+            _categoryFacade.Update(code, categoryName);
+            return Json(new { success = true });
+        }
+
+        public JsonResult Remove(string code)
+        {
+            _categoryFacade.Delete(code);
+            return Json(new { success = true });
+        }
     }
 }

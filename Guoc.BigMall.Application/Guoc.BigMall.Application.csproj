@@ -53,6 +53,7 @@
     <Compile Include="Configuration\SystemConfig.cs" />
     <Compile Include="DTO\AccountInfo.cs" />
     <Compile Include="DTO\AccountCreateModel.cs" />
+    <Compile Include="DTO\BrandModel.cs" />
     <Compile Include="DTO\BrandRechargeVoucherDto.cs" />
     <Compile Include="DTO\BrandRechargeVoucherSearch.cs" />
     <Compile Include="DTO\CategoryRechargeVoucherDto.cs" />
