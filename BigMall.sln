@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoc.BigMall.Application.Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoc.BigMall.Domain", "Guoc.BigMall.Domain\Guoc.BigMall.Domain.csproj", "{E349624E-9C0A-4E9E-9C99-9DF8F9531EC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoc.BigMall.Api", "Guoc.BigMall.Api\Guoc.BigMall.Api.csproj", "{0CFA47CD-EA69-4C22-A827-8CC92E12C0A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,12 +50,17 @@ Global
 		{E349624E-9C0A-4E9E-9C99-9DF8F9531EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E349624E-9C0A-4E9E-9C99-9DF8F9531EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E349624E-9C0A-4E9E-9C99-9DF8F9531EC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CFA47CD-EA69-4C22-A827-8CC92E12C0A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CFA47CD-EA69-4C22-A827-8CC92E12C0A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CFA47CD-EA69-4C22-A827-8CC92E12C0A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CFA47CD-EA69-4C22-A827-8CC92E12C0A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{00CA9D0A-7ACE-43EE-B704-2772D6B9A340} = {F1079383-D39A-4401-B14C-1CCCC1276D1E}
+		{0CFA47CD-EA69-4C22-A827-8CC92E12C0A7} = {F1079383-D39A-4401-B14C-1CCCC1276D1E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {447F4577-0ED1-41B8-8794-F94133D2ABB6}
